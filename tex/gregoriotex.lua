@@ -554,7 +554,7 @@ local function post_linebreak(h, groupcode, glyphes)
           dashnode.shift = currentshift
           hyphnode.font = currentfont
           insert_after(line.head, lastseennode, dashnode)
-          addash=false
+          adddash=false
         end
         if line_id then
           new_score_heights[prev_line_id] = { linenum, line_top, line_bottom,
