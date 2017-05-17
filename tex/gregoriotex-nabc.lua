@@ -20,7 +20,7 @@
 -- this file contains lua functions used by GregorioTeX St. Gall ancient
 -- neume support when called with LuaTeX.
 
--- GREGORIO_VERSION 5.0.0-beta2
+-- GREGORIO_VERSION 5.0.1
 
 local catcode_at_letter = luatexbase.catcodetables['gre@atletter']
 
@@ -275,16 +275,16 @@ end
 local add_spacing = function(str, len, idx, ret)
   while idx <= len and (str:sub(idx, idx) == "/" or str:sub(idx, idx) == "`") do
     if idx < len and str:sub(idx, idx + 1) == "//" then
-      ret = ret .. "\\hskip \\gre@space@skip@nabclargerspace"
+      ret = ret .. "\\gre@hskip \\gre@space@skip@nabclargerspace"
       idx = idx + 2
     elseif idx < len and str:sub(idx, idx + 1) == "``" then
-      ret = ret .. "\\hskip -\\gre@space@skip@nabclargerspace"
+      ret = ret .. "\\gre@hskip -\\gre@space@skip@nabclargerspace"
       idx = idx + 2
     elseif str:sub(idx, idx) == "/" then
-      ret = ret .. "\\hskip \\gre@space@skip@nabcinterelementspace"
+      ret = ret .. "\\gre@hskip \\gre@space@skip@nabcinterelementspace"
       idx = idx + 1
     else
-      ret = ret .. "\\hskip -\\gre@space@skip@nabcinterelementspace"
+      ret = ret .. "\\gre@hskip -\\gre@space@skip@nabcinterelementspace"
       idx = idx + 1
     end
   end

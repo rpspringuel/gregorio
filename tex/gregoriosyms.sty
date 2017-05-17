@@ -19,7 +19,7 @@
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{gregoriosyms}
-    [2017/02/24 v5.0.0-beta2 GregorioTeX symbols only.]% PARSE_VERSION_DATE_LTX
+    [2017/04/16 v5.0.1 GregorioTeX symbols only.]% PARSE_VERSION_DATE_LTX
 
 % If gregoriotex has been loaded, then we need to abort the loading process of this package here in order to avoid some conflicts.
 \ifcsname gregoriotex@symbols@loaded\endcsname\endinput\fi%
@@ -39,7 +39,7 @@
 
 % The version of gregorio. All gregoriotex*.tex files must have the same.
 % All gtex files must also have the same version.
-\xdef\gre@gregoriotexversion{5.0.0-beta2}% GREGORIO_VERSION - VersionManager.py
+\xdef\gre@gregoriotexversion{5.0.1}% GREGORIO_VERSION - VersionManager.py
 
 \providecommand{\gre@declarefileversion}[2]{\relax}
 
@@ -59,44 +59,8 @@
 
 \ProcessKeyvalOptions*
 
-\def\gre@debugmsg#1#2{%
-  \IfStrEq{\gre@debug}{}{}%
-    %false
-    {\IfStrEq{#1}{all}%
-      %true
-      {\gre@error{Debug error: ‘all’ is not a permitted keyword}}%
-      %false
-      {\IfStrEq{\gre@debug}{all}%
-        %true
-        {\gre@typeout{GregorioTeX debug: (#1) #2}}%
-        %false
-        {\IfSubStr{\gre@debug}{#1}%
-          %true
-          {\gre@typeout{GregorioTeX debug: (#1) #2}}%
-          %false
-          {\relax}%
-        }%
-      }%
-    }%
-}%
+\input gregoriotex-common.tex
 
-% Macro to handle deprecated macros.
-% #1 - the deprecated macro
-% #2 - the correct macro to use
-\def\gre@deprecated#1#2{%
-  \ifgre@allowdeprecated%
-    \gre@warning{#1\space is deprecated.\MessageBreak Use #2\space instead}%
-  \else%
-    \gre@error{#1\space is deprecated.\MessageBreak Use #2\space instead}%
-  \fi%
-  \relax%
-}%
-
-\def\gre@obsolete#1#2{%
-  \gre@error{#1\space is obsolete.\MessageBreak Use #2\space instead}%
-  \relax%
-}%
-\AtBeginDocument{\IfStrEq{\gre@debug}{}{}{\typeout{GregorioTeX is in debug mode}\typeout{\gre@debug\space messages will be printed to the log.}}}%
 
 \long\def\gre@iflatex#1{#1}
 \long\def\gre@ifnotlatex#1{}

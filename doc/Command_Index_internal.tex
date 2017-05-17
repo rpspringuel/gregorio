@@ -47,7 +47,7 @@ Executes \MP{} commands using luamplib.
   \#1 & \MP{} commands & The \MP{} commands to execute.
 \end{argtable}
 
-\macroname{\textbackslash gre@deprecated}{\#1\#2}{gregoriotex-main.tex}
+\macroname{\textbackslash gre@deprecated}{\#1\#2}{gregoriotex-common.tex}
 Macro that handles deprecation messages. By default, deprecated macros
 are allowed and a warning is printed. If the package option
 \texttt{deprecated=false} is set, then deprecated macros raise a
@@ -58,7 +58,7 @@ package error, halting \TeX.
   \#2 & string & name of the correct macro to use\\
 \end{argtable}
 
-\macroname{\textbackslash gre@obsolete}{\#1\#2}{gregoriotex-main.tex}
+\macroname{\textbackslash gre@obsolete}{\#1\#2}{gregoriotex-common.tex}
 Macro that handles obsolescence errors.
 
 \begin{argtable}
@@ -283,14 +283,6 @@ argument.
       & \texttt{a} & Gregorio\TeX\ will automatically compile gabc files if necessary.\\
       & \texttt{f} & Forces Gregorio\TeX\ to compile the gabc file.\\
   \#2 & string & Relative or absolute path to the score.\\
-\end{argtable}
-
-\macroname{\textbackslash gre@gabcsnippet}{\#1}{gregoriotex-main.tex}
-Macro that handles \verb=\gabcsnippet= calls when they do not have an
-optional argument.
-
-\begin{argtable}
-  \#1 & string & Snippet of gabc code.\\
 \end{argtable}
 
 \macroname{\textbackslash gre@writemode}{\#1\#2\#3}{gregoriotex-main.tex}
@@ -878,6 +870,10 @@ Workhorse function behind \verb=\grecommentary=.
   \#2 & string & the new commentary content\\
 \end{argtable}
 
+\macroname{\textbackslash gre@printcommentary}{}{gregoriotex-main.tex}
+Computes the true ``raise'' and prints the commentary contained in
+\verb=\gre@box@commentary=.
+
 \macroname{\textbackslash gre@atletter}{}{gregoriotex-main.tex}
 A Lua\TeX\ catcode table which makes sure that Lua\TeX\ treats `@‘ corectly.
 
@@ -895,6 +891,44 @@ Macro for raising a bug error when some calculation goes awry and comes up with 
 
 \macroname{\textbackslash gre@changestyle}{\#1\#2[\#3]}{gregoriotex.sty \textup{and} gregoriotex.tex}
 Workhorse function behind \verb=\grechangestyle=.  Necessary because the internals of the definition are slightly different in \LaTeX\ and Plain \TeX.
+
+\macroname{\textbackslash gre@bolshiftcleftypeglobal}{}{gregoriotex-spaces.tex}
+Takes on the value \texttt{1}, \texttt{2}, or \texttt{3} depending on whether
+to calculate the beginning-of-line shift based on the largest, current, or
+forced clef width (\ie, directly use the value stored in
+\verb=\gre@dimen@clefwidth@bol=), respectively.  This is the ``global'' value,
+used to initialize \verb=\gre@bolshiftcleftypelocal= at the start of a score.
+
+\macroname{\textbackslash gre@bolshiftcleftypelocal}{}{gregoriotex-spaces.tex}
+Takes on the value \texttt{1}, \texttt{2}, or \texttt{3} depending on whether
+to calculate the beginning-of-line shift based on the largest, current, or
+forced clef width (\ie, directly use the value stored in
+\verb=\gre@dimen@clefwidth@bol=), respectively.  This is the ``local'' value,
+used in the actual computation.
+
+\macroname{\textbackslash gre@update@clefwidth@largest}{\#1}{gregoriotex-spaces.tex}
+Updates the ``largest'' clef width, used when \verb=\gre@bolshiftcleftypelocal=
+is \texttt{1}.
+
+\begin{argtable}
+  \#1 & distance & The new value to use for the ``largest'' clef width.\\
+\end{argtable}
+
+\macroname{\textbackslash gre@update@clefwidth@current}{\#1}{gregoriotex-spaces.tex}
+Updates the ``current'' clef width, used when \verb=\gre@bolshiftcleftypelocal=
+is \texttt{2}.
+
+\begin{argtable}
+  \#1 & distance & The new value to use for the ``current'' clef width.\\
+\end{argtable}
+
+\macroname{\textbackslash gre@update@clefwidth@forced}{\#1}{gregoriotex-spaces.tex}
+Updates the ``forced'' clef width, used when \verb=\gre@bolshiftcleftypelocal=
+is \texttt{3}.
+
+\begin{argtable}
+  \#1 & distance & The new value to use for the ``forced'' clef width.\\
+\end{argtable}
 
 \macroname{\textbackslash gre@calculate@bolshift}{\#1\#2}{gregoriotex-spaces.tex}
 Macro used in \verb=\GreSyllable=. Sets \verb=\gre@skip@bolshift= to the left kern that should appear at the beginning of a line in case of a forced linebreak.  The goal of this left kern is to have all lines aligned on notes.  This shift is applied to the right before every syllable and then to the left after placing an empty box.  At the beginning of the line the shift to the right is ignored by \TeX\ as leading white space, but the shift left is not because of the presence of the “character” of the empty box.
@@ -929,13 +963,26 @@ Macro to hold the original distance which is to be scaled by \verb=\gre@changeon
 \macroname{\textbackslash gre@debug}{}{gregoriotex.sty \textup{and} gregoriotex.tex}
 Macro to hold the list of debug messages which should be designated as printing.  Contains comma-separated values from \Nameref{DebugCategory}, set via the \texttt{debug} package keyword parameter.
 
-\macroname{\textbackslash gre@debugmsg}{\#1\#2}{gregoriotex-main.tex}
+\macroname{\textbackslash gre@debugmsg}{\#1\#2}{gregoriotex-common.tex}
 Macro to print debugging messages.
 
 \begin{argtable}
   \#1 & string & The category of the message (used in conjunction with \verb=\gre@debug= to determine whether to print the message or not; see \Nameref{DebugCategory}\\
   \#2 & string & The debug message\\
 \end{argtable}
+
+\macroname{\textbackslash gre@trace}{\#1}{gregoriotex-common.tex}
+Macro to mark the beginning of a function in the log with a GreTrace message.
+
+\begin{argtable}
+  \#1 & string & name and argument list of the function being identified.
+\end{argtable}
+
+\macroname{\textbackslash gre@trace@end}{\#1}{gregoriotex-common.tex}
+Macro to mark the end of a function in the log with a GreTrace message.
+
+\macroname{\textbackslash gre@trace@prefix}{gregoriotex-common.tex}
+Macro to hold the prefix of GreTrace messages (value is manipulated to control indentation and indicate nesting).
 
 \macroname{\textbackslash gre@declarefileversion}{\#1\#2}{gregoriotex-main.tex}
 Macro which checks for version consistency between Gregorio\TeX\ files.
@@ -1015,7 +1062,7 @@ Macro which stores the first part of the next syllable (that which comes before 
 \macroname{\textbackslash gre@nextmiddlesyllablepart}{}{gregoriotex-syllable.tex}
 Macro which stores the middle part of the next syllable (the part which aligns with the notes).
 
-\macroname{\textbackslash gre@fixdebug}{}{gregoriotex-main.tex}
+\macroname{\textbackslash gre@fixdebug}{}{gregoriotex-common.tex}
 Fixes the raw \verb=\gre@debug= value for use with \verb=\gre@debugmsg=.
 
 \macroname{\textbackslash gre@fixedtextformat}{\#1}{gregoriotex-syllable.tex}
@@ -1377,6 +1424,20 @@ Puts the greater of its two integer arguments into \verb=\gre@count@temp@one=.
 
 \macroname{\textbackslash gre@evaluatenextsyllable}{\#1}{gregoriotex-syllable.tex}
 Evaluates its first argument as an advance computation against the next syllable.  Twiddles the \verb=ifgre@evaluatingnextsyllable= flag around evaluation of the macro argument.
+
+\macroname{\textbackslash gre@save@additionalspaces}{}{gregoriotex-spaces.tex}
+Macro to save the additional vertical spaces associated with the line (\texttt{additionalbottomspace}, \texttt{additionaltopspace}, \texttt{additionaltopspacealt}, \texttt{additionaltopspacenabc}, \texttt{currenttranslationheight}, \texttt{textlower}, \texttt{currentabovelinestextheight}, and \texttt{constantglyphraise}) so that they can be restored later.
+
+\macroname{\textbackslash gre@restore@additionalspaces}{}{gregoriotex-spaces.tex}
+Macro to restore the additional vertical spaces associated with the line from their saved values.
+
+\macroname{\textbackslash gre@clearsyllable}{\#1}{gregoriotex-spaces.tex}
+Prevents the current syllable from overlapping with the previous syllable.
+
+\begin{argtable}
+  \#1 & bar  & the current syllable is a bar syllable.\\
+      & note & the current syllable is a note syllable.\\
+\end{argtable}
 
 \subsection{Auxiliary File}
 Gregorio\TeX\ creates its own auxiliary file (extension \texttt{gaux}) which it uses to store information between successive typesetting runs.  This allows for such features as the dynamic interline spacing.  The following functions are used to interact with that auxiliary file.
@@ -1900,6 +1961,10 @@ second is the name of the distance.
 
 These additional distances are calculated by Gregorio based on the values for the user customizable distances and what may be going on in the score at the time of their use.
 
+In some cases it is necessary to temporarily manipulate some of these distances for the purpose of some particular operation and then restore them to their previous values.  In that case the distance will have a \verb=\gre@saved@...= register associated with it (\eg \verb=\gre@dimen@constantglyphraise= is saved to and restored from \verb=\gre@saved@dimen@constantglyphraise=).
+
+We also have save registries for \verb=\baselineskip=, \verb=\lineskip=, \verb=\lineskiplimit=, \verb=\parskip=, and \verb=\parfillskip= so that we can modify the way line breaking decisions are handled inside a score without affecting the rest of the document.
+
 \macroname{\textbackslash gre@dimen@morawidth}{}{gregoriotex-spaces.tex}
 Width of a punctum mora (reinitialized at each score, lazily recomputed).
 
@@ -2006,9 +2071,6 @@ Temporary dimensions used in calculations.  There are currently five of these.
 \macroname{\textbackslash gre@skip@temp@...}{}{gregoriotex-spaces.tex}
 Temporary skips used in calculations.  There are currently four of these.
 
-\macroname{\textbackslash gre@dimen@savedglyphraise}{}{gregoriotex-signs.tex}
-Macro to hold the value of the glyph raise so that it can be restored after some calculations which may change it are performed.
-
 \macroname{\textbackslash gre@dimen@eolshift}{}{gregoriotex-spaces.tex}
 The left kern that should appear before an end of line.
 
@@ -2041,9 +2103,6 @@ Minimum shift required for the text.
 
 \macroname{\textbackslash gre@skip@minShiftNotes}{}{gregoriotex-spaces.tex}
 Minimum shift required for the notes.
-
-\macroname{\textbackslash gre@save@parfillskip}{}{gregoriotex-main.tex}
-Macro to store \verb=\parfillskip= value so that we can restore it at the end of the score (needed to force the last line of a score to be justified).
 
 \macroname{\textbackslash gre@scaledist}{}{gregoriotex-spaces.tex}
 Working alias for \verb=\gre@skip@temp@one= or \verb=\gre@dimen@temp@one=, as appropriate, used when rescaling a distance due to a change in \verb=\gre@factor=.
@@ -2082,17 +2141,6 @@ Displacement of whole syllable to account for the presence of a punctum mora at 
 \macroname{\textbackslash gre@skip@alterationshift}{}{gregoriotex-spaces.tex}
 Displacement of whole syllable to account for the presence of an alteration at the beginning of the next syllable.
 
-\macroname{\textbackslash gre@skip@baselineskip@save}{}{gregoriotex-spaces.tex}
-Saved value of \verb=\baselineskip= from before a score so that it can be restored when the score ends.
-
-\macroname{\textbackslash gre@skip@lineskip@save}{}{gregoriotex-spaces.tex}
-Saved value of \verb=\lineskip= from before a score so that it can be restored when the score ends.
-
-\macroname{\textbackslash gre@skip@lineskiplimit@save}{}{gregoriotex-spaces.tex}
-Saved value of \verb=\lineskiplimit= from before a score so that it can be restored when the score ends.
-
-\macroname{\textbackslash gre@skip@parskip@save}{}{gregoriotex-spaces.tex}
-Saved value of \verb=\parskip= from before a score so that it can be restored when the score ends.
 
 
 \subsection{Penalties}
@@ -2350,6 +2398,7 @@ rather than have multiple definitions.
   \item[spacing] Random spacing-related messages.
   \item[syllablerewriting] Syllable rewrite messages.  Generated when rewriting syllables for better kerning and ligaturing.
   \item[syllablespacing] Syllable spacing computations.
+  \item[trace] Messages to trace the calling of functions.
 \end{description}
 \end{shaded*}
 

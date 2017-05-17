@@ -24,20 +24,20 @@ local hpack, traverse, traverse_id, has_attribute, count, remove, insert_after, 
 gregoriotex = gregoriotex or {}
 local gregoriotex = gregoriotex
 
-local internalversion = '5.0.0-beta2' -- GREGORIO_VERSION (comment used by VersionManager.py)
+local internalversion = '5.0.1' -- GREGORIO_VERSION (comment used by VersionManager.py)
 
 local err, warn, info, log = luatexbase.provides_module({
     name               = "gregoriotex",
-    version            = '5.0.0-beta2', -- GREGORIO_VERSION
+    version            = '5.0.1', -- GREGORIO_VERSION
     greinternalversion = internalversion,
-    date               = "2017/02/24", -- GREGORIO_DATE_LTX
+    date               = "2017/04/16", -- GREGORIO_DATE_LTX
     description        = "GregorioTeX module.",
     author             = "The Gregorio Project (see CONTRIBUTORS.md)",
     copyright          = "2008-2017 - The Gregorio Project",
     license            = "GPLv3+",
 })
 
-local gregorio_exe = 'gregorio-5_0_0-beta2' -- FILENAME_VERSION
+local real_gregorio_exe = nil
 
 gregoriotex.module = { err = err, warn = warn, info = info, log = log }
 
@@ -119,6 +119,39 @@ local marker_whatsit_id = luatexbase.get_user_whatsit_id('marker', 'gregoriotex'
 local translation_mark = 1
 local abovelinestext_mark = 2
 log("marker whatsit id is %d", marker_whatsit_id)
+
+local function gregorio_exe()
+  if real_gregorio_exe == nil then
+    local exe_version
+
+    -- first look for one with the exact version
+    real_gregorio_exe = 'gregorio-5_0_1' -- FILENAME_VERSION
+    exe_version = io.popen(real_gregorio_exe..' --version', 'r')
+    if exe_version then
+      exe_version = exe_version:read("*line")
+    end
+    if not exe_version then
+      -- look for suffix-less executable
+      real_gregorio_exe = 'gregorio'
+      exe_version = io.popen(real_gregorio_exe..' --version', 'r')
+      exe_version = exe_version:read("*line")
+      if not exe_version or string.match(exe_version,"%d+%.%d+%.")
+          ~= string.match(internalversion,"%d+%.%d+%.") then
+        real_gregorio_exe = nil
+        err("Unable to find gregorio executable.\n"..
+            "shell-escape mode may not be activated. Try\n\n"..
+            "%s --shell-escape %s.tex\n\n"..
+            "See the documentation of Gregorio or your TeX\n"..
+            "distribution to automatize it.",
+            tex.formatname, tex.jobname)
+      end
+    end
+
+    log("will use %s", real_gregorio_exe)
+  end
+
+  return real_gregorio_exe
+end
 
 local function mark(value)
   local marker = create_marker()
@@ -228,8 +261,12 @@ local function write_greaux()
       for id, tab in pairs(new_line_heights) do
         aux:write(string.format('  ["%s"]={\n', id))
         for id2, line in pairs(tab) do
-          aux:write(string.format('   [%d]={%d,%d,%d,%d,%d},\n', id2, line[1],
-              line[2], line[3], line[4], line[5]))
+          if id2 == 'last' then
+            aux:write(string.format('   ["%s"]=%d,\n', id2, line))
+          else
+            aux:write(string.format('   [%d]={%d,%d,%d,%d,%d},\n', id2, line[1],
+                line[2], line[3], line[4], line[5]))
+          end
         end
         aux:write('  },\n')
       end
@@ -560,6 +597,7 @@ local function post_linebreak(h, groupcode, glyphes)
           new_score_heights[prev_line_id] = { linenum, line_top, line_bottom,
               line_has_translation and 1 or 0,
               line_has_abovelinestext and 1 or 0 }
+          new_score_heights['last'] = prev_line_id
           prev_line_id = line_id
         end
         if new_score_last_syllables and syl_id then
@@ -735,8 +773,8 @@ local function compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
     extra_args = extra_args..' -D'
   end
 
-  local cmd = string.format("%s %s -W -o %s -l %s %s", gregorio_exe, extra_args,
-      gtex_file, glog_file, gabc_file)
+  local cmd = string.format('%s %s -W -o %s -l %s "%s"', gregorio_exe(),
+      extra_args, gtex_file, glog_file, gabc_file)
   res = os.execute(cmd)
   if res == nil then
     err("\nSomething went wrong when executing\n    '%s'.\n"
@@ -761,7 +799,8 @@ local function compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
       glog:close()
     end
     err("\nAn error occured when compiling the score file\n"
-        .."'%s' with %s.\nPlease check your score file.", gabc_file, gregorio_exe)
+        .."'%s' with %s.\nPlease check your score file.", gabc_file,
+        gregorio_exe())
   else
     -- open the gtex file for writing so that LuaTeX records output to it
     -- when the -recorder option is used
@@ -790,21 +829,30 @@ local function compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
 end
 
 local function include_score(input_file, force_gabccompile, allow_deprecated)
-  local file_root
-  if string.match(input_file:sub(-5), '%.gtex') then
-    file_root = input_file:sub(1,-6)
-  elseif string.match(input_file:sub(-4), '%.tex') then
-    file_root = input_file:sub(1,-5)
-  elseif string.match(input_file:sub(-5), '%.gabc') then
-    file_root = input_file:sub(1,-6)
-  elseif not file_root then
-    file_root = input_file
+  if string.match(input_file, "[#%%]") then
+    err("GABC filename contains invalid character(s): # %%\n"
+        .."Rename the file and retry: %s", input_file)
   end
-  local gtex_file = file_root.."-"..internalversion:gsub("%.", "_")..".gtex"
-  local glog_file = file_root.."-"..internalversion:gsub("%.", "_")..".glog"
-  local gabc_file = file_root..".gabc"
+  local has_extention = false
+  local file_dir,input_name
+  local extensions = {['gabc']=true, ['gtex']=true, ['tex']=true}
+  if extensions[string.match(input_file, "([^%.\\/]*)$")] then
+    has_extention = true
+  end
+  if has_extention then
+    file_dir,input_name = string.match(input_file, "(.-)([^\\/]-)%.?[^%.\\/]*$")
+  else
+    file_dir,input_name = string.match(input_file, "(.-)([^\\/]*)$")
+  end
+
+  local cleaned_filename = input_name:gsub("[%s%+%&%*%?$@:;!\"\'`]", "-")
+  local gabc_file = string.format("%s%s.gabc", file_dir, input_name)
+  local gtex_file = string.format("%s%s-%s.gtex", file_dir, cleaned_filename,
+      internalversion:gsub("%.", "_"))
+  local glog_file = string.format("%s%s-%s.glog", file_dir, cleaned_filename,
+      internalversion:gsub("%.", "_"))
   if not lfs.isfile(gtex_file) then
-    clean_old_gtex_files(file_root)
+    clean_old_gtex_files(file_dir..cleaned_filename)
     log("The file %s does not exist. Searching for a gabc file", gtex_file)
     if lfs.isfile(gabc_file) then
       local gabc = io.open(gabc_file, 'r')
@@ -837,7 +885,7 @@ local function include_score(input_file, force_gabccompile, allow_deprecated)
     log("%s has been modified and %s needs to be updated. Recompiling the gabc file.", gabc_file, gtex_file)
     compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
   elseif force_gabccompile then
-    compile_gabc(gabc_file, gtex_file, glog_file)
+    compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
   end
   tex.print(string.format([[\input %s\relax]], gtex_file))
   return
@@ -856,7 +904,7 @@ local function direct_gabc(gabc, header, allow_deprecated)
   gabc = gabc:match('^()%s*$') and '' or gabc:match('^%s*(.*%S)')
   f:write('name:direct-gabc;\n'..(header or '')..'\n%%\n'..gabc:gsub('\\par ', '\n'))
   f:close()
-  local cmd = string.format('%s -W %s-S -l %s %s', gregorio_exe, deprecated,
+  local cmd = string.format('%s -W %s-S -l %s %s', gregorio_exe(), deprecated,
       snippet_logname, snippet_filename)
   local p = io.popen(cmd, 'r')
   if p == nil then
@@ -1097,45 +1145,80 @@ local function font_size()
   tex.print(string.format('%.2f', (unsafe_get_font_by_id(font.current()).size / 65536.0)))
 end
 
-local function adjust_line_height(inside_discretionary)
-  if score_heights then
-    local heights = score_heights[tex.getattribute(glyph_id_attr)]
-    if heights then
-      -- restore saved dims
-      local name, value
-      for name, value in pairs(saved_dims) do
-        tex.sprint(catcode_at_letter, string.format(
-            [[\grechangedim{%s}{%s}{%s}]], name, value[1], value[2]))
-      end
-      for name, value in pairs(saved_counts) do
-        tex.sprint(catcode_at_letter, string.format(
-            [[\grechangecount{%s}{%s}]], name, value))
-      end
-      -- clear saved dims
-      saved_dims = {}
-      saved_counts = {}
-      -- apply per-line dims
-      local line_dims = per_line_dims[heights[1]]
-      if line_dims ~= nil then
-        for name, value in pairs(line_dims) do
-          tex.sprint(catcode_at_letter, string.format(
-              [[\gre@changedimforline{%s}{%s}{%s}]], name, value[1], value[2]))
-        end
-      end
-      local line_counts = per_line_counts[heights[1]]
-      if line_counts ~= nil then
-        for name, value in pairs(line_counts) do
-          tex.sprint(catcode_at_letter, string.format(
-              [[\gre@changecountforline{%s}{%s}]], name, value))
-        end
-      end
-      -- recalculate spaces
+local function adjust_line_height_internal(heights, inside_discretionary, for_next_line)
+  local backup_dims = saved_dims
+  local backup_counts = saved_counts
+  -- restore saved dims
+  local name, value
+  for name, value in pairs(saved_dims) do
+    tex.sprint(catcode_at_letter, string.format(
+        [[\grechangedim{%s}{%s}{%s}]], name, value[1], value[2]))
+  end
+  for name, value in pairs(saved_counts) do
+    tex.sprint(catcode_at_letter, string.format(
+        [[\grechangecount{%s}{%s}]], name, value))
+  end
+  -- clear saved dims
+  saved_dims = {}
+  saved_counts = {}
+  -- apply per-line dims
+  local line_dims = per_line_dims[heights[1]]
+  if line_dims ~= nil then
+    for name, value in pairs(line_dims) do
       tex.sprint(catcode_at_letter, string.format(
-          [[\gre@calculate@additionalspaces{%d}{%d}{%d}{%d}]],
-          heights[2], heights[3], heights[4], heights[5]))
-      if inside_discretionary == 0 then
-        tex.sprint(catcode_at_letter, [[\gre@updateleftbox ]])
+          [[\gre@changedimforline{%s}{%s}{%s}]], name, value[1], value[2]))
+    end
+  end
+  local line_counts = per_line_counts[heights[1]]
+  if line_counts ~= nil then
+    for name, value in pairs(line_counts) do
+      tex.sprint(catcode_at_letter, string.format(
+          [[\gre@changecountforline{%s}{%s}]], name, value))
+    end
+  end
+  -- recalculate spaces
+  tex.sprint(catcode_at_letter, string.format(
+      [[\gre@calculate@additionalspaces{%d}{%d}{%d}{%d}]],
+      heights[2], heights[3], heights[4], heights[5]))
+  if inside_discretionary == 0 then
+    tex.sprint(catcode_at_letter, [[\gre@updateleftbox ]])
+  end
+  if for_next_line then
+    -- IS THIS GOOD ENOUGH???
+    -- restore saved dims (from current line)
+    local name, value
+    for name, value in pairs(saved_dims) do
+      tex.sprint(catcode_at_letter, string.format(
+          [[\grechangedim{%s}{%s}{%s}]], name, value[1], value[2]))
+    end
+    for name, value in pairs(saved_counts) do
+      tex.sprint(catcode_at_letter, string.format(
+          [[\grechangecount{%s}{%s}]], name, value))
+    end
+    -- put previous saved dims back
+    saved_dims = backup_dims
+    saved_counts = backup_counts
+  end
+end
+
+local function adjust_line_height(inside_discretionary, for_next_line)
+  if score_heights then
+    local heights = nil
+    if for_next_line then
+      local last = score_heights['last']
+      if last then
+        local target_id = tex.getattribute(glyph_id_attr) + 1
+        while target_id <= last do
+          heights = score_heights[target_id]
+          if heights then break end
+          target_id = target_id + 1
+        end
       end
+    else
+      heights = score_heights[tex.getattribute(glyph_id_attr)]
+    end
+    if heights then
+      adjust_line_height_internal(heights, inside_discretionary, for_next_line)
     end
   end
 end
