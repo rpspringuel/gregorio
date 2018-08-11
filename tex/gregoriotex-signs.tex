@@ -1,6 +1,6 @@
 %GregorioTeX file.
 %
-% Copyright (C) 2007-2017 The Gregorio Project (see CONTRIBUTORS.md)
+% Copyright (C) 2007-2018 The Gregorio Project (see CONTRIBUTORS.md)
 %
 % This file is part of Gregorio.
 %
@@ -22,7 +22,7 @@
 
 \def\grebarbracewidth{.58879}%
 
-\gre@declarefileversion{gregoriotex-signs.tex}{5.0.2}% GREGORIO_VERSION
+\gre@declarefileversion{gregoriotex-signs.tex}{5.1.1}% GREGORIO_VERSION
 
 \def\gre@usestylecommon{%
   \gre@trace{gre@usestylecommon}%
@@ -1791,6 +1791,25 @@
 %% macros for the typesetting of bars
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% flag to indicate that lines behind an dotted bar should be hidden
+\newif\ifgre@hidedottedbarlines
+% default state is to hide them
+\gre@hidedottedbarlinestrue
+
+% macro for manipulating above flag
+\def\gresetlinesbehinddottedbar#1{%
+  \gre@trace{gresetlinesbehinddottedbar{#1}}%
+  \IfStrEqCase{#1}{%
+    {visible}%
+      {\gre@hidedottedbarlinesfalse}%
+    {invisible}%
+      {\gre@hidedottedbarlinestrue}%
+    }[% all other cases
+      \gre@error{Unrecognized option "#1" for \protect\gresetlinesbehinddottedbar\MessageBreak Possible options are: 'visible' and 'invisible'}%
+    ]%
+  \gre@trace@end%
+}%
+
 % we define two types of macro for each four bar : when it is inside a syllable, and when it is not
 
 \def\GreInVirgula#1#2#3{%
@@ -1807,6 +1826,20 @@
   \gre@trace@end%
 }%
 
+\def\GreInVirgulaHigh#1#2#3{%
+  \gre@trace{GreInVirgulaHigh{#1}{#2}{#3}}%
+  \gre@writebar{14}{1}{#1}{#2}{#3}%
+  \relax%
+  \gre@trace@end%
+}%
+
+\def\GreVirgulaHigh#1#2#3{%
+  \gre@trace{GreVirgulaHigh{#1}{#2}{#3}}%
+  \gre@writebar{14}{0}{#1}{#2}{#3}%
+  \relax%
+  \gre@trace@end%
+}%
+
 \def\GreInDivisioMinima#1#2#3{%
   \gre@trace{GreInDivisioMinima{#1}{#2}{#3}}%
   \gre@writebar{1}{1}{#1}{#2}{#3}%
@@ -1817,6 +1850,20 @@
 \def\GreDivisioMinima#1#2#3{%
   \gre@trace{GreDivisioMinima{#1}{#2}{#3}}%
   \gre@writebar{1}{0}{#1}{#2}{#3}%
+  \relax%
+  \gre@trace@end%
+}%
+
+\def\GreInDivisioMinimaHigh#1#2#3{%
+  \gre@trace{GreInDivisioMinimaHigh{#1}{#2}{#3}}%
+  \gre@writebar{15}{1}{#1}{#2}{#3}%
+  \relax%
+  \gre@trace@end%
+}%
+
+\def\GreDivisioMinimaHigh#1#2#3{%
+  \gre@trace{GreDivisioMinimaHigh{#1}{#2}{#3}}%
+  \gre@writebar{15}{0}{#1}{#2}{#3}%
   \relax%
   \gre@trace@end%
 }%
@@ -1845,6 +1892,20 @@
 \def\GreDivisioMaior#1#2{%
   \gre@trace{GreDivisioMaior{#1}{#2}}%
   \gre@writebar{3}{0}{#1}{#2}{0}%
+  \relax%
+  \gre@trace@end%
+}%
+
+\def\GreInDivisioMaiorDotted#1#2{%
+  \gre@trace{GreInDivisioMaiorDotted{#1}{#2}}%
+  \gre@writebar{16}{1}{#1}{#2}{0}%
+  \relax%
+  \gre@trace@end%
+}%
+
+\def\GreDivisioMaiorDotted#1#2{%
+  \gre@trace{GreDivisioMaiorDotted{#1}{#2}}%
+  \gre@writebar{16}{0}{#1}{#2}{0}%
   \relax%
   \gre@trace@end%
 }%
@@ -2011,7 +2072,7 @@
 \newskip\gre@skip@bar@lastskip% skip after last bar
 
 %a macro to write a bar
-%% 1: the type of the bar : 0 for virgula, 1 for minima 2 for minor, 3 for major, 4 for finalis and 5 for the last finalis, 6 to 13 for dominican bars
+%% 1: the type of the bar : 0 for virgula, 1 for minima 2 for minor, 3 for major, 4 for finalis and 5 for the last finalis, 6 to 13 for dominican bars, 14 for high virgula, 15 for high minima
 %% 2: is 0 if it is in a syllable containing only this bar, 1 otherwise
 %% 3: is 0 if there's no text under the bar or 1 if there is text under the bar
 %% 4: macros that may happen before the skip after the bar (typically GreVEpisema)
@@ -2048,8 +2109,8 @@
       \gre@hskip\gre@skip@temp@four %
       \GreNoBreak %
     \fi %
-    \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPVirgula}%
-    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\GreCPVirgula}%
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@virgula}%
+    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@virgula}%
     #4\relax %
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
@@ -2062,8 +2123,8 @@
       \gre@hskip\gre@skip@temp@four %
       \GreNoBreak %
     \fi %
-    \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPDivisioMinima}%
-    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\GreCPDivisioMinima}%
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@divisiominima}%
+    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiominima}%
     #4\relax %
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
@@ -2076,8 +2137,8 @@
       \gre@hskip\gre@skip@temp@four %
       \GreNoBreak %
     \fi %
-    \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPDivisioMinor}%
-    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\GreCPDivisioMinor}%
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@divisiominor}%
+    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiominor}%
     #4\relax %
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
@@ -2090,7 +2151,7 @@
       \gre@hskip\gre@skip@temp@four %
       \GreNoBreak %
     \fi %
-    \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPDivisioMaior}%
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@divisiomaior}%
     \gre@fontchar@divisiomaior %
     #4\relax %
     \ifnum\gre@count@temp@one=1\relax %
@@ -2254,6 +2315,61 @@
       \gre@skip@temp@four = \csname gre@space@skip@bar@dominican\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
       \gre@hskip\gre@skip@temp@four %
     \fi %
+  \or % 14 : high virgula
+    \ifnum\gre@count@temp@one=1\relax %
+      \gre@skip@temp@four = \csname gre@space@skip@bar@virgula\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
+      \gre@hskip\gre@skip@temp@four %
+      \GreNoBreak %
+    \fi %
+    \GreGlyphHeights{\gre@pitch@ledger@above}{\gre@pitch@ledger@above}%
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@virgulahigh}%
+    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@virgulahigh}%
+    \GreAdditionalLine{\GreOCaseBarVirgula}{0}{2}%
+    #4\relax %
+    \ifnum\gre@count@temp@one=1\relax %
+      \GreNoBreak %
+      \gre@skip@temp@four = \csname gre@space@skip@bar@virgula\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
+      \gre@hskip\gre@skip@temp@four %
+    \fi %
+  \or % 15 : high minima
+    \ifnum\gre@count@temp@one=1\relax %
+      \gre@skip@temp@four = \csname gre@space@skip@bar@minima\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
+      \gre@hskip\gre@skip@temp@four %
+      \GreNoBreak %
+    \fi %
+    \GreGlyphHeights{\gre@pitch@ledger@above}{\gre@pitch@ledger@above}%
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@divisiominimahigh}%
+    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiominimahigh}%
+    \GreAdditionalLine{\GreOCaseBarStandard}{0}{2}%
+    #4\relax %
+    \ifnum\gre@count@temp@one=1\relax %
+      \GreNoBreak %
+      \gre@skip@temp@four = \csname gre@space@skip@bar@minima\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
+      \gre@hskip\gre@skip@temp@four %
+    \fi %
+  \or % 16 : dotted maior
+    \ifnum\gre@count@temp@one=1\relax %
+      \gre@skip@temp@four = \csname gre@space@skip@bar@maior\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
+      \gre@hskip\gre@skip@temp@four %
+      \GreNoBreak %
+    \fi %
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@divisiomaiordotted}%
+    \ifgre@hidedottedbarlines %
+      \hbox to 0pt{%
+        {%
+          \color{grebackgroundcolor}%
+          \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiomaiordottedbacking}%
+        }%
+        \hss %
+      }%
+    \fi %
+    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiomaiordotted}%
+    #4\relax %
+    \ifnum\gre@count@temp@one=1\relax %
+      \GreNoBreak %
+      \gre@skip@temp@four = \csname gre@space@skip@bar@maior\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
+      \gre@hskip\gre@skip@temp@four %
+    \fi %
   \fi %
   \global\gre@skip@bar@lastskip=\gre@skip@temp@four %
   \gre@debugmsg{spacing}{Width of bar just printed: \the\wd\gre@box@temp@width}%
@@ -2268,9 +2384,9 @@
 \def\gre@fontchar@divisiomaior{%
   \ifnum\gre@stafflinefactor=17\relax %
     %\gre@calculate@glyphraisevalue{\gre@pitch@bar}{0}{}% bar glyphs are made to be at this height
-    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\GreCPDivisioMaior}%
+    \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiomaior}%
   \else %
-    \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPDivisioMaior}%
+    \setbox\gre@box@temp@width=\hbox{\gre@font@music\gre@char@bar@divisiomaior}%
     % we calculate the raise of the bar
     \gre@dimen@temp@five=\dimexpr(\gre@dimen@additionalbottomspace %
       + \gre@space@dimen@spacebeneathtext %

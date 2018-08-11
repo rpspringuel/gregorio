@@ -1,6 +1,6 @@
 % !TEX program = LuaLaTeX+se
 %
-% Copyright (C) 2006-2017 The Gregorio Project (see CONTRIBUTORS.md)
+% Copyright (C) 2006-2018 The Gregorio Project (see CONTRIBUTORS.md)
 %
 % This file is part of Gregorio.
 %
@@ -164,7 +164,12 @@
 }
 \makeatother
 
+\newcommand{\pitchchar}{\textit{p\kern-.25em{}c}}%
+\newcommand{\Pitchchar}{\textit{P\kern-.25em{}c}}%
+
 \setlength{\parindent}{0mm} % Default is 15pt
+
+\gresetspecial{\string\126\string\126}{\textasciitilde{}}%
 
 \begin{document}
 
@@ -177,7 +182,7 @@
 
     \vspace{1cm}
 
-    \large Version \textbf{5.0.2}, 24 May 2017 %% PARSE_VERSION_DATE
+    \large Version \textbf{5.1.1}, 25 March 2018 %% PARSE_VERSION_DATE
 
     \vspace{1.5cm}
   \end{center}

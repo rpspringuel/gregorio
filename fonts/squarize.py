@@ -6,7 +6,7 @@
 """
     Python fontforge script to build a square notation font.
 
-    Copyright (C) 2013-2017 The Gregorio Project (see CONTRIBUTORS.md)
+    Copyright (C) 2013-2018 The Gregorio Project (see CONTRIBUTORS.md)
 
     This file is part of Gregorio.
 
@@ -90,7 +90,7 @@ AMBITUS = {
     14 : 'Fourteen',
 }
 
-GREGORIO_VERSION = '5.0.2'
+GREGORIO_VERSION = '5.1.1'
 
 # The unicode character at which we start our numbering:
 # U+E000 is the start of the BMP Private Use Area
@@ -255,15 +255,38 @@ DIRECT_GLYPHS = {
     'FClefChange' : False,
     'Flat' : False,
     'Natural' : False,
-    'Virgula' : False,
-    'DivisioMinima' : False,
-    'DivisioMinor' : False,
-    'DivisioMaior' : False,
+    'VirgulaTwo' : False,
+    'VirgulaThree' : False,
+    'VirgulaFour' : False,
+    'VirgulaFive' : False,
+    'VirgulaSix' : False,
+    'DivisioMinimaTwo' : False,
+    'DivisioMinimaThree' : False,
+    'DivisioMinimaFour' : False,
+    'DivisioMinimaFive' : False,
+    'DivisioMinimaSix' : False,
+    'DivisioMinorTwo' : False,
+    'DivisioMinorThree' : False,
+    'DivisioMinorFour' : False,
+    'DivisioMinorFive' : False,
+    'DivisioMaiorTwo' : False,
+    'DivisioMaiorThree' : False,
+    'DivisioMaiorFour' : False,
+    'DivisioMaiorFive' : False,
+    'DivisioMaiorDottedTwo' : False,
+    'DivisioMaiorDottedThree' : False,
+    'DivisioMaiorDottedFour' : False,
+    'DivisioMaiorDottedFive' : False,
+    'DivisioMaiorDottedBackingTwo' : False,
+    'DivisioMaiorDottedBackingThree' : False,
+    'DivisioMaiorDottedBackingFour' : False,
+    'DivisioMaiorDottedBackingFive' : False,
     'PunctumDeminutus' : False,
     'AuctumMora' : False,
     'Punctum' : True,
     'AscendensPunctumInclinatum' : True,
     'DescendensPunctumInclinatum' : True,
+    'StansPunctumInclinatum' : True,
     'Stropha' : True,
     'StrophaAucta' : True,
     'StrophaAuctaLongtail' : True,
@@ -1070,6 +1093,8 @@ HEPISEMA_GLYPHS = {
     'HEpisemaFlat': 'Flat',
     'HEpisemaSharp': 'Sharp',
     'HEpisemaNatural': 'Natural',
+    'HEpisemaBarStandard': 'DivisioMinima',
+    'HEpisemaBarVirgula': 'Virgula',
 }
 
 def hepisema():

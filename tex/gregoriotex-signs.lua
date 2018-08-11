@@ -1,6 +1,6 @@
 --GregorioTeX Signs Lua support file.
 --
---Copyright (C) 2015-2017 The Gregorio Project (see CONTRIBUTORS.md)
+--Copyright (C) 2015-2018 The Gregorio Project (see CONTRIBUTORS.md)
 --
 --This file is part of Gregorio.
 --
@@ -19,7 +19,7 @@
 
 -- this file contains lua functions to support signs used by GregorioTeX.
 
--- GREGORIO_VERSION 5.0.2
+-- GREGORIO_VERSION 5.1.1
 
 local err = gregoriotex.module.err
 local warn = gregoriotex.module.warn
@@ -197,12 +197,14 @@ local offset_cases = {
   -- standard bar
   {
     case = 'BarStandard',
-    v = [[\gre@vepisemaorrareaux{0}{\GreCPDivisioMinima}{1}{0}{#2}{#3}{#4}]],
+    v = [[\gre@vepisemaorrareaux{0}{\gre@char@bar@divisiominima}{1}{0}{#2}{#3}{#4}]],
+    h = [[\gre@hepisorlineaux{\gre@char@bar@divisiominima}{\gre@char@he@barstandard{#4}}{2}{#3}]],
   },
   -- virgula
   {
     case = 'BarVirgula',
-    v = [[\gre@vepisemaorrareaux{0}{\GreCPVirgula}{1}{0}{#2}{#3}{#4}]],
+    v = [[\gre@vepisemaorrareaux{0}{\gre@char@bar@virgula}{1}{0}{#2}{#3}{#4}]],
+    h = [[\gre@hepisorlineaux{\gre@char@bar@virgula}{\gre@char@he@barvirgula{#4}}{2}{#3}]],
   },
   -- divisio finalis
   {
