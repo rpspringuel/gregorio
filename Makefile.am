@@ -60,3 +60,9 @@ dist-macosx: gregorio doc fonts
 
 clean-macosx:
 	$(MAKE) -C macosx clean-local
+
+dist-windows:
+	$(MAKE) -C windows dist-windows
+
+clean-windows:
+	$(MAKE) -C windows clean-local
