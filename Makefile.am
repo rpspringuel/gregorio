@@ -66,8 +66,16 @@ endif
 clean-macosx:
 	$(MAKE) -C macosx clean-local
 
+if !WINDOWS
 dist-windows:
 	$(MAKE) -C windows dist-windows
+else
+dist-windows:
+	@echo "The dist-windows target is for cross-compiling from Linux/Mac to Windows,"
+	@echo "not for building natively on Windows."
+	@echo "If you're building natively on Windows, you should probably be using the"
+	@echo "normal build targets."
+endif
 
 clean-windows:
 	$(MAKE) -C windows clean-local
