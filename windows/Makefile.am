@@ -21,7 +21,7 @@ dist-windows :
 	$(TOP)/build.sh
 	$(TOP)/build.sh --mingw
 	wine 'C:\\Program Files (x86)\Inno Setup 6\ISCC.exe' gregorio.iss
-	mv Output/mysetup.exe GregorioSetup-$(VERSION).exe
+	mv Output/mysetup.exe GregorioSetup-$(subst .,_,$(VERSION)).exe
 	rm -rf Output/
 
 clean-local :
