@@ -23,7 +23,7 @@ EXTRA_DIST = README.md CHANGELOG.md CONTRIBUTING.md CONTRIBUTORS.md \
 			 UPGRADE.md COPYING.md .gregorio-version VersionManager.py \
 			 build.sh install.sh install-gtex.sh
 
-MAINTAINERCLEANFILES = gregoriotex.ctan.zip
+CLEANFILES = gregoriotex.ctan.zip
 
 VERSION := $(shell ./VersionManager.py --get-current)
 TOP := $(shell pwd)
