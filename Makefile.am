@@ -25,7 +25,7 @@ EXTRA_DIST = README.md CHANGELOG.md CONTRIBUTING.md CONTRIBUTORS.md \
 
 MOSTLYCLEANFILES = res.txt
 
-CLEANFILES = gregoriotex.ctan.zip gregorio-$(VERSION).zip
+CLEANFILES = gregoriotex.ctan.zip $(wildcard gregorio-*.zip) $(wildcard gregorio-*.tar.bz2)
 
 VERSION := $(shell ./VersionManager.py --get-current)
 TOP := $(shell pwd)
