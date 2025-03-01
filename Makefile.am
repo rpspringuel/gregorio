@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Gregorio.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = src examples tex contrib fonts doc macosx
+SUBDIRS = src examples tex contrib fonts doc macosx windows
 
 ACLOCAL_AMFLAGS = -I m4
 
