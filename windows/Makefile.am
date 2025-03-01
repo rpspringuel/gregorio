@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Gregorio.  If not, see <http://www.gnu.org/licenses/>.
 
-
+CLEANFILES = $(wildcard GregorioSetup-*.exe)
 
 dist-windows :
 	$(TOP)/build.sh
@@ -25,4 +25,4 @@ dist-windows :
 	rm -rf Output/
 
 clean-local :
-	rm -f *.exe
+	rm -rf Output/
