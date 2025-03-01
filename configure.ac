@@ -33,7 +33,7 @@ AC_PROG_CC
 dnl AM_PROG_CC_C_O is deprecated since Automake 1.14, to be removed in the future
 AM_PROG_CC_C_O
 AC_PROG_CPP
-AM_PROG_LEX
+AM_PROG_LEX(noyywrap)
 AC_PROG_YACC
 AC_CHECK_TOOL([RC], [windres], [no])
 AM_CONDITIONAL([HAVE_RC], [test x$RC != xno])
