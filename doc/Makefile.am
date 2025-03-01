@@ -63,9 +63,9 @@ clean-doc: clean-doc-intermediate
 	rm -rf GregorioRef.pdf
 	rm -rf GregorioNabcRef.pdf
 
-distclean-local: clean-doc-intermediate
+mostlyclean-local: clean-doc-intermediate
 
-maintainer-clean-local: clean-doc
+clean-local: clean-doc
 
 EXTRA_DIST = $(SRCFILES) $(NABCSRCFILES) \
 	     GregorioRef.pdf \
