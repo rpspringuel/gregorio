@@ -69,7 +69,7 @@ clean-macosx:
 	$(MAKE) -C macosx clean-local
 
 if !WINDOWS
-dist-windows:
+dist-windows: gregorio doc fonts
 	$(MAKE) -C windows dist-windows
 else
 dist-windows:
