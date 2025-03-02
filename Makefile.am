@@ -27,10 +27,6 @@ MOSTLYCLEANFILES = res.txt
 
 CLEANFILES = gregoriotex.ctan.zip $(wildcard gregorio-*.zip) $(wildcard gregorio-*.tar.bz2)
 
-VERSION := $(shell ./VersionManager.py --get-current)
-TOP := $(shell pwd)
-export TOP
-
 export TOP_LEVEL_MAKE = true
 
 gregorio:
