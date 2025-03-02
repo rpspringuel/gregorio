@@ -63,6 +63,7 @@ dist-macosx: gregorio doc fonts
 else
 dist-macosx:
 	@echo "macOS packages can only be built on Mac systems."
+	@false
 endif
 
 clean-macosx:
@@ -77,6 +78,7 @@ dist-windows:
 	@echo "not for building natively on Windows."
 	@echo "If you're building natively on Windows, you should probably be using the"
 	@echo "normal build targets."
+	@false
 endif
 
 clean-windows:
