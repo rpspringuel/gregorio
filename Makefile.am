@@ -79,3 +79,18 @@ endif
 
 clean-windows:
 	$(MAKE) -C windows clean-local
+
+clean-local:
+	rm -rf $(wildcard release-*)
+
+release-$(FILENAME_VERSION):
+	mkdir -p release-$(FILENAME_VERSION)
+
+release: release-$(FILENAME_VERSION) dist dist-macosx dist-windows ctan
+	$(MAKE) -C fonts supp-fonts-dist
+	cp gregorio-$(VERSION).tar.bz2 release-$(FILENAME_VERSION)/
+	cp fonts/supp_fonts-$(FILENAME_VERSION).zip release-$(FILENAME_VERSION)/
+	cp macosx/Gregorio-$(FILENAME_VERSION).pkg release-$(FILENAME_VERSION)/
+	cp macosx/Uninstall-Gregorio-$(FILENAME_VERSION).pkg release-$(FILENAME_VERSION)/
+	cp windows/GregorioSetup-$(FILENAME_VERSION).exe release-$(FILENAME_VERSION)/
+	cp doc/*.pdf release-$(FILENAME_VERSION)/
