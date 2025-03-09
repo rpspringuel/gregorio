@@ -84,7 +84,7 @@
 
 % an attribute to mark various parts of the score
 % 1 = commentary, 2 = stafflines, 3 = initial
-% 4 = lyrics, 5 = translation, 6 = alt, 7 = nabc
+% 4 = lyrics, 5 = translation, 6 = alt, 7 = nabc, 8 = nabc below
 \newluatexattribute\gre@attr@part%
   \edef\gre@attrid@part{\the\allocationnumber}
 
@@ -704,12 +704,27 @@
 % similarly, but for typesetting Nabc neumes above lines
 
 \xdef\gre@currentnabcvoice@i{}%
+\xdef\gre@currentnabcvoice@ii{}%
 
 \def\GreSetNabcAboveLines#1{%
   \gdef\gre@currentnabcvoice@i{%
     \gre@typesettextabovelines{#1}{1}%
     \gdef\gre@currentnabcvoice@i{}%
-    \relax %
+  }%
+}%
+
+\def\gre@typesettextbelowlines#1{%
+  \gre@trace{gre@typesettextbelowlines{#1}}%
+  \gre@dimen@temp@five=\dimexpr(\gre@space@dimen@spacebeneathtext
+    + \gre@space@dimen@spacelinestext)\relax
+  \leavevmode\raise\gre@dimen@temp@five\hbox attr \gre@attrid@part=8 to 0pt{#1\hss}%
+  \gre@trace@end%
+}%
+
+\def\GreSetNabcBelowLines#1{%
+  \gdef\gre@currentnabcvoice@ii{%
+    \gre@typesettextbelowlines{#1}%
+    \gdef\gre@currentnabcvoice@ii{}%
   }%
 }%
 

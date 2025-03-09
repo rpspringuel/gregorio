@@ -903,6 +903,7 @@
   \gre@luasavedim{abovelinestextraise}%
   \gre@luasavedim{abovelinesnabcheight}%
   \gre@luasavedim{abovelinesnabcraise}%
+  \gre@luasavedim{belowlinesnabcheight}%
   \gre@luasavedim{spacelinestext}%
   \gre@luasavedim{translationheight}%
   \gre@luasavedim{spacebeneathtext}%
@@ -1585,8 +1586,8 @@
 % #1 : line number
 % #2-#4 : same as #1-#3 of \grechangedim
 \def\grechangenextscorelinedim#1#2#3#4{%
-  \IfStrEqCase{#2}{{abovelinestextheight}{}{abovelinestextraise}{}{abovelinesnabcheight}{}{abovelinesnabcraise}{}{spaceabovelines}{}{spacelinestext}{}{noteadditionalspacelinestext}{}{translationheight}{}{spacebeneathtext}{}}[%
-    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'spaceabovelines', 'abovelinestextheight', 'abovelinestextraise', 'abovelinesnabcheight', 'abovelinesnabcraise', 'spacelinestext', 'noteadditionalspacelinestext', 'translationheight', 'spacebeneathtext'}%
+  \IfStrEqCase{#2}{{abovelinestextheight}{}{abovelinestextraise}{}{abovelinesnabcheight}{}{abovelinesnabcraise}{}{spaceabovelines}{}{belowlinesnabcheight}{}{spacelinestext}{}{noteadditionalspacelinestext}{}{translationheight}{}{spacebeneathtext}{}}[%
+    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'spaceabovelines', 'abovelinestextheight', 'abovelinestextraise', 'abovelinesnabcheight', 'abovelinesnabcraise', 'belowlinesnabcheight', 'spacelinestext', 'noteadditionalspacelinestext', 'translationheight', 'spacebeneathtext'}%
   ]%
   {\grechangedim{#2}{#3}{#4}%
    \gre@rubberpermit{#2}%
@@ -1697,13 +1698,14 @@
     {clivisalignmentmin}{\gre@rubberfalse}%
     {choralsigndownshift}{\gre@rubberfalse}%
     {choralsignupshift}{\gre@rubberfalse}%
-    {translationheight}{\gre@rubberfalse}%
-    {spacelinestext}{\gre@rubberfalse}%
-    {spacebeneathtext}{\gre@rubberfalse}%
-    {abovelinestextraise}{\gre@rubberfalse}%
     {abovelinestextheight}{\gre@rubberfalse}%
-    {abovelinesnabcraise}{\gre@rubberfalse}%
+    {abovelinestextraise}{\gre@rubberfalse}%
     {abovelinesnabcheight}{\gre@rubberfalse}%
+    {abovelinesnabcraise}{\gre@rubberfalse}%
+    {spacelinestext}{\gre@rubberfalse}%
+    {belowlinesnabcheight}{\gre@rubberfalse}%
+    {translationheight}{\gre@rubberfalse}%
+    {spacebeneathtext}{\gre@rubberfalse}%
     {braceshift}{\gre@rubberfalse}%
     {curlybraceaccentusshift}{\gre@rubberfalse}%
     {initialraise}{\gre@rubberfalse}%
@@ -2130,18 +2132,6 @@
   \ifgre@scale@choralsignupshift%
     \gre@changeonedimenfactor{choralsignupshift}{#1}{#2}%
   \fi%
-  \ifgre@scale@translationheight%
-    \gre@changeonedimenfactor{translationheight}{#1}{#2}%
-  \fi%
-  \ifgre@scale@spaceabovelines%
-    \gre@changeonedimenfactor{spaceabovelines}{#1}{#2}%
-  \fi%
-  \ifgre@scale@spacelinestext%
-    \gre@changeonedimenfactor{spacelinestext}{#1}{#2}%
-  \fi%
-  \ifgre@scale@spacebeneathtext%
-    \gre@changeonedimenfactor{spacebeneathtext}{#1}{#2}%
-  \fi%
   \ifgre@scale@abovelinestextraise%
     \gre@changeonedimenfactor{abovelinestextraise}{#1}{#2}%
   \fi%
@@ -2153,6 +2143,21 @@
   \fi%
   \ifgre@scale@abovelinesnabcheight%
     \gre@changeonedimenfactor{abovelinesnabcheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@spaceabovelines%
+    \gre@changeonedimenfactor{spaceabovelines}{#1}{#2}%
+  \fi%
+  \ifgre@scale@belowlinesnabcheight%
+    \gre@changeonedimenfactor{belowlinesnabcheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@spacelinestext%
+    \gre@changeonedimenfactor{spacelinestext}{#1}{#2}%
+  \fi%
+  \ifgre@scale@translationheight%
+    \gre@changeonedimenfactor{translationheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@spacebeneathtext%
+    \gre@changeonedimenfactor{spacebeneathtext}{#1}{#2}%
   \fi%
   \ifgre@scale@braceshift%
     \gre@changeonedimenfactor{braceshift}{#1}{#2}%
