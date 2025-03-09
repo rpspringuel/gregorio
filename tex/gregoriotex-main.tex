@@ -678,11 +678,9 @@
 }%
 
 % typesets the text or nabc neumes above the line
+% #2: 0 = text, 1 = nabc
 \def\gre@typesettextabovelines#1#2{%
   \gre@trace{gre@typesettextabovelines{#1}{#2}}%
-  \gre@style@abovelinestext%
-  \gre@debugmsg{spacing}{Raise alt text: \gre@space@dimen@abovelinestextraise}%
-  \endgre@style@abovelinestext%
   \ifnum#2=0\relax%
     \gre@attr@part=6\relax
   \else%
@@ -690,20 +688,27 @@
   \fi%
   \gre@dimen@temp@five=\dimexpr(\gre@dimen@staffheight %
     + \gre@space@dimen@spacebeneathtext %
-    + \gre@space@dimen@spacelinestext %
-    + \gre@space@dimen@abovelinestextraise)\relax%
+    + \gre@space@dimen@spacelinestext)\relax%
   \gre@debugmsg{spacing}{Raise alt text: \the\gre@dimen@temp@five}%
-  \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{\gre@style@abovelinestext#1\endgre@style@abovelinestext\hss}%
+  \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{%
+    \ifnum#2=0\relax
+      \gre@style@abovelinestext#1\endgre@style@abovelinestext
+    \else
+      #1%
+    \fi
+    \hss}%
   \unsetluatexattribute{\gre@attr@part}%
   \gre@trace@end%
 }%
 
 % similarly, but for typesetting Nabc neumes above lines
 
+\xdef\gre@currentnabcvoice@i{}%
+
 \def\GreSetNabcAboveLines#1{%
-  \gdef\gre@currenttextabovelines{%
+  \gdef\gre@currentnabcvoice@i{%
     \gre@typesettextabovelines{#1}{1}%
-    \gdef\gre@currenttextabovelines{}%
+    \gdef\gre@currentnabcvoice@i{}%
     \relax %
   }%
 }%

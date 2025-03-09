@@ -901,6 +901,8 @@
   \fi
   \gre@luasavedim{abovelinestextheight}%
   \gre@luasavedim{abovelinestextraise}%
+  \gre@luasavedim{abovelinesnabcheight}%
+  \gre@luasavedim{abovelinesnabcraise}%
   \gre@luasavedim{spacelinestext}%
   \gre@luasavedim{translationheight}%
   \gre@luasavedim{spacebeneathtext}%
@@ -1583,8 +1585,8 @@
 % #1 : line number
 % #2-#4 : same as #1-#3 of \grechangedim
 \def\grechangenextscorelinedim#1#2#3#4{%
-  \IfStrEqCase{#2}{{abovelinestextheight}{}{abovelinestextraise}{}{spaceabovelines}{}{spacelinestext}{}{noteadditionalspacelinestext}{}{translationheight}{}{spacebeneathtext}{}}[%
-    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'abovelinestextheight', 'abovelinestextraise', 'spaceabovelines', 'spacelinestext', 'noteadditionalspacelinestext', 'translationheight', 'spacebeneathtext'}%
+  \IfStrEqCase{#2}{{abovelinestextheight}{}{abovelinestextraise}{}{abovelinesnabcheight}{}{abovelinesnabcraise}{}{spaceabovelines}{}{spacelinestext}{}{noteadditionalspacelinestext}{}{translationheight}{}{spacebeneathtext}{}}[%
+    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'spaceabovelines', 'abovelinestextheight', 'abovelinestextraise', 'abovelinesnabcheight', 'abovelinesnabcraise', 'spacelinestext', 'noteadditionalspacelinestext', 'translationheight', 'spacebeneathtext'}%
   ]%
   {\grechangedim{#2}{#3}{#4}%
    \gre@rubberpermit{#2}%
@@ -1700,6 +1702,8 @@
     {spacebeneathtext}{\gre@rubberfalse}%
     {abovelinestextraise}{\gre@rubberfalse}%
     {abovelinestextheight}{\gre@rubberfalse}%
+    {abovelinesnabcraise}{\gre@rubberfalse}%
+    {abovelinesnabcheight}{\gre@rubberfalse}%
     {braceshift}{\gre@rubberfalse}%
     {curlybraceaccentusshift}{\gre@rubberfalse}%
     {initialraise}{\gre@rubberfalse}%
@@ -2143,6 +2147,12 @@
   \fi%
   \ifgre@scale@abovelinestextheight%
     \gre@changeonedimenfactor{abovelinestextheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@abovelinesnabcraise%
+    \gre@changeonedimenfactor{abovelinesnabcraise}{#1}{#2}%
+  \fi%
+  \ifgre@scale@abovelinesnabcheight%
+    \gre@changeonedimenfactor{abovelinesnabcheight}{#1}{#2}%
   \fi%
   \ifgre@scale@braceshift%
     \gre@changeonedimenfactor{braceshift}{#1}{#2}%

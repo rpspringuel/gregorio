@@ -752,23 +752,37 @@ local function adjust_additional_spaces(line, info, linenum)
   end
 
   -- per-line changes to other spaces
-  local extra_above_lines_text_raise = get_space('abovelinestextraise') - saved_dims['abovelinestextraise']
   local extra_space_lines_text = get_space('spacelinestext') - saved_dims['spacelinestext']
   local extra_space_beneath_text = get_space('spacebeneathtext') - saved_dims['spacebeneathtext']
 
   -- how much to raise/lower each part
   local commentary_raise = additional_top_space_alt
-  local alt_raise = additional_top_space_alt + extra_above_lines_text_raise
-  local nabc_raise = additional_top_space_nabc + extra_above_lines_text_raise
-  local height_new = get_space('spaceabovelines') + additional_top_space
-  if info.has_alt then
-    height_new = math.max(height_new, additional_top_space_alt)
-    height_new = height_new + get_space('abovelinestextraise') + get_space('abovelinestextheight')
-  elseif info.has_nabc then
-    height_new = math.max(height_new, additional_top_space_nabc)
-    height_new = height_new + get_space('abovelinestextraise') + get_space('abovelinestextheight')
+
+  local cur = 0 -- vertical position without any additional space
+  local add = 0 -- with additional space
+
+  local nabc_raise
+  if info.has_nabc then
+    cur = cur + get_space('abovelinesnabcraise')
+    add = math.max(add, cur + additional_top_space_nabc)
+    nabc_raise = add
+    cur = cur + get_space('abovelinesnabcheight')
+    add = add + get_space('abovelinesnabcheight')
   end
-  local height_increase = height_new - saved_dims['spaceabovelines']
+
+  local alt_raise
+  if info.has_alt then
+    cur = cur + get_space('abovelinestextraise')
+    add = math.max(add, cur + additional_top_space_alt)
+    alt_raise = add
+    cur = cur + get_space('abovelinestextheight')
+    add = add + get_space('abovelinestextheight')
+  end
+
+  cur = cur + get_space('spaceabovelines')
+  add = math.max(add, cur + additional_top_space)
+  local height_increase = add - saved_dims['spaceabovelines']
+  
   local lyrics_lower = additional_bottom_space + extra_space_lines_text
   local translation_lower = lyrics_lower + translation_height
   local everything_raise = translation_lower + extra_space_beneath_text
