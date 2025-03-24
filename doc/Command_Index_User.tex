@@ -274,7 +274,7 @@ Macro to change one of Gregorio\TeX’s distances.  This function will check to 
 \end{argtable}
 
 \macroname{\textbackslash grechangenextscorelinedim}{\{\#1\}\{\#2\}\{\#3\}\{\#4\}}{gregoriotex-spaces.tex}
-Changes one of Gregorio\TeX’s distances for a given line in the next included score.  This works with \texttt{abovelinestextheight}, \texttt{spaceabovelines}, \texttt{abovelinestextraise}, \texttt{spacelinestext}, \texttt{spacebeneathtext}, and \texttt{translationheight}.
+Changes one of Gregorio\TeX’s distances for a given line in the next included score.  This works with \texttt{abovelinestextheight}, \texttt{abovelinestextraise}, \texttt{spaceabovelines}, \texttt{spacelinestext}, \texttt{spacebeneathtext}, and \texttt{translationheight}.
 
 \begin{argtable}
   \#1 & list of integers & A comma-separated list of line numbers in the next
@@ -1760,7 +1760,7 @@ The space for the translation.
 \end{gdimension}
 
 \begin{gdimension}{spaceabovelines}
-The space above the lines.
+The space above the staff lines and the above-lines text.
 \end{gdimension}
 
 \begin{gdimension}{spacelinestext}
@@ -1780,7 +1780,7 @@ Distance from the top staff line to the baseline of the above-lines text.
 \end{gdimension}
 
 \begin{gdimension}{abovelinestextheight}
-Height that is added at the top of the lines if there is text above the lines (it must be bigger than the text for it to be taken into consideration).
+Minimum height of the above-lines text. (It must be bigger than the text for it to be taken into consideration.)
 \end{gdimension}
 
 \begin{gdimension}{braceshift}
