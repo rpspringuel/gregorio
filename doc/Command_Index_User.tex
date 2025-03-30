@@ -1442,26 +1442,26 @@ Each of the following counts controls some aspect of the configuration of the Gr
 
 \begin{gcount}{additionaltopspacethreshold}
 The threshold above which we start accounting notes above lines for additional
-vertical space. For instance with a threshold of \texttt{2} and four line
+vertical space. For instance, with a threshold of \texttt{2} and four line
 staves, notes with a pitch of \texttt{k} and \texttt{l} will not interfere with
 the space above lines.  Set it to a high value if you don't want high notes to
-interfere with space above lines.
+interfere with space above lines. See \S\ref{sec:vertical-spacing}.
 \end{gcount}
 
 \begin{gcount}{additionaltopspacealtthreshold}
 Same as \texttt{additionaltopspacethreshold} but setting the threshold for
-notes taken into account with above lines text vertical placement.
+notes taken into account with above lines text vertical placement. See \S\ref{sec:vertical-spacing}.
 \end{gcount}
 
 \begin{gcount}{additionaltopspacenabcthreshold}
 Same as \texttt{additionaltopspacethreshold} but setting the threshold for
 notes taken into account with above lines nabc neume vertical placement
-baseline.
+baseline.  See \S\ref{sec:vertical-spacing}.
 \end{gcount}
 
 \begin{gcount}{noteadditionalspacelinestextthreshold}
 The number of low notes which will add space between the lines and the lyrics.  For instance, with a threshold of
-\texttt{2}, every note below \texttt{c} will add space for each pitch needed below \texttt{c}, accounting for the various signs.
+\texttt{2}, every note below \texttt{c} will add space for each pitch needed below \texttt{c}, accounting for the various signs. See \S\ref{sec:vertical-spacing}.
 \end{gcount}
 
 \subsection{Distances}\label{distances}
@@ -1755,34 +1755,6 @@ The distance to shift choral signs up.  The following choral signs are shifted u
 \end{itemize}
 \end{gdimension}
 
-\begin{gdimension}{translationheight}
-The space for the translation.
-\end{gdimension}
-
-\begin{gdimension}{spaceabovelines}
-The space above the staff lines and the above-lines text.
-\end{gdimension}
-
-\begin{gdimension}{spacelinestext}
-The space between the lines and the bottom of the text.
-\end{gdimension}
-
-\begin{gdimension}{noteadditionalspacelinestext}
-The per-note additional space between lines and the bottom of the text.
-\end{gdimension}
-
-\begin{gdimension}{spacebeneathtext}
-The space beneath the text.
-\end{gdimension}
-
-\begin{gdimension}{abovelinestextraise}
-Distance from the top staff line to the baseline of the above-lines text.
-\end{gdimension}
-
-\begin{gdimension}{abovelinestextheight}
-Minimum height of the above-lines text. (It must be bigger than the text for it to be taken into consideration.)
-\end{gdimension}
-
 \begin{gdimension}{braceshift}
 An additional shift you can give to the brace above the staff.
 \end{gdimension}
@@ -1885,25 +1857,301 @@ Distance to shift a bracket down when the lowest note in the brackets is
 neither on a line nor below the staff.
 \end{gdimension}
 
-\begin{gdimension}{parskip}
-The effective \verb=\parskip= inside of a score.
-\end{gdimension}
-
-\begin{gdimension}{lineskip}
-The effective \verb=\lineskip= inside of a score.
-\end{gdimension}
-
-\begin{gdimension}{baselineskip}
-The effective \verb=\baselineskip= inside of a score.
-\end{gdimension}
-
-\begin{gdimension}{lineskiplimit}
-The effective \verb=\lineskiplimit= inside of a score.
-\end{gdimension}
-
 \begin{gdimension}{shortspaceafterlineclef}
 Space after a clef at the beginning of a line, when the clef and first note are vertically distant.
 \end{gdimension}
+
+{
+\subsubsection{Vertical spacing within staves}
+\label{sec:vertical-spacing}
+
+\newcommand{\lines}[1]{
+  \begin{minipage}[b]{1.5cm}
+    \grechangedim{parskip}{0pt}{fixed}%
+    \setlength{\baselineskip}{0pt}%
+    \setlength{\lineskip}{0pt}%
+    \textcolor{red}{\hrule}%
+    \setbox0=\vbox{#1}%
+    \copy0%
+    \vspace{-\dp0}%
+    \textcolor{red}{\hrule}%
+  \end{minipage}%
+}
+
+\makeatletter
+\def\getdims{%
+  \edef\spaceabovelines{\gre@space@skip@spaceabovelines}%
+  \edef\abovelinestextheight{\gre@space@dimen@abovelinestextheight}%
+  \edef\abovelinestextraise{\gre@space@dimen@abovelinestextraise}%
+  \edef\stafflinedistance{\the\dimexpr(\gre@dimen@interstafflinedistancebase+\gre@dimen@stafflinethicknessbase)*\gre@factor/2}%
+  \edef\staffheight{\the\dimexpr(\gre@dimen@interstafflinedistancebase*3+\gre@dimen@stafflinethicknessbase*4)*\gre@factor}%
+  \edef\spacelinestext{\the\dimexpr\gre@space@dimen@spacelinestext}%
+  \edef\translationheight{\gre@space@dimen@translationheight}%
+  \edef\spacebeneathtext{\gre@space@dimen@spacebeneathtext}%
+  \edef\grebaselineskip{\the\dimexpr\glueexpr\gre@space@skip@baselineskip}%
+  \edef\grelineskip{\the\dimexpr\glueexpr\gre@space@skip@lineskip}%
+  \edef\greparskip{\the\dimexpr\glueexpr\gre@space@skip@parskip}%
+}
+\makeatother
+\newcommand{\lab}[1]{\scalebox{0.5}{\tt\small #1}}%
+
+\gresetinitiallines{0}
+
+A staff has text (lyrics) below it, and optionally another line of translation below the text. Above the staff, there can also be a line of text (called the above-lines text) or NABC neumes. The vertical position and height of all these parts are shown below (with \texttt{spaceabovelines} and \texttt{spacebeneathtext} set to 0.2 cm for clarity). The staff together with all the text and neumes above and below it form one box, whose topline and baseline are drawn in red.
+
+
+{\grechangedim{spaceabovelines}{0.2cm}{scalable}
+\grechangedim{spacebeneathtext}{0.2cm}{scalable}
+\begin{center}
+  \scalebox{2}{%
+    \getdims
+    \begin{mplibcode}
+      beginfig(0);
+        pickup pencircle scaled 0.1bp;
+        ahangle := 30; ahlength := 2;
+        y0 := \spacebeneathtext;
+        y1 := y0+\translationheight;
+        y2 := y1+\spacelinestext;
+        y3 := y2+\staffheight;
+        y4 := y3+\abovelinestextraise;
+        y5 := y4+\abovelinestextheight;
+        y6 := y5+\spaceabovelines;
+        x := 0.1cm;
+        draw (-x, 0) -- (x, 0);
+        draw (-x,y0) -- (x,y0);
+        draw (-x,y1) -- (x,y1);
+        draw (-x,y2) -- (x,y2);
+        draw (-x,y3) -- (x,y3);
+        draw (-x,y4) -- (x,y4);
+        draw (-x,y5) -- (x,y5);
+        draw (-x,y6) -- (x,y6);
+        drawdblarrow ( 0, 0) -- (0,y0); label.lft(btex \lab{spacebeneathtext} etex, (0, y0/2));
+        drawdblarrow ( 0,y0) -- (0,y1); label.lft(btex \lab{translationheight} etex, (0, (y0+y1)/2));
+        drawdblarrow ( 0,y1) -- (0,y2); label.lft(btex \lab{spacelinestext} etex, (0, (y1+y2)/2));
+        %drawdblarrow ( 0,y2) -- (0,y3); label.lft(btex \lab{staffheight} etex, (0, (y2+y3)/2));
+        drawdblarrow ( 0,y3) -- (0,y4); label.lft(btex \lab{abovelinestextraise} etex, (0, (y3+y4)/2));
+        drawdblarrow ( 0,y4) -- (0,y5); label.lft(btex \lab{abovelinestextheight} etex, (0, (y4+y5)/2));
+        drawdblarrow ( 0,y5) -- (0,y6); label.lft(btex \lab{spaceabovelines} etex, (0, (y5+y6)/2));
+      endfig;
+    \end{mplibcode}%
+    \hspace{0.2cm}%
+    \lines{\gabcsnippet{<alt>alt</alt>text[trans](g)}}%
+    \hspace{0.5cm}%
+    \lines{\nabcsnippet{text[trans](g|vi)}}%
+  }
+\end{center}
+}
+  
+The height of the staff lines is determined by the commands \verb|\grechangefactor| and \verb|\grechangestafflinethickness|.
+
+\begin{gdimension}{spaceabovelines}
+The space above the staff lines (and above-lines text or NABC neumes, if any).
+\end{gdimension}
+
+\begin{gdimension}{abovelinestextheight}
+Minimum height of the above-lines text. (It must be bigger than the text for it to be taken into consideration.)
+\end{gdimension}
+
+\begin{gdimension}{abovelinestextraise}
+Distance from the top staff line to the baseline of the above-lines text.
+\end{gdimension}
+
+\begin{gdimension}{spacelinestext}
+The space between the lines and the bottom of the text.
+\end{gdimension}
+
+\begin{gdimension}{translationheight}
+The space between the baseline of the text and the baseline of the translation.
+\end{gdimension}
+
+\begin{gdimension}{spacebeneathtext}
+The space beneath the text (and translation, if any).
+\end{gdimension}
+
+\paragraph{Additional top space}
+
+The space between the top staff line and the topline is normally $\texttt{spaceabovelines}$, but if there are notes above the staff, additional space may automatically be added.
+
+The count \texttt{additionaltopspacethreshold} sets a threshold relative to the top line of the staff, so on a four-line staff, $0$ is pitch \texttt{j}, $1$ is pitch \texttt{k}, and so on. By default, $\texttt{additionaltopspacethreshold} = 2$, which is pitch \texttt{l}.
+Then, if the highest note is $n$ steps above this threshold, then $n$ steps of additional space are added (where a step is half the distance between staff lines). For example, again assuming the default of $\texttt{additionaltopspacethreshold} = 2$ on a four-line staff, if the highest note is \texttt{m}, then one step of additional space is added.
+
+Note that if there are high notes, increasing \texttt{spaceabovelines} may not add any visible space above the notes. To ensure a minimum space above the notes, set \texttt{spaceabovelines} to a length greater than $(1+\texttt{additionaltopspacethreshold})$. That is, with all other settings at their defaults, \texttt{spaceabovelines} should be greater than $3~\textrm{steps} \approx 0.41~\textrm{cm}$.
+
+\begin{quote}
+\verb|\grechangedim{spaceabovelines}{0.5cm}{scalable}|
+\grechangedim{spaceabovelines}{0.5cm}{scalable}
+
+\begin{center}
+\rowcolors{1}{white}{white}%
+\begin{tabular}{ccccc}
+  \lines{\gabcsnippet{i[0 steps](i)}} &
+  \lines{\gabcsnippet{j[0 steps](j)}} &
+  \lines{\gabcsnippet{k[0 steps](k)}} &
+  \lines{\gabcsnippet{l[0 steps](l)}} &
+  \lines{\gabcsnippet{m[1 step](m)}}
+\end{tabular}
+\end{center}
+\end{quote}
+
+High notes also cause the above-lines text, if any, to be raised. The above-lines text has its own threshold, \texttt{additionaltopspacealtthreshold} (default 0):
+\begin{center}
+\rowcolors{1}{white}{white}%
+\begin{tabular}{ccccc}
+  \lines{\gabcsnippet{<alt>alt</alt>i[0 steps](i)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>j[0 steps](j)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>k[1 step](k)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>l[2 steps](l)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>m[3 steps](m)}}
+\end{tabular}
+\end{center}
+
+Because the above-lines text and the topline have different thresholds, they may get raised by different amounts. The two preceding examples combine to look like this:
+\begin{quote}
+\verb|\grechangedim{spaceabovelines}{0.5cm}{scalable}|
+\grechangedim{spaceabovelines}{0.5cm}{scalable}
+  
+\begin{center}
+\rowcolors{1}{white}{white}%
+\begin{tabular}{ccccc}
+  \lines{\gabcsnippet{<alt>alt</alt>i(i)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>j(j)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>k(k)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>l(l)}} &
+  \lines{\gabcsnippet{<alt>alt</alt>m(m)}}
+\end{tabular}
+\end{center}
+\end{quote}
+
+NABC neumes use a different threshold, \texttt{additionaltopspacenabcthreshold}. This defaults to $4$, meaning that only the very highest notes affect the positioning of NABC neumes.
+\begin{quote}
+\grechangedim{abovelinestextheight}{0.1cm}{scalable}%
+\verb|\grechangedim{abovelinestextheight}{0.1cm}{scalable}| \\
+\grechangedim{abovelinestextraise}{0.8cm}{scalable}%
+\verb|\grechangedim{abovelinestextraise}{0.8cm}{scalable}|%
+\gresetlyriccentering{syllable}%
+\begin{center}
+\rowcolors{1}{white}{white}%
+\begin{tabular}{ccccc}
+  \lines{\nabcsnippet{m|vi[0 steps](m|vi)}} &
+  \lines{\nabcsnippet{m_1|vi[0 steps](m_1|vi)}} &
+  \lines{\nabcsnippet{m'1|vi[1 step](m'1|vi)}} &
+  \lines{\nabcsnippet{m_1'1|vi[2 steps](m_1'1|vi)}}
+\end{tabular}
+\end{center}
+\end{quote}
+
+\paragraph{Additional bottom space}
+
+Additional space below the staff works in much the same way. The count \texttt{noteadditionalspacelinestextthreshold} sets a threshold relative to pitch \texttt{a}, so $0$ is pitch \texttt{a}, $1$ is pitch \texttt{b}, and so on. Under the default settings, $\texttt{noteadditionalspacelinestextthreshold} = 2$, which is pitch \texttt{c}. Then, if the lowest note is $n$ steps below the threshold, then $n$ steps of additional bottom space are added.
+
+\begin{center}
+\rowcolors{1}{white}{white}%
+\begin{tabular}{ccccc}
+  \lines{\gabcsnippet{e[0 steps](e)}} &
+  \lines{\gabcsnippet{d[0 steps](d)}} &
+  \lines{\gabcsnippet{c[0 steps](c)}} &
+  \lines{\gabcsnippet{b[1 step](b)}} &
+  \lines{\gabcsnippet{a[2 steps](a)}}
+\end{tabular}
+\end{center}
+
+A legacy option is to change the amount of additional bottom space per step by setting \verb|\gresetnoteadditionalspacelinestext{manual}| and the following:
+
+\begin{gdimension}{noteadditionalspacelinestext}
+The per-step additional space between lines and the bottom of the text, when using \verb|\gresetnoteadditionalspacelinestext{manual}|.
+\end{gdimension}
+
+\paragraph{Vertical spacing between staves}
+
+The standard rules for paragraph and line spacing apply to scores and staves.
+
+\begin{gdimension}{parskip}
+The effective \verb=\parskip= inside of a score. This amount of space is added to the top of a score, although this space is removed in some contexts (like the top of a page).
+\end{gdimension}
+
+\begin{gdimension}{baselineskip}
+The effective \verb=\baselineskip= inside of a score. This is the minimum distance between baselines of consecutive staves.
+\end{gdimension}
+
+\begin{gdimension}{lineskiplimit}
+The effective \verb=\lineskiplimit= inside of a score. If the distance between one staff's bottomline and the next staff's topline is less than this, then \texttt{lineskip} is added between them.
+\end{gdimension}
+
+\begin{gdimension}{lineskip}
+The effective \verb=\lineskip= inside of a score. If the distance between one staff's bottomline and the next staff's topline is less than \texttt{lineskiplimit}, then this amount of space is added between them.
+\end{gdimension}
+
+These settings are illustrated below (with \texttt{parskip} and \texttt{lineskip} set to 0.2 cm for clarity).
+
+{\grechangedim{parskip}{0.2cm}{scalable}
+\grechangedim{lineskip}{0.2cm}{scalable}
+\begin{center}
+  \scalebox{2}{%
+    \getdims
+    \begin{mplibcode}
+      beginfig(0);
+        pickup pencircle scaled 0.4bp;
+        wd := 1.5cm;
+        y0 := \spacelinestext + \staffheight + \spaceabovelines;
+        y1 := \grebaselineskip;
+        y2 := y1 + \spacelinestext + \staffheight + \spaceabovelines;
+        y3 := y2 + \greparskip;
+        draw (0,0) -- (wd,0) withcolor red;
+        draw (0,y0) -- (wd,y0) withcolor red;
+        draw (0,y1) -- (wd,y1) withcolor red;
+        draw (0,y2) -- (wd,y2) withcolor red;
+        draw (0,y3) -- (wd,y3) withcolor red;
+        pickup pencircle scaled 0.1bp;
+        ahangle := 30; ahlength := 2;
+        x0 := -0.2cm;
+        dx := 0.1cm;
+        draw (x0-dx, 0) -- (x0+dx, 0);
+        draw (x0-dx,y1) -- (x0+dx,y1);
+        draw (x0-dx,y2) -- (x0+dx,y2);
+        draw (x0-dx,y3) -- (x0+dx,y3);
+        drawdblarrow (x0, 0) -- (x0, y1);
+        label.lft(btex \lab{baselineskip} etex, (x0, y1/2));
+        drawdblarrow (x0, y2) -- (x0, y3);
+        label.lft(btex \lab{parskip} etex, (x0, (y2+y3)/2));
+      endfig;
+    \end{mplibcode}%
+    \llap{\begin{minipage}[b]{1.5cm}\hrule\gabcsnippet{text(gZ) text(g)}\end{minipage}}%
+  }%
+  \hspace*{1cm}%
+  \scalebox{2}{%
+    \getdims
+    \rlap{\begin{minipage}[b]{1.5cm}\hrule\gabcsnippet{text(gZ) <alt>alt</alt>text[trans](g)}\end{minipage}}%
+    \begin{mplibcode}
+      beginfig(0);
+        pickup pencircle scaled 0.4bp;
+        wd := 1.5cm;
+        y0 := \spacebeneathtext + \translationheight + \spacelinestext + \staffheight + \abovelinestextraise + \abovelinestextheight + \spaceabovelines;
+        y1 := y0 + \grelineskip;
+        y2 := y1 + \spacelinestext + \staffheight + \spaceabovelines;
+        y3 := y2 + \greparskip;
+        draw (0,0) -- (wd,0) withcolor red;
+        draw (0,y0) -- (wd,y0) withcolor red;
+        draw (0,y1) -- (wd,y1) withcolor red;
+        draw (0,y2) -- (wd,y2) withcolor red;
+        draw (0,y3) -- (wd,y3) withcolor red;
+        pickup pencircle scaled 0.1bp;
+        ahangle := 30; ahlength := 2;
+        x0 := 2.2cm;
+        dx := 0.1cm;
+        draw (x0-dx,y0) -- (x0+dx,y0);
+        draw (x0-dx,y1) -- (x0+dx,y1);
+        draw (x0-dx,y2) -- (x0+dx,y2);
+        draw (x0-dx,y3) -- (x0+dx,y3);
+        drawdblarrow (x0, y0) -- (x0, y1);
+        label.rt(btex \lab{lineskip} etex, (x0, (y0+y1)/2));
+        drawdblarrow (x0, y2) -- (x0, y3);
+        label.rt(btex \lab{parskip} etex, (x0, (y2+y3)/2));
+      endfig;
+    \end{mplibcode}%
+  }%
+\end{center}
+As shown on the right, under the default settings, a staff with both above-lines text (or NABC) and translations has height greater than the default \texttt{baselineskip}. So if you want to increase \texttt{baselineskip}, you might have to increase it significantly before seeing any effect.
+}% 
 
 \subsubsection{Bar distances}
 
