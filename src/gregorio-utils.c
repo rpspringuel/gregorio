@@ -237,7 +237,7 @@ static void check_input_clobber(char *input_file_name, char *output_file_name)
             buf = gregorio_malloc(bufsize);
         }
         if (current_directory == NULL) {
-            fprintf(stderr, _("can't determine current directory"));
+            fprintf(stderr, _("can't determine current directory\n"));
             free(buf);
             gregorio_exit(1);
         }
@@ -617,7 +617,7 @@ int main(int argc, char **argv)
             default:
                 /* not reachable unless there's a programming error */
                 /* LCOV_EXCL_START */
-                fprintf(stderr, "error: unsupported format");
+                fprintf(stderr, "error: unsupported format\n");
                 print_short_usage(argv[0]);
                 gregorio_exit(1);
                 /* LCOV_EXCL_STOP */
@@ -637,7 +637,7 @@ int main(int argc, char **argv)
                 gregorio_exit(1));
         output_file = fopen(output_file_name, "wb");
         if (!output_file) {
-            fprintf(stderr, "error: can't write in file %s", output_file_name);
+            fprintf(stderr, "error: can't write to file %s\n", output_file_name);
             gregorio_exit(1);
         }
     }
@@ -676,7 +676,7 @@ int main(int argc, char **argv)
     default:
         /* not reachable unless there's a programming error */
         /* LCOV_EXCL_START */
-        fprintf(stderr, "error : invalid input format\n");
+        fprintf(stderr, "error: invalid input format\n");
         fclose(input_file);
         fclose(output_file);
         gregorio_exit(1);
@@ -707,7 +707,7 @@ int main(int argc, char **argv)
     default:
         /* not reachable unless there's a programming error */
         /* LCOV_EXCL_START */
-        fprintf(stderr, "error : invalid output format\n");
+        fprintf(stderr, "error: invalid output format\n");
         gregorio_free_score(score);
         fclose(output_file);
         gregorio_exit(1);
