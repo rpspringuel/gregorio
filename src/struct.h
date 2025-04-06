@@ -524,7 +524,7 @@ typedef struct gregorio_note {
     ENUM_BITFIELD(gregorio_ledger_specificity) low_ledger_specificity:2;
     bool is_lower_note:1;
     bool is_upper_note:1;
-    ENUM_BITFIELD(gregorio_vposition) mora_vposition:2;
+    gregorio_vposition mora_vposition;
     bool choral_sign_is_nabc:1;
 } gregorio_note;
 
