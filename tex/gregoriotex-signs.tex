@@ -196,14 +196,6 @@
   \gre@trace@end%
 }%
 
-%% macro redrawing a key from clefnum, useful for vertical space changes
-\def\gre@updatelinesclef{%
-  \gre@trace{gre@updatelinesclef}%
-  \GreSetLinesClef{\gre@clef}{\gre@clefheight}{1}{\gre@clefflatheight}%
-  {\gre@cleftwo}{\gre@cleftwoheight}{\gre@cleftwoflatheight}\relax %
-  \gre@trace@end%
-}%
-
 \newbox\gre@box@temp@clef%
 \newbox\gre@box@temp@cleftwo%
 

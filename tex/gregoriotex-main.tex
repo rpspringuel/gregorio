@@ -264,9 +264,6 @@
         \kern -\gre@dimen@eolshift\relax%
       \fi%
     \fi %
-    \ifnum\gre@insidediscretionary=0\relax %
-      \gre@updateleftbox %
-    \fi %
     % If this is the last element, just end the paragraph here, ignoring #1
     % and letting \gre@count@lastline determine justification of the last line.
     \ifgre@endofscore
@@ -346,12 +343,6 @@
   ]%
 }%
 \gresetinitialanchor{baseline}%
-
-\def\gre@updateleftbox{%
-  \gre@trace{gre@updateleftbox}%
-  \gre@updatelinesclef %
-  \gre@trace@end%
-}%
 
 \def\greillumination#1{%
   \setbox\gre@box@initial=\hbox{#1}%
