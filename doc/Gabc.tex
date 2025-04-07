@@ -738,13 +738,15 @@ Some examples:
 
 \paragraph{\textit{Punctum Mora}}
 
-The \textit{punctum mora} (dots after the note) are denoted by adding a period ( \texttt{.} ) after the note. When there are two \textit{punctum mora} after a neume, the character is simply doubled: ( \texttt{..} ).  You cannot place more than two \textit{punctum mora} after a note.
+The \textit{punctum mora} (dots after the note) are denoted by adding a period ( \texttt{.} ) after the note.
+Next to a note on a line, Gregorio will place the dot above or below the line according to the context, but you can force its position with \verb=.0= (below) or \verb=.1= (above).
+When there are two \textit{punctum mora} after a neume, the character is simply doubled: ( \texttt{..} ).  You cannot place more than two \textit{punctum mora} after a note.
 
 {
   \gresetinitiallines{0}\gresetlyriccentering{firstletter}%
   \gresetclef{invisible}\gresetlastline{justified}%
   \ttfamily
-  \gabcsnippet{( ) g.(g.) h.(h.) g..(g..) ( )}
+  \gabcsnippet{( ) g.(g.) h.(h.) h.0(h.0) h.1(h.1) g..(g..) ( )}
 }
 
 \paragraph{\textit{Ictus}}
