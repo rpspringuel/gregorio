@@ -138,24 +138,6 @@
 %% Global distances
 %%%%%%%%%%%%%%%%%
 
-% textlower is the height of the separation between the bottom line (which is invisible : for the notes which are very low) and the bottom of the text
-\newdimen\gre@dimen@textlower\relax%
-\def\gre@calculate@textlower{%
-  \gre@trace{gre@calculate@textlower}%
-  \gre@dimen@textlower=\gre@space@dimen@spacebeneathtext\relax%
-  %\advance\gre@dimen@textlower by \translationheight
-  \gre@trace@end%
-}%
-
-% stafflinewidth is the width of a line of staff, this can vary, for example at the first line
-\newdimen\gre@dimen@stafflinewidth\relax%
-\def\gre@calculate@stafflinewidth{%
-  \gre@trace{gre@calculate@stafflinewidth}%
-  \gre@dimen@stafflinewidth=\gre@dimen@linewidth\relax%
-  \gre@trace@end%
-}%
-
-
 % linewidth is the width of a line of a score (including the initial)
 \newdimen\gre@dimen@linewidth\relax%
 \def\gre@calculate@linewidth{%
@@ -212,14 +194,12 @@
 \def\gre@calculate@constantglyphraise{%
   \gre@trace{gre@calculate@constantglyphraise}%
   \global\gre@dimen@constantglyphraise = \dimexpr((\gre@dimen@glyphraisebase * \gre@factor) %
-    + \gre@dimen@additionalbottomspace %
     + \gre@space@dimen@spacebeneathtext %
     + \gre@space@dimen@spacelinestext %
     + \gre@dimen@interstafflinespace %
     + \gre@dimen@interstafflinespace %
     + \gre@dimen@stafflineheight %
     + \gre@dimen@stafflineheight %
-    + \gre@dimen@currenttranslationheight %
     % an adjustment in the case of big lines
     + \gre@dimen@stafflinediff)\relax%
   \relax %
@@ -241,19 +221,15 @@
 % A routine that simply aggregates the above global space calculating routines so we can easily update all when needed.
 %% Note: It used to be that some distance calculating functions called others.  Since this can create problems with circularity if one is not careful, this is no longer the case.  Now all distance calculating functions simply calculate their respective distance.  This means that dependent distances are not necessarily recalculated when an individual distance is recalculated.  This function updates all global calculated distances and in the order needed for the dependencies.
 %% Dependencies:
-%% textlower: spacebeneathtext
 %% linewidth: hsize
-%% stafflinewidth: linewidth
 %% stafflineheight: stafflinefactor & gre@factor
 %% interstafflinespace: stafflineheight & gre@factor
 %% stafflinediff: stafflineheight & gre@factor
 %% staffheight: stafflineheight & interstafflinespace
-%% constantglyphraise: gre@factor, additionalbottomspace, spacebeneathtext, spacelinestext, interstafflinespace, stafflineheight, currenttranslationheight, stafflinediff
+%% constantglyphraise: gre@factor, spacebeneathtext, spacelinestext, interstafflinespace, stafflineheight, stafflinediff
 \def\gre@computespaces{%
   \gre@trace{gre@computespaces}%
-  \gre@calculate@textlower%
   \gre@calculate@linewidth%
-  \gre@calculate@stafflinewidth%
   \gre@calculate@stafflineheight%
   \gre@calculate@interstafflinespace%
   \gre@calculate@stafflinediff%
@@ -900,15 +876,6 @@
   \gre@trace@end%
 }%
 
-% two dimensions for the additionalspaces
-\newdimen\gre@dimen@additionalbottomspace\relax%
-% the one taken into account to adjust space between lines
-\newdimen\gre@dimen@additionaltopspace\relax%
-% the one taken into account for above lines text height
-\newdimen\gre@dimen@additionaltopspacealt\relax%
-% the one taken into account for above lines nabc height
-\newdimen\gre@dimen@additionaltopspacenabc\relax%
-
 \newcount\gre@space@count@additionaltopspacethreshold\relax%
 \gre@space@count@additionaltopspacethreshold=2
 
@@ -921,116 +888,24 @@
 \newcount\gre@space@count@noteadditionalspacelinestextthreshold\relax%
 \gre@space@count@noteadditionalspacelinestextthreshold=2
 
-\def\gre@num@min#1#2{%
-  \gre@trace{gre@num@min{#1}{#2}}%
-  \ifnum#1 < #2\relax %
-    \gre@count@temp@one=#1\relax %
-  \else %
-    \gre@count@temp@one=#2\relax %
-  \fi %
-  \gre@trace@end%
-}%
-\def\gre@num@max#1#2{%
-  \gre@trace{gre@num@max{#1}{#2}}%
-  \ifnum#1 > #2\relax %
-    \gre@count@temp@one=#1\relax %
-  \else %
-    \gre@count@temp@one=#2\relax %
-  \fi %
-  \gre@trace@end%
-}%
-
-% some backup demensions for use around discretionaries
-\newdimen\gre@saved@prediscretionary@dimen@additionalbottomspace\relax%
-\newdimen\gre@saved@prediscretionary@dimen@additionaltopspace\relax%
-\newdimen\gre@saved@prediscretionary@dimen@additionaltopspacealt\relax%
-\newdimen\gre@saved@prediscretionary@dimen@additionaltopspacenabc\relax%
-\newdimen\gre@saved@prediscretionary@dimen@currenttranslationheight\relax%
-\newdimen\gre@saved@prediscretionary@dimen@textlower\relax%
-\newdimen\gre@saved@prediscretionary@dimen@currentabovelinestextheight\relax%
-\newdimen\gre@saved@prediscretionary@dimen@constantglyphraise\relax%
-
-
-\def\gre@save@additionalspaces{%
-  \gre@trace{gre@save@additionalspaces}%
-  \global\gre@saved@prediscretionary@dimen@additionalbottomspace=\gre@dimen@additionalbottomspace\relax%
-  \global\gre@saved@prediscretionary@dimen@additionaltopspace=\gre@dimen@additionaltopspace\relax%
-  \global\gre@saved@prediscretionary@dimen@additionaltopspacealt=\gre@dimen@additionaltopspacealt\relax%
-  \global\gre@saved@prediscretionary@dimen@additionaltopspacenabc=\gre@dimen@additionaltopspacenabc\relax%
-  \global\gre@saved@prediscretionary@dimen@currenttranslationheight=\gre@dimen@currenttranslationheight\relax%
-  \global\gre@saved@prediscretionary@dimen@textlower=\gre@dimen@textlower\relax%
-  \global\gre@saved@prediscretionary@dimen@currentabovelinestextheight=\gre@dimen@currentabovelinestextheight\relax%
-  \global\gre@saved@prediscretionary@dimen@constantglyphraise=\gre@dimen@constantglyphraise\relax%
-  \gre@trace@end%
-}%
-
-\def\gre@restore@additionalspaces{%
-  \gre@trace{gre@restore@additionalspaces}%
-  \global\gre@dimen@additionalbottomspace=\gre@saved@prediscretionary@dimen@additionalbottomspace\relax%
-  \global\gre@dimen@additionaltopspace=\gre@saved@prediscretionary@dimen@additionaltopspace\relax%
-  \global\gre@dimen@additionaltopspacealt=\gre@saved@prediscretionary@dimen@additionaltopspacealt\relax%
-  \global\gre@dimen@additionaltopspacenabc=\gre@saved@prediscretionary@dimen@additionaltopspacenabc\relax%
-  \global\gre@dimen@currenttranslationheight=\gre@saved@prediscretionary@dimen@currenttranslationheight\relax%
-  \global\gre@dimen@textlower=\gre@saved@prediscretionary@dimen@textlower\relax%
-  \global\gre@dimen@currentabovelinestextheight=\gre@saved@prediscretionary@dimen@currentabovelinestextheight\relax%
-  \global\gre@dimen@constantglyphraise=\gre@saved@prediscretionary@dimen@constantglyphraise\relax%
-  \gre@trace@end%
-}%
-
-\let\gre@pitch@cleftop\gre@pitch@dummy %
-\let\gre@pitch@clefbottom\gre@pitch@dummy %
-
-% #1 is the high height
-% #2 is the low height
-% #3 is 1 if there is a translation somewhere
-% #4 is if 1 if we have space above the staff
-\def\gre@calculate@additionalspaces#1#2#3#4{%
-  \gre@trace{gre@calculate@additionalspaces{#1}{#2}{#3}{#4}}%
-  \gre@num@max{#1}{\gre@pitch@cleftop}%
-  \gre@count@temp@one=\numexpr(\gre@count@temp@one - \gre@pitch@adjust@top - \gre@space@count@additionaltopspacethreshold)\relax %
-  \ifnum\gre@count@temp@one>0\relax %
-    \global\gre@dimen@additionaltopspace=\dimexpr(((\gre@dimen@interstafflinedistancebase + \gre@dimen@stafflinethicknessbase) / 2 ) * \gre@count@temp@one * \gre@factor)\relax %
-  \else %
-    \global\gre@dimen@additionaltopspace=0 sp%
-  \fi %
-  \gre@num@max{#1}{\gre@pitch@cleftop}%
-  \gre@count@temp@one=\numexpr(\gre@count@temp@one - \gre@pitch@adjust@top - \gre@space@count@additionaltopspacealtthreshold)\relax %
-  \ifnum\gre@count@temp@one>0\relax %
-    \global\gre@dimen@additionaltopspacealt=\dimexpr(((\gre@dimen@interstafflinedistancebase + \gre@dimen@stafflinethicknessbase) / 2 ) * \gre@count@temp@one * \gre@factor)\relax %
-  \else %
-    \global\gre@dimen@additionaltopspacealt=0 sp%
-  \fi %
-  \gre@num@max{#1}{\gre@pitch@cleftop}%
-  \gre@count@temp@one=\numexpr(\gre@count@temp@one - \gre@pitch@adjust@top - \gre@space@count@additionaltopspacenabcthreshold)\relax %
-  \ifnum\gre@count@temp@one>0\relax %
-    \global\gre@dimen@additionaltopspacenabc=\dimexpr(((\gre@dimen@interstafflinedistancebase + \gre@dimen@stafflinethicknessbase) / 2 ) * \gre@count@temp@one * \gre@factor)\relax %
-  \else %
-    \global\gre@dimen@additionaltopspacenabc=0 sp%
-  \fi %
-  \gre@num@min{#2}{\gre@pitch@clefbottom}%
-  \gre@count@temp@one=\numexpr(\gre@pitch@adjust@bottom - \gre@count@temp@one)\relax %
-  \ifnum\gre@count@temp@one>0\relax %
-    \ifgre@noteadditionalspacelinestext%
-      \global\gre@dimen@additionalbottomspace=\dimexpr(\gre@space@dimen@noteadditionalspacelinestext * \gre@count@temp@one)\relax%
-    \else%
-      \global\gre@dimen@additionalbottomspace=\dimexpr(((\gre@dimen@interstafflinedistancebase + \gre@dimen@stafflinethicknessbase) / 2 ) * \gre@factor * \gre@count@temp@one)\relax%
-    \fi%
-  \else %
-    \global\gre@dimen@additionalbottomspace=0 sp%
-  \fi %
-  \ifnum#3 = 1\relax %
-    \gre@addtranslationspace %
-  \else %
-    \gre@removetranslationspace %
-  \fi %
-  \ifnum#4 = 1\relax %
-    \gre@addspaceabove %
-  \else %
-    \gre@removespaceabove %
-  \fi %
+\def\gre@calculate@additionalspaces{%
+  \gre@trace{gre@calculate@additionalspaces}%
+  % Pass in dimensions and counts that are macros
+  \gre@luasavedim{abovelinestextheight}%
+  % \ifgre@noteadditionalspacelinestext is not accessible in Lua, so handle it here
+  \ifgre@noteadditionalspacelinestext
+    \gre@luasavedim{noteadditionalspacelinestext}%
+  \else
+    {\grechangedim{noteadditionalspacelinestext}{\the\dimexpr(\gre@dimen@interstafflinedistancebase+\gre@dimen@stafflinethicknessbase)/2 * \gre@factor\relax}{fixed}%
+     \gre@luasavedim{noteadditionalspacelinestext}}%
+  \fi
+  \gre@luasavedim{spaceabovelines}%
+  \gre@luasavedim{abovelinestextraise}%
+  \gre@luasavedim{spacelinestext}%
+  \gre@luasavedim{spacebeneathtext}%
+  \gre@luasavedim{translationheight}%
   \gre@generatelines %
   \gre@calculate@constantglyphraise %
-  \relax %
   \gre@trace@end%
 }%
 
@@ -1084,29 +959,6 @@
   \gre@trace@end%
 }%
 
-% temporary value for space for the translation, beneath the text
-\newdimen\gre@dimen@currenttranslationheight\relax%
-
-% macro to tell gregorio to set space for the translation
-\def\gre@addtranslationspace{%
-  \gre@trace{gre@addtranslationspace}%
-  \gre@style@translation%
-  \global\gre@dimen@currenttranslationheight=\gre@space@dimen@translationheight\relax%
-  \global\gre@dimen@textlower=\dimexpr(\gre@space@dimen@spacebeneathtext %
-    + \gre@space@dimen@translationheight)\relax%
-  \endgre@style@translation%
-  \relax %
-  \gre@trace@end%
-}%
-
-\def\gre@removetranslationspace{%
-  \gre@trace{gre@removetranslationspace}%
-  \global\gre@dimen@currenttranslationheight=0 sp%
-  \global\gre@dimen@textlower=\gre@space@dimen@spacebeneathtext\relax%
-  \relax %
-  \gre@trace@end%
-}%
-
 %nextbegindifference is the begindifference of the next syllable
 \newskip\gre@skip@nextbegindifference\relax%
 
@@ -1147,9 +999,7 @@
   \global\advance\gre@dimen@annotationtrueraise by %
     \dimexpr(\gre@dimen@staffheight %
     + \gre@space@dimen@spacebeneathtext %
-    + \gre@dimen@currenttranslationheight %
-    + \gre@space@dimen@spacelinestext %
-    + \gre@dimen@additionalbottomspace)\relax%
+    + \gre@space@dimen@spacelinestext)\relax%
   \gre@style@annotation%
   \global\advance\gre@dimen@annotationtrueraise by \gre@space@dimen@annotationraise\relax%
   \gre@debugmsg{annotation}{Added user raise.}%
@@ -1163,15 +1013,13 @@
 %This function sets the true raises of the commentary (it has to be called just as the boxes are placed in order to make sure that the values are all correct)
 \def\gre@calculate@commentarytrueraise{%
   \gre@trace{gre@calculate@commentarytrueraise}%
-  \gre@style@commentary%
   \gre@debugmsg{commentary}{Calculating the raise.}%
   \global\advance\gre@dimen@commentarytrueraise by %
     \dimexpr(\gre@dimen@staffheight %
     + \gre@space@dimen@spacebeneathtext %
-    + \gre@dimen@currenttranslationheight %
-    + \gre@space@dimen@spacelinestext %
-    + \gre@dimen@additionalbottomspace %
-    + \gre@space@dimen@commentaryraise)\relax%
+    + \gre@space@dimen@spacelinestext)\relax
+  \gre@style@commentary
+  \global\advance\gre@dimen@commentarytrueraise by \gre@space@dimen@commentaryraise
   \endgre@style@commentary%
   \gre@trace@end%
 }%
@@ -1535,9 +1383,6 @@
 \newdimen\gre@dimen@initialwidth\relax%
 \gre@dimen@initialwidth= 0 pt\relax%
 
-\newdimen\gre@dimen@currentabovelinestextheight\relax%
-\gre@dimen@currentabovelinestextheight = 0pt\relax%
-
 %% TODO: perhaps create a pair of functions which “reserve” and “release” the temporary registers in order to keep track of which ones are in use when.  There would also need to be a list of the registers currently in use.  The reserve function would then check the list to make sure the requested register isn’t already in use, throwing an error if it is and adding its name to the list if it isn’t.  It might also provide for an alias (via \let).  The release function would simply remove the register from the list of those in use.
 % Register allocation is an inherently global process in TeX.  Below are the registers used within calculations on a temporary basis.
 \newdimen\gre@dimen@temp@one%
@@ -1627,8 +1472,15 @@
 }%
 
 \def\grechangecount#1#2{%
-  \expandafter\csname gre@space@count@#1\endcsname=#2%
-  \relax %
+  \IfStrEqCase{#1}{% DEPRECATED
+    {finalpenalty}{\gre@warning{The count 'finalpenalty' no longer has any effect and will be removed in a future release}}% DEPRECATED
+  }[% DEPRECATED
+    \ifcsname gre@space@count@#1\endcsname
+      \expandafter\csname gre@space@count@#1\endcsname=#2\relax
+    \else
+      \gre@error{Unknown count '#1'}%
+    \fi
+  ]% DEPRECATED
 }
 
 % The common internals for \grecreatedim and \grechangedim.
@@ -1649,7 +1501,6 @@
       \def\gre@prefixII{dimen}%
     \fi%
     \expandafter\edef\csname gre@space@\gre@prefix @#1\endcsname{\expandafter\unexpanded{\csname gre@space@\gre@prefixII @#2\endcsname}}%
-    \directlua{gregoriotex.hash_spaces("\luatexluaescapestring{#1}", "\luatexluaescapestring{inherited from #2}")}%
   }{%
     \gre@rubberpermit{#2}%
     \ifgre@rubber%
@@ -1685,7 +1536,6 @@
         \fi%
       }{}%
     \expandafter\edef\csname gre@space@\gre@prefix @#1\endcsname{#2}%
-    \directlua{gregoriotex.hash_spaces("\luatexluaescapestring{#1}", "\luatexluaescapestring{#2}")}%
     \relax %
   }%
   \gre@trace@end%
@@ -1711,10 +1561,11 @@
   \fi%
 }
 
-% same arguments as \grechangedim, but used for setting the dimension for a
-% single line
-\def\gre@changedimforline#1#2#3{%
-  \gre@trace{gre@changedimforline{#1}{#2}{#3}}%
+% Make a dim accessible in Lua code. Any scaling or inheriting is done
+% at the time of the expansion of \gre@luasavedim, not when the dim is
+% used in Lua.
+% #1: name of dim
+\def\gre@luasavedim#1{%
   \gre@rubberpermit{#1}%
   \ifgre@rubber%
     \def\gre@prefix{skip}%
@@ -1724,52 +1575,40 @@
   \directlua{%
     gregoriotex.save_dim(%
       "\luatexluaescapestring{#1}",%
-      "\luatexluaescapestring{\expandafter\unexpanded%
-        \expandafter\expandafter\expandafter{%
-          \csname gre@space@\gre@prefix @#1\endcsname%
-        }%
-      }",%
-      "\csname ifgre@scale@#1\endcsname scalable\else fixed\fi"%
+      "\luatexluaescapestring{\csname gre@space@\gre@prefix @#1\endcsname}"%
     )%
   }%
-  \grechangedim{#1}{#2}{#3}%
-  \gre@trace@end%
 }%
 
 % #1 : line number
 % #2-#4 : same as #1-#3 of \grechangedim
 \def\grechangenextscorelinedim#1#2#3#4{%
-  \directlua{%
-    gregoriotex.change_next_score_line_dim(%
-      "\luatexluaescapestring{#1}",%
-      "\luatexluaescapestring{#2}",%
-      "\luatexluaescapestring{#3}",%
-      "\luatexluaescapestring{#4}"%
-    )%
+  \IfStrEqCase{#2}{{abovelinestextheight}{}{noteadditionalspacelinestext}{}{spaceabovelines}{}{abovelinestextraise}{}{spacelinestext}{}{spacebeneathtext}{}{translationheight}{}}[%
+    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'abovelinestextraise', 'noteadditionalspacelinestext', 'spaceabovelines', 'spacebeneathtext', 'spacelinestext', 'translationheight'}%
+  ]%
+  {\grechangedim{#2}{#3}{#4}%
+   \gre@rubberpermit{#2}%
+   \ifgre@rubber%
+     \def\gre@prefix{skip}%
+   \else%
+     \def\gre@prefix{dimen}%
+   \fi%
+   \directlua{%
+     gregoriotex.change_next_score_line_dim(%
+       "\luatexluaescapestring{#1}",%
+       "\luatexluaescapestring{#2}",%
+       "\luatexluaescapestring{\csname gre@space@\gre@prefix @#2\endcsname}"%
+     )%
+   }%
   }%
-}%
-
-% same arguments as \grechangecount, but used for setting the dimension for a
-% single line
-\def\gre@changecountforline#1#2{%
-  \gre@trace{gre@changecountforline{#1}{#2}}%
-  \directlua{%
-    gregoriotex.save_count(%
-      "\luatexluaescapestring{#1}",%
-      "\luatexluaescapestring{\expandafter\unexpanded%
-        \expandafter\expandafter\expandafter{%
-          \expandafter\the\csname gre@space@count@#1\endcsname%
-        }%
-      }"%
-    )%
-  }%
-  \grechangecount{#1}{#2}%
-  \gre@trace@end%
 }%
 
 % #1 : line number
 % #2-#3 : same as #1-#2 of \grechangecount
 \def\grechangenextscorelinecount#1#2#3{%
+  \IfStrEqCase{#2}{{additionaltopspacethreshold}{}{additionaltopspacealtthreshold}{}{additionaltopspacenabcthreshold}{}{noteadditionalspacelinestextthreshold}{}}[%
+    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinecount\MessageBreak Possible options are: 'additionaltopspacethreshold', 'additionaltopspacealtthreshold', 'additionaltopspacenabcthreshold', 'noteadditionalspacelinestextthreshold'}%
+  ]%
   \directlua{%
     gregoriotex.change_next_score_line_count(%
       "\luatexluaescapestring{#1}",%
@@ -1785,7 +1624,7 @@
 \newcount\gre@space@count@endofsyllablepenalty%
 \newcount\gre@space@count@endafterbarpenalty%
 \newcount\gre@space@count@endafterbaraltpenalty%
-\newcount\gre@space@count@finalpenalty%
+\newcount\gre@space@count@finalpenalty% DEPRECATED
 \newcount\gre@space@count@endofelementpenalty%
 \newcount\gre@space@count@hyphenpenalty%
 \newcount\gre@space@count@brokenpenalty%

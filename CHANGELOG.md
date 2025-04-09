@@ -3,7 +3,15 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][CTAN]
+### Added
+- Added new option `\gresetlastline{trimmed}`, which sets the last line ragged and also trims the staff lines. See [#1418](https://github.com/gregorio-project/gregorio/issues/1418).
 
+### Changed
+- Variable line heights are now computed in one pass instead of two. Per-line adjustments using `\grechangenextscorelinedim` and `\grechangenextscorelinecount` are also done in one pass, but only work on dimensions/counts related to line heights.
+- Previously, if a score ended with `Z` (ragged line break) or `z` (justified line break), the appearance of the last line would sometimes depend on `Z` versus `z` and sometimes depend on `\gresetlastline{ragged}` versus `\gresetlastline{justified}`. Now, the appearance of the last line always depends on `\gresetlastline`.
+
+### Deprecated
+- The count `grefinalpenalty` no longer has any effect and will be removed in a future release.
 
 ## [6.1.0] - 2025-02-28
 ### Fixed
@@ -34,7 +42,6 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - Allow `\gresetinitiallines{n}` where `n` is any number of lines (a non-negative integer). The manual linebreaks (`z`) that used to be required for 2-line initials are no longer required. See [#1488](https://github.com/gregorio-project/gregorio/issues/1488). Added new options `\gresetinitialanchor` and `\gresetinitialposition` to control the placement of initials.
 - Added new alterations: soft flat (X) and sharp (##), which appear when there is no previous flat or sharp (respectively) in effect, and soft natural (Y), which appears when there is a previous flat or sharp in effect. A new option `\gresetalterationeffect` determines what the "effect" of an alteration is. It defaults to `line`, which is useful for Dominican chant. See [#157](https://github.com/gregorio-project/gregorio/issues/157) and also [#1575](https://github.com/gregorio-project/gregorio/issues/1575).
 - 9 new St. Gall neume glyphs have been added to the `gregall` font.
-
 
 ## [6.0.0] - 2021-03-13
 ### Fixed

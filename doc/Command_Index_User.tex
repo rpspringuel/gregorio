@@ -66,13 +66,13 @@ To use the \texttt{allowdeprecated=false} option, you'll need \verb=\gre@allowde
 The compilation options can be set using \verb=\gresetcompilegabc= (see below).
 
 \textbf{Important:} Gregorio\TeX{} may require up to two passes (runs of
-\texttt{lualatex} or \texttt{luatex}) to compute the line heights correctly.  If a second
+\texttt{lualatex} or \texttt{luatex}) to compute certain things correctly.  If a second
 pass is required, Gregorio\TeX{} will emit the following
 warning:\par\medskip
 
 \begin{scriptsize}
 \begin{latexcode}
-Module gregoriotex warning: Line heights or variable brace lengths may have changed. Rerun to fix.
+Module gregoriotex warning: Variable brace lengths or soft flats/sharps may have changed. Rerun to fix.
 \end{latexcode}
 \end{scriptsize}
 
@@ -274,7 +274,7 @@ Macro to change one of Gregorio\TeX’s distances.  This function will check to 
 \end{argtable}
 
 \macroname{\textbackslash grechangenextscorelinedim}{\{\#1\}\{\#2\}\{\#3\}\{\#4\}}{gregoriotex-spaces.tex}
-Changes one of Gregorio\TeX’s distances for a given line in the next included score.  This works with \texttt{spaceabovelines}, \texttt{spacebeneathtext}, and \texttt{spacelinestext}.
+Changes one of Gregorio\TeX’s distances for a given line in the next included score.  This works with \texttt{abovelinestextheight}, \texttt{spaceabovelines}, \texttt{abovelinestextraise}, \texttt{spacelinestext}, \texttt{spacebeneathtext}, and \texttt{translationheight}.
 
 \begin{argtable}
   \#1 & list of integers & A comma-separated list of line numbers in the next
@@ -311,7 +311,7 @@ Macro to change one of Gregorio\TeX’s counts or penalities (numeric values).
 \end{argtable}
 
 \macroname{\textbackslash grechangenextscorelinecount}{\{\#1\}\{\#2\}\{\#3\}}{gregoriotex-spaces.tex}
-Changes one of Gregorio\TeX’s counts or penalties for a given line in the next included score.
+Changes one of Gregorio\TeX’s counts or penalties for a given line in the next included score. This works with \texttt{additionaltopspacethreshold}, \texttt{additionaltopspacealtthreshold}, \texttt{additionaltopspacenabcthreshold}, and \texttt{noteadditionalspacelinestextthreshold}. 
 
 \begin{argtable}
   \#1 & list of integers & A comma-separated list of line numbers in the next
@@ -350,32 +350,14 @@ above or below the staff lines.
 \end{argtable}
 
 By default, Gregorio\TeX{} uses \texttt{variable} line expansion.  This
-produces output similar to modern liturgical books.  However, this
-feature imposes a slight performance impact and typically requires a
-second pass (run of \texttt{lualatex}) to get the heights right.\bigskip
+produces output similar to modern liturgical books.
 
 The older behavior of Gregorio\TeX{}, \texttt{uniform} line expansion,
-does not have this performance impact.  However, the extra space it adds
-below the staff lines may look out-of-place in a section where there are
+adds extra space below the staff lines that may look out-of-place in a section where there are
 no notes below the staff lines.\bigskip
 
 This behavior may be switched as needed within a \TeX{} document and
-affects all the scores which follow.  However, if \texttt{variable} line
-expansion is enabled anywhere in the document, the second pass will be
-necessary.
-
-\begin{small}
-\begin{framed}
-    \textit{For experts only:}\bigskip
-
-    It is possible to suppress the line height computation and just use
-    whatever has been computed from the previous run.  If you are sure
-    that the score line heights haven't changed from the previous run,
-    define the \verb=\greskipheightcomputation= control sequence before
-    including the Gregorio\TeX{} package.  This will save a little bit
-    of time per run.
-\end{framed}
-\end{small}
+affects all the scores which follow.
 
 \macroname{\textbackslash gresetledgerlineheuristic}{\{\#1\}}{gregoriotex-spaces.tex}
 Macro which enables or disables ledger line heuristics.  Currently, ledger
@@ -1098,7 +1080,7 @@ emit the following warning:\par\medskip
 
 \begin{scriptsize}
 \begin{latexcode}
-Module gregoriotex warning: Line heights or variable brace lengths may have changed. Rerun to fix.
+Module gregoriotex warning: Variable brace lengths or soft flats/sharps may have changed. Rerun to fix.
 \end{latexcode}
 \end{scriptsize}
 
@@ -1184,11 +1166,12 @@ Equivalent of \verb=\grebolshiftcleftype= but valid only until the next end of a
 \end{argtable}
 
 \macroname{\textbackslash gresetlastline}{\{\#1\}}{gregoriotex-main.tex}
-Macro to determine whether the last line of the score should be justified or not.
+Macro to determine how the last line of the score should be printed.
 
 \begin{argtable}
   \#1 & \texttt{justified} & Set the last line justified with the rest of the score\\
-  & \texttt{ragged} & Set the last line ragged (default)
+  & \texttt{ragged} & Set the last line ragged (default)\\
+  & \texttt{trimmed} & Set the last line ragged and trim the staff lines
 \end{argtable}
 
 \macroname{\textbackslash gresetunbreakablesyllablenotes}{\{\#1\}\{\#2\}\{\#3\}}{gregoriotex-syllable.tex}
@@ -2187,7 +2170,7 @@ Penalty to force a line break.
 \end{gcount}
 
 \begin{gcount}{finalpenalty}
-The penalty applied after the final element of a score.
+The penalty applied after the final element of a score. Deprecated.
 \end{gcount}
 
 \macroname{looseness}{}{gregoriotex-gsp-default.tex}

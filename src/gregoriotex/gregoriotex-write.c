@@ -56,10 +56,10 @@ typedef struct gregoriotex_status {
     signed char bottom_height;
 
     /* indicates if there is a translation on the line */
-    bool translation;
+    bool translation; /* DEPRECATED */
 
     /* indicates if there is "above lines text" on the line */
-    bool abovelinestext;
+    bool abovelinestext; /* DEPRECATED */
 
     bool suppressed_custos;
 } gregoriotex_status;
@@ -4699,13 +4699,21 @@ void gregoriotex_write_score(FILE *const f, gregorio_score *const score,
     if (score->first_voice_info) {
         clef = score->first_voice_info->initial_clef;
     }
-    fprintf(f, "\\GreBeginScore{%s}{%d}{%d}{%d}{%d}{%s}{%u}"
-            "{\\GreInitialClefPosition{%d}{%d}}%%\n",
-            digest_to_hex(score->digest), status.top_height,
-            status.bottom_height, bool_to_int(status.translation),
-            bool_to_int(status.abovelinestext),
+    /* After removing deprecated arguments, this will become:
+    fprintf(f, "\\GreBeginScore{%s}{%s}{%u}{}%%\n",
+            digest_to_hex(score->digest),
             point_and_click_filename? point_and_click_filename : "",
-            score->staff_lines, clef.line, clef.secondary_line);
+            score->staff_lines); */
+    fprintf(f, "\\GreBeginScore{%s}{%d}{%d}{%d}{%d}{%s}{%u}"
+            "{\\GreInitialClefPosition{%d}{%d}}%%\n", /* DEPRECATED */
+            digest_to_hex(score->digest),
+            status.top_height, /* DEPRECATED */
+            status.bottom_height, /* DEPRECATED */
+            bool_to_int(status.translation), /* DEPRECATED */
+            bool_to_int(status.abovelinestext), /* DEPRECATED */
+            point_and_click_filename? point_and_click_filename : "",
+            score->staff_lines,
+            clef.line, clef.secondary_line); /* DEPRECATED */
     if (score->nabc_lines) {
         fprintf(f, "\\GreScoreNABCLines{%d}", (int)score->nabc_lines);
     }

@@ -85,24 +85,8 @@ Macro holding the list of directories to be searched for scores.  \verb=\input@p
 \macroname{\textbackslash gre@calculate@constantglyphraise}{}{gregoriotex-spaces.tex}
 Macro to calculate \verb=\gre@constantglyphraise=
 
-\macroname{\textbackslash gre@addtranslationspace}{}{gregoriotex-spaces.tex}
-Macro to tell Gregorio to set space for the translation.
-
-\macroname{\textbackslash gre@removetranslationspace}{}{gregoriotexspaces.tex}
-Macro to tell Gregorio to remove the space allocated to the translation.
-
-\macroname{\textbackslash gre@calculate@additionalspaces}{\#1\#2\#3\#4}{gregoriotex-spaces.tex}
-Macro which calculates \verb=\gre@additionalbottomspace= and\\
-\verb=\gre@additionaltopspace=
-
-\begin{argtable}
-  \#1 & integer & the height number of the top pitch, including signs\\
-  \#2 & integer & the height number of the bottom pitch, including signs\\
-  \#3 & \texttt{0} & there is no translation line\\
-  & \texttt{1} & there is a translation line\\
-  \#4 & \texttt{0} & there is no above lines text\\
-  & \texttt{1} & there is above lines text
- \end{argtable}
+\macroname{\textbackslash gre@calculate@additionalspaces}{}{gregoriotex-spaces.tex}
+Macro which initializes various dimensions and counts used for variable line height computation.
 
 \macroname{\textbackslash gre@calculate@textaligncenter}{\#1\#2\#3\#4}{gregoriotex-spaces.tex}
 Macro for calculating \verb=\gre@textaligncenter=.
@@ -121,14 +105,8 @@ Macro to calculate \verb=\gre@dimen@annotationtrueraise=.
 \macroname{\textbackslash gre@calculate@commentarytrueraise}{}{gregoriotex-spaces.tex}
 Macro to calculate \verb=\gre@dimen@commentarytrueraise=.
 
-\macroname{\textbackslash gre@calculate@textlower}{}{gregoriotex-spaces.tex}
-Calculates the value of \texttt{textlower}.  Default is \texttt{spacebeneathtext}.
-
 \macroname{\textbackslash gre@calculate@linewidth}{}{gregoriotex-spaces.tex}
 Calculates the line width.  Default is the width of the printable space (\verb=\hsize=).
-
-\macroname{\textbackslash gre@calculate@stafflinewidth}{}{gregoriotex-spaces.tex}
-Calculates the width of the staff lines.  Default is \texttt{linewidth}.
 
 \macroname{\textbackslash gre@calculate@stafflineheight}{}{gregoriotex-spaces.tex}
 Calculates the height (thickness) of the staff lines.  Dependent on \texttt{stafflineheightfactor} and \texttt{gre@factor}.
@@ -143,7 +121,7 @@ Calculates a correction factor for when the staff lines are not their default th
 Calculates the total height of the staff.  Dependent on \texttt{stafflineheight} and \texttt{interstafflinespace}.
 
 \macroname{\textbackslash gre@calculate@constantglyphraise}{}{gregoriotex-spaces.tex}
-Calculates the baseline correction for the glyphs.  Dependent on \texttt{gre@factor}, \texttt{additionalbottomspace}, \texttt{spacebeneathtext}, \texttt{spacelinestext}, \texttt{interstafflinespace}, \texttt{stafflineheight}, \texttt{currenttranslationheight}, and \texttt{stafflinediff}.
+Calculates the baseline correction for the glyphs.  Dependent on \texttt{gre@factor}, \texttt{spacebeneathtext}, \texttt{spacelinestext}, \texttt{interstafflinespace}, \texttt{stafflineheight}, and \texttt{stafflinediff}.
 
 \macroname{\textbackslash gre@computespaces}{}{gregoriotex-spaces.tex}
 Aggregates all of the global distance calculations and calls them in the order needed to respect dependencies.
@@ -479,12 +457,6 @@ Macro called when no initial is being set.
 
 \macroname{\textbackslash gre@setinitial}{\#1}{gregoriotex-main.tex}
 Macro to set the initial in the score.
-
-\macroname{\textbackslash gre@addspaceabove}{}{gregoriotex-main.tex}
-Macro to increase the space above the lines to account for above lines text.
-
-\macroname{\textbackslash gre@removespaceabove}{}{gregoriotex-main.tex}
-Macro to decrease the space above the lines as there is no longer any above lines text.
 
 \macroname{\textbackslash gre@alteration}{\#1\#2\#3\#4\#5\#6}{gregoriotex-signs.tex}
 Macro to typeset an alteration.
@@ -1140,20 +1112,8 @@ Macro set to \verb=0= for full-syllable centering, \verb=1= for vowel centering 
 \macroname{\textbackslash gre@rightfill}{}{gregoriotex-main.tex}
 Macro set to \verb=\hfil= or \verb=\relax= depending on alignment choices.
 
-\macroname{\textbackslash gre@mark@abovelinestext}{}{gregoriotex-main.tex}
-Macro to set the point-and-click position for above lines text.
-
-\macroname{\textbackslash gre@mark@translation}{}{gregoriotex-main.tex}
-Macro to set the point-and-click position for translations.
-
 \macroname{\textbackslash gre@pitch@[a-n,p]}{}{gregoriotex-main.tex}
 Macros which map gabc pitch letters (the final part of the macro name) to the numerical value that Gregorio\TeX\ uses in processing note placement.
-
-\macroname{\textbackslash gre@pitch@adjust@top}{}{gregoriotex-main.tex}
-If any note appears above this pitch, the space above the lines must be adjusted to account for it.
-
-\macroname{\textbackslash gre@pitch@adjust@bottom}{}{gregoriotex-main.tex}
-If any note appears below this pitch, the space below the lines must be adjusted to account for it.
 
 \macroname{\textbackslash gre@pitch@abovestaff}{}{gregoriotex-main.tex}
 The pitch above the staff.
@@ -1277,15 +1237,8 @@ Alias for \verb=\resizebox=.
 \macroname{\textbackslash gre@dimension}{}{gregoriotex-spaces.tex}
 Workhorse function for setting distances in \verb=\grecreatedim= and \verb=\grechangedim=.
 
-\macroname{\textbackslash gre@changedimforline}{\#1\#2\#3}{gregoriotex-spaces.tex}
-Saves the current value of the dimension and then changes it.  The arguments
-are the same as \verb=\grechangedim=.  Used to temporarily change the dimension
-for a given line, which is restored at the next beginning of the next line.
-
-\macroname{\textbackslash gre@changecountforline}{\#1\#2}{gregoriotex-spaces.tex}
-Saves the current value of the count and then changes it.  The arguments
-are the same as \verb=\grechangeocount=.  Used to temporarily change the count
-for a given line, which is restored at the next beginning of the next line.
+\macroname{\textbackslash gre@luasavedim}{}{gregoriotex-spaces.tex}
+Makes a distance, which is a macro and therefore only visible in TeX code, also visible in Lua code.
 
 \macroname{\textbackslash gre@setstafflines}{\#1}{gregoriotex-main.tex}
 Sets the number of staff lines.
@@ -1394,30 +1347,8 @@ Macro to make adjustments to \verb=nextbegindifference= in order to account for 
 \macroname{\textbackslash gre@punctummoraadjustment}{}{gregoriotex-spaces.tex}
 Macro to make adjustments to cursor position and \verb=previousenddifference= based on the presence of a punctum mora at the end of the last syllable.
 
-\macroname{\textbackslash gre@num@min}{\#1\#2}{gregoriotex-spaces.tex}
-Puts the lower of its two integer arguments into \verb=\gre@count@temp@one=.
-
-\begin{argtable}
-  \#1 & integer & the first value to compare\\
-  \#2 & integer & the second value to compare\\
-\end{argtable}
-
-\macroname{\textbackslash gre@num@max}{\#1\#2}{gregoriotex-spaces.tex}
-Puts the greater of its two integer arguments into \verb=\gre@count@temp@one=.
-
-\begin{argtable}
-  \#1 & integer & the first value to compare\\
-  \#2 & integer & the second value to compare\\
-\end{argtable}
-
 \macroname{\textbackslash gre@evaluatenextsyllable}{\#1}{gregoriotex-syllable.tex}
 Evaluates its first argument as an advance computation against the next syllable.  Twiddles the \verb=ifgre@evaluatingnextsyllable= flag around evaluation of the macro argument.
-
-\macroname{\textbackslash gre@save@additionalspaces}{}{gregoriotex-spaces.tex}
-Macro to save the additional vertical spaces associated with the line (\texttt{additionalbottomspace}, \texttt{additionaltopspace}, \texttt{additionaltopspacealt}, \texttt{additionaltopspacenabc}, \texttt{currenttranslationheight}, \texttt{textlower}, \texttt{currentabovelinestextheight}, and \texttt{constantglyphraise}) so that they can be restored later.
-
-\macroname{\textbackslash gre@restore@additionalspaces}{}{gregoriotex-spaces.tex}
-Macro to restore the additional vertical spaces associated with the line from their saved values.
 
 \macroname{\textbackslash gre@clearsyllable}{\#1}{gregoriotex-spaces.tex}
 Prevents the current syllable from overlapping with the previous syllable.
@@ -1795,9 +1726,6 @@ A Lua\TeX\ attribute which indicates whether a syllable takes a dash if it ends 
 \macroname{\textbackslash gre@attr@center}{}{gregoriotex-main.tex}
 A Lua\TeX\ attribute which indicates the type of translation centering.
 
-\macroname{\textbackslash gre@attr@glyph@id}{}{gregoriotex-main.tex}
-A Lua\TeX\ attribute which identifies the glyph we are at.  Used for dynamic line spacing.
-
 \macroname{\textbackslash gre@attr@glyph@top}{}{gregoriotex-main.tex}
 A Lua\TeX\ attribute which identifies the high point of the glyph.  Used for dynamic line spacing.
 
@@ -1891,8 +1819,8 @@ Boolean which indicates if line breaks are prohibited in an \texttt{euouae} area
 \macroname{\textbackslash ifgre@in@euouae}{}{gregoriotex-main.tex}
 Boolean which indicates that we are in an \texttt{euouae} area.
 
-\macroname{\textbackslash ifgre@justifylastline}{}{gregoriotex-main.tex}
-Boolean which indicates that the last line of the score should be justified.
+\macroname{\textbackslash gre@count@lastline}{}{gregoriotex-main.tex}
+Count which indicates that the last line of the score should be justified (0), ragged (1), or trimmed (2).
 
 \macroname{\textbackslash ifgre@showclef}{}{gregoriotex-main.tex}
 Boolean which indicates that the clef should be visible.
@@ -2148,32 +2076,12 @@ Width of the clef used to compute bolshift.
 \macroname{\textbackslash gre@dimen@constantglyphraise}{}{gregoriotex-spaces.tex}
 Dimension representing the space between the 0 of the gregorian fonts and the effective 0 of the TeX score.
 
-\macroname{\textbackslash gre@dimen@currenttranslationheight}{}{gregoriotex-spaces.tex}
-Dimension representing the space for the translation beneath the text.
-
 \macroname{\textbackslash gre@dimen@stafflinewidth}{}{gregoriotex-spaces.tex}
 Dimension representing the width of a line of staff.  Can vary, for
 example, at the first line.
 
 \macroname{\textbackslash gre@dimen@linewidth}{}{gregoriotex-spaces.tex}
 Dimension representing the width of the score (including initial).
-
-\macroname{\textbackslash gre@dimen@additionalbottomspace}{}{gregoriotex-spaces.tex}
-Dimension representing extra space below the staff needed for low notes.
-
-\macroname{\textbackslash gre@dimen@additionaltopspace}{}{gregoriotex-spaces.tex}
-Dimension representing extra space above the staff needed for high notes.
-
-\macroname{\textbackslash gre@dimen@additionaltopspacealt}{}{gregoriotex-spaces.tex}
-Dimension representing extra space above the staff needed for above lines text.
-
-\macroname{\textbackslash gre@dimen@additionaltopspacenabc}{}{gregoriotex-spaces.tex}
-Dimension representing extra space above the staff needed for nabc notation.
-
-\macroname{\textbackslash gre@dimen@textlower}{}{gregoriotex-spaces.tex}
-Dimension representing the height of the separation between the 0th
-line (which is invisible except for notes in the a or b position) and
-the bottom of the text.
 
 \macroname{\textbackslash gre@dimen@textaligncenter}{}{gregoriotex-spaces.tex}
 Dimension representing the width from the beginning of the letters in
@@ -2182,9 +2090,6 @@ neumes and syllables.
 
 \macroname{\textbackslash gre@dimen@initialwidth}{}{gregoriotex-spaces.tex}
 Dimension representing the width of the initial (and the space after).
-
-\macroname{\textbackslash gre@dimen@currentabovelinestextheight}{}{gregoriotex-spaces.tex}
-Dimension representing the space allocated above the lines for text.
 
 \macroname{\textbackslash gre@dimen@staffheight}{}{gregoriotex-spaces.tex}
 The total height of the staff including the width of the lines and the spaces between them.

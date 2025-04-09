@@ -90,7 +90,6 @@
 
 \def\gre@newglyphcommon{%
   \gre@trace{gre@newglyphcommon}%
-  \global\advance\gre@attr@glyph@id by 1\relax %
   % first there is something we must do: setting \gre@lastoflinecount to 0 if its value is 2. The reason of this is that in ab(abzcd), we cannot let \grelastoflinecount set to 2 after the end of line... the only way I found to achieve it is to reset \grelastoflinecount to 0 after each glyph or bar.
   \ifnum\gre@lastoflinecount=2\relax %
     \global\gre@lastoflinecount=0\relax %
@@ -115,8 +114,9 @@
 
 \def\gre@endofglyphcommon{%
   \gre@trace{gre@endofglyphcommon}%
+  \global\unsetluatexattribute{\gre@attr@glyph@top}%
+  \global\unsetluatexattribute{\gre@attr@glyph@bottom}%
   \ifgre@endofscore %
-    \gre@penalty{\the\gre@space@count@finalpenalty}%
     \gre@localleftbox{}%
     \gre@localrightbox{}%
   \fi %
@@ -177,7 +177,6 @@
     \global\gre@firstglyphfalse%
   \fi%
   #6\relax %
-  \directlua{gregoriotex.adjust_line_height(\gre@insidediscretionary)}%
   \gre@endofglyphcommon %
   \relax%
 }%
@@ -877,7 +876,6 @@
   % So, at beginning of lines, we will have shifted left, and in middle of lines
   % we will have shifted right and left, thus cancelling... Very easy trick, but
   % took me years to find it!
-  \gre@debugmsg{bolshift}{Current glyph: \the\gre@attr@glyph@id}%
   % we only want to execute these shifts if the clef is being shown
   % if no clef is being shown, then there is no space under the clef for the
   % lyrics to invade
@@ -1049,8 +1047,8 @@
     \kern\gre@skip@temp@one %
   \fi%
   #8\relax %
-  \raise\gre@dimen@textlower%
-  \copy\gre@box@syllabletext %
+  \raise\gre@space@dimen@spacebeneathtext
+  \hbox attr \gre@attrid@part=4 {\unhcopy\gre@box@syllabletext}%
   \ifgre@mustdotranslationcenterend%
     % case of end of translation centering, we do it after the typesetting of the text
     \gre@dotranslationcenterend %
@@ -1324,7 +1322,8 @@
     #8%
     \GreNoBreak %
     %print the text, the raise is in case of a translation
-    \raise\gre@dimen@textlower \copy\gre@box@syllabletext%
+    \raise\gre@space@dimen@spacebeneathtext
+    \hbox attr \gre@attrid@part=4 {\unhcopy\gre@box@syllabletext}%
     %and the code which handles translation centering
     \ifgre@mustdotranslationcenterend%
       % case of end of translation centering, we do it after the typesetting of the text
@@ -1410,8 +1409,6 @@
     \else %
       \ifgre@endofscore %
         \gre@localleftbox{}%
-        \gre@debugmsg{barspacing}{after bar penalty: \gre@space@count@endafterbarpenalty}%
-        \gre@penalty{\the\gre@space@count@finalpenalty}%
       \else %
         \ifnum\gre@newlinearg=-1\else %
           \gre@debugmsg{barspacing}{calling new line with argument: \gre@newlinearg}%
@@ -1518,7 +1515,7 @@
     % then the most simple : the case where there is something to write under the bar. We just need to adjust the spaces.
     \else %ifdim\wd\gre@box@syllabletext = 0 pt
       #8\relax %
-      \raise\gre@dimen@textlower \copy\gre@box@syllabletext %
+      \raise\gre@space@dimen@spacebeneathtext \copy\gre@box@syllabletext %
       \ifgre@mustdotranslationcenterend%
         % case of end of translation centering, we do it after the typesetting of the text
         \gre@dotranslationcenterend %

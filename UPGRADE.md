@@ -4,6 +4,16 @@ This file contains instructions to upgrade to a new release of Gregorio.  These 
 
 ## [Unreleased][develop]
 
+## [Unreleased][CTAN]
+
+### `grefinalpenalty`
+
+The count `grefinalpenalty` no longer has any effect and will be removed in a future release.
+
+### Final `Z` and `z`
+
+Forced line breaks (`Z` or `z`) at the very end of a score are discouraged. Please use `\gresetlastline{ragged}` or `\gresetlastline{justified}` instead to set the appearance of the last line.
+
 ## 6.1
 
 ### Multiline initials
