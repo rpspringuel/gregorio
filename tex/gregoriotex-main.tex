@@ -277,6 +277,7 @@
     \else
       \ifnum#1=1\relax
         \GreNoBreak
+        \null% prevent the \hfill from getting eaten in case of empty line
         \hfill
       \fi
       \gre@penalty{-10001}%
