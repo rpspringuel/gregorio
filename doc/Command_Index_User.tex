@@ -1862,7 +1862,7 @@ Space after a clef at the beginning of a line, when the clef and first note are 
 \end{gdimension}
 
 {
-\subsubsection{Vertical spacing within staves}
+\subsubsection{Vertical spacing}
 \label{sec:vertical-spacing}
 
 \newcommand{\lines}[1]{
@@ -1897,10 +1897,10 @@ Space after a clef at the beginning of a line, when the clef and first note are 
 
 \gresetinitiallines{0}
 
-A staff has text (lyrics) below it, and optionally another line of translation below the text. Above the staff, there can also be a line of text (called the above-lines text) or NABC neumes. The vertical position and height of all these parts are shown below (with \texttt{spaceabovelines} and \texttt{spacebeneathtext} set to 0.2 cm for clarity). The staff together with all the text and neumes above and below it form one box, whose topline and baseline are drawn in red.
+A staff has text (lyrics) below it, and optionally another line of translation below the text. Above the staff, there can also be a line of text (called the above-lines text) or NABC neumes. The vertical position and height of all these parts are shown in Figure~\ref{fig:vertical-spacing-within-staff} (with \texttt{spaceabovelines} and \texttt{spacebeneathtext} set to 0.2 cm for clarity). The staff together with all the text and neumes above and below it form one box, whose topline and baseline are drawn in red.
 
-
-{\grechangedim{spaceabovelines}{0.2cm}{scalable}
+\begin{figure}
+\grechangedim{spaceabovelines}{0.2cm}{scalable}
 \grechangedim{spacebeneathtext}{0.2cm}{scalable}
 \begin{center}
   \scalebox{2}{%
@@ -1940,20 +1940,23 @@ A staff has text (lyrics) below it, and optionally another line of translation b
     \lines{\nabcsnippet{text[trans](g|vi)}}%
   }
 \end{center}
-}
+\caption{The vertical position and height of the various parts above and below the staff. The distances \texttt{spaceabovelines} and \texttt{spacebeneathtext} are set to 0.2 cm for clarity. The staff together with all the text and neumes above and below it form one box, whose topline and baseline are drawn in red.}
+\label{fig:vertical-spacing-within-staff}
+\end{figure}
   
 The height of the staff lines is determined by the commands \verb|\grechangefactor| and \verb|\grechangestafflinethickness|.
+The other distances are listed below and can be changed using \verb|\grechangedim|.
 
 \begin{gdimension}{spaceabovelines}
 The space above the staff lines (and above-lines text or NABC neumes, if any).
 \end{gdimension}
 
 \begin{gdimension}{abovelinestextheight}
-Minimum height of the above-lines text. (It must be bigger than the text for it to be taken into consideration.)
+The height of the above-lines text is this or the the text's natural height, whichever is bigger.
 \end{gdimension}
 
 \begin{gdimension}{abovelinestextraise}
-Distance from the top staff line to the baseline of the above-lines text.
+The distance from the top staff line to the baseline of the above-lines text.
 \end{gdimension}
 
 \begin{gdimension}{spacelinestext}
@@ -1972,8 +1975,12 @@ The space beneath the text (and translation, if any).
 
 The space between the top staff line and the topline is normally $\texttt{spaceabovelines}$, but if there are notes above the staff, additional space may automatically be added.
 
+\goodbreak % prevents a weird page break between translationheight and spacebeneathtext
+
 The count \texttt{additionaltopspacethreshold} sets a threshold relative to the top line of the staff, so on a four-line staff, $0$ is pitch \texttt{j}, $1$ is pitch \texttt{k}, and so on. By default, $\texttt{additionaltopspacethreshold} = 2$, which is pitch \texttt{l}.
 Then, if the highest note is $n$ steps above this threshold, then $n$ steps of additional space are added (where a step is half the distance between staff lines). For example, again assuming the default of $\texttt{additionaltopspacethreshold} = 2$ on a four-line staff, if the highest note is \texttt{m}, then one step of additional space is added.
+
+The minimum value of \texttt{additionaltopspacethreshold} is $-1$ (additional top space for anything above the top staff line) and the maximum value is currently $6$ (no additional top space).
 
 Note that if there are high notes, increasing \texttt{spaceabovelines} may not add any visible space above the notes. To ensure a minimum space above the notes, set \texttt{spaceabovelines} to a length greater than $(1+\texttt{additionaltopspacethreshold})$. That is, with all other settings at their defaults, \texttt{spaceabovelines} should be greater than $3~\textrm{steps} \approx 0.41~\textrm{cm}$.
 
@@ -1993,6 +2000,7 @@ Note that if there are high notes, increasing \texttt{spaceabovelines} may not a
 \end{center}
 \end{quote}
 
+\begin{minipage}{\linewidth}
 High notes also cause the above-lines text, if any, to be raised. The above-lines text has its own threshold, \texttt{additionaltopspacealtthreshold} (default 0):
 \begin{center}
 \rowcolors{1}{white}{white}%
@@ -2004,6 +2012,7 @@ High notes also cause the above-lines text, if any, to be raised. The above-line
   \lines{\gabcsnippet{<alt>alt</alt>m[3 steps](m)}}
 \end{tabular}
 \end{center}
+\end{minipage}
 
 Because the above-lines text and the topline have different thresholds, they may get raised by different amounts. The two preceding examples combine to look like this:
 \begin{quote}
@@ -2044,6 +2053,8 @@ NABC neumes use a different threshold, \texttt{additionaltopspacenabcthreshold}.
 
 Additional space below the staff works in much the same way. The count \texttt{noteadditionalspacelinestextthreshold} sets a threshold relative to pitch \texttt{a}, so $0$ is pitch \texttt{a}, $1$ is pitch \texttt{b}, and so on. Under the default settings, $\texttt{noteadditionalspacelinestextthreshold} = 2$, which is pitch \texttt{c}. Then, if the lowest note is $n$ steps below the threshold, then $n$ steps of additional bottom space are added.
 
+The minimum value of \texttt{noteadditionalspacelinestextthreshold} is currently $-2$ (no additional bottom space) and the maximum value is $4$ (additional bottom space for anything below the bottom staff line).
+
 \begin{center}
 \rowcolors{1}{white}{white}%
 \begin{tabular}{ccccc}
@@ -2063,7 +2074,7 @@ The per-step additional space between lines and the bottom of the text, when usi
 
 \paragraph{Vertical spacing between staves}
 
-The standard rules for paragraph and line spacing apply to scores and staves.
+The standard rules for paragraph and line spacing apply to scores and staves. However, the distances which control those rules are different inside a score from in regular text. The distances listed below will be used inside a score and can be changed with \verb|\grechangedim| without affecting how text outside of a score is typeset.
 
 \begin{gdimension}{parskip}
 The effective \verb=\parskip= inside of a score. This amount of space is added to the top of a score, although this space is removed in some contexts (like the top of a page).
@@ -2074,16 +2085,17 @@ The effective \verb=\baselineskip= inside of a score. This is the minimum distan
 \end{gdimension}
 
 \begin{gdimension}{lineskiplimit}
-The effective \verb=\lineskiplimit= inside of a score. If the distance between one staff's bottomline and the next staff's topline is less than this, then \texttt{lineskip} is added between them.
+The effective \verb=\lineskiplimit= inside of a score. If two consecutive staves have baselines \texttt{baselineskip} apart and the distance between the first staff's bottomline and the second staff's topline is less than this, then \texttt{lineskip} is added between them.
 \end{gdimension}
 
 \begin{gdimension}{lineskip}
-The effective \verb=\lineskip= inside of a score. If the distance between one staff's bottomline and the next staff's topline is less than \texttt{lineskiplimit}, then this amount of space is added between them.
+The effective \verb=\lineskip= inside of a score. If two consecutive staves have baselines \texttt{baselineskip} apart and the distance between the first staff's bottomline and the second staff's topline is less than \texttt{lineskiplimit}, then this amount of space is added between them.
 \end{gdimension}
 
-These settings are illustrated below (with \texttt{parskip} and \texttt{lineskip} set to 0.2 cm for clarity).
+These settings are illustrated in Figure~\ref{fig:vertical-spacing-between-staves} (with \texttt{parskip} and \texttt{lineskip} set to 0.2 cm for clarity).
 
-{\grechangedim{parskip}{0.2cm}{scalable}
+\begin{figure}
+\grechangedim{parskip}{0.2cm}{scalable}
 \grechangedim{lineskip}{0.2cm}{scalable}
 \begin{center}
   \scalebox{2}{%
@@ -2150,8 +2162,11 @@ These settings are illustrated below (with \texttt{parskip} and \texttt{lineskip
     \end{mplibcode}%
   }%
 \end{center}
+\caption{Settings controlling the vertical spacing between staves. Distances \texttt{parskip} and \texttt{lineskip} are set to 0.2 cm for clarity.}
+\label{fig:vertical-spacing-between-staves}
+\end{figure}
+
 As shown on the right, under the default settings, a staff with both above-lines text (or NABC) and translations has height greater than the default \texttt{baselineskip}. So if you want to increase \texttt{baselineskip}, you might have to increase it significantly before seeing any effect.
-}% 
 
 \subsubsection{Bar distances}
 
