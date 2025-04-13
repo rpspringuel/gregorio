@@ -31,7 +31,7 @@ GREGORIO=gregorio-$(FILENAME_VERSION)
 
 GregorioRef.pdf: $(SRCFILES)
 	luaotfload-tool --update --force
-	$(MAKE) $(AM_MAKEFLAGS) -C ../src $(GREGORIO)
+	$(MAKE) $(AM_MAKEFLAGS) -C ../src all
 	../src/$(GREGORIO) -o factus.gtex $(<D)/factus.gabc
 	TEXINPUTS=$(<D):$(<D)/../tex: LUAINPUTS=$(<D):$(<D)/../tex: \
 		 TTFONTS=$(<D)/../fonts: PATH=../src:${PATH} latexmk -f -recorder -pdf \
@@ -41,7 +41,7 @@ GregorioRef.pdf: $(SRCFILES)
 
 GregorioNabcRef.pdf: $(NABCSRCFILES)
 	luaotfload-tool --update --force
-	$(MAKE) $(AM_MAKEFLAGS) -C ../src $(GREGORIO)
+	$(MAKE) $(AM_MAKEFLAGS) -C ../src all
 	../src/$(GREGORIO) -o veni.gtex $(<D)/veni.gabc
 	../src/$(GREGORIO) -o omnes.gtex $(<D)/omnes.gabc
 	TEXINPUTS=$(<D):$(<D)/../tex: LUAINPUTS=$(<D):$(<D)/../tex: \
