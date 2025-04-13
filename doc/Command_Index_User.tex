@@ -1896,6 +1896,10 @@ Space after a clef at the beginning of a line, when the clef and first note are 
 \newcommand{\lab}[1]{\scalebox{0.5}{\tt\small #1}}%
 
 \gresetinitiallines{0}
+\gresetlyriccentering{firstletter}
+\gresetlastline{justified}
+\grechangestyle{abovelinestext}{\rmfamily\itshape}
+\grechangestyle{translation}{\rmfamily\itshape}
 
 A staff has text (lyrics) below it, and optionally another line of translation below the text. Above the staff, there can also be a line of text (called the above-lines text) or NABC neumes. The vertical position and height of all these parts are shown in Figure~\ref{fig:vertical-spacing-within-staff} (with \texttt{spaceabovelines} and \texttt{spacebeneathtext} set to 0.2 cm for clarity). The staff together with all the text and neumes above and below it form one box, whose topline and baseline are drawn in red.
 
@@ -1990,6 +1994,7 @@ Note that if there are high notes, increasing \texttt{spaceabovelines} may not a
 
 \begin{center}
 \rowcolors{1}{white}{white}%
+\ttfamily
 \begin{tabular}{ccccc}
   \lines{\gabcsnippet{i[0 steps](i)}} &
   \lines{\gabcsnippet{j[0 steps](j)}} &
@@ -2004,6 +2009,7 @@ Note that if there are high notes, increasing \texttt{spaceabovelines} may not a
 High notes also cause the above-lines text, if any, to be raised. The above-lines text has its own threshold, \texttt{additionaltopspacealtthreshold} (default 0):
 \begin{center}
 \rowcolors{1}{white}{white}%
+\ttfamily
 \begin{tabular}{ccccc}
   \lines{\gabcsnippet{<alt>alt</alt>i[0 steps](i)}} &
   \lines{\gabcsnippet{<alt>alt</alt>j[0 steps](j)}} &
@@ -2021,6 +2027,7 @@ Because the above-lines text and the topline have different thresholds, they may
   
 \begin{center}
 \rowcolors{1}{white}{white}%
+\ttfamily
 \begin{tabular}{ccccc}
   \lines{\gabcsnippet{<alt>alt</alt>i(i)}} &
   \lines{\gabcsnippet{<alt>alt</alt>j(j)}} &
@@ -2037,14 +2044,14 @@ NABC neumes use a different threshold, \texttt{additionaltopspacenabcthreshold}.
 \verb|\grechangedim{abovelinestextheight}{0.1cm}{scalable}| \\
 \grechangedim{abovelinestextraise}{0.8cm}{scalable}%
 \verb|\grechangedim{abovelinestextraise}{0.8cm}{scalable}|%
-\gresetlyriccentering{syllable}%
 \begin{center}
 \rowcolors{1}{white}{white}%
+\ttfamily
 \begin{tabular}{ccccc}
   \lines{\nabcsnippet{m|vi[0 steps](m|vi)}} &
   \lines{\nabcsnippet{m_1|vi[0 steps](m_1|vi)}} &
-  \lines{\nabcsnippet{m'1|vi[1 step](m'1|vi)}} &
-  \lines{\nabcsnippet{m_1'1|vi[2 steps](m_1'1|vi)}}
+  \lines{\nabcsnippet{m<v>\textquotesingle</v>1|vi[1 step](m'1|vi)}} &
+  \lines{\nabcsnippet{m_1<v>\textquotesingle</v>1|vi[2 steps](m_1'1|vi)}}
 \end{tabular}
 \end{center}
 \end{quote}
@@ -2057,6 +2064,7 @@ The minimum value of \texttt{noteadditionalspacelinestextthreshold} is currently
 
 \begin{center}
 \rowcolors{1}{white}{white}%
+\ttfamily
 \begin{tabular}{ccccc}
   \lines{\gabcsnippet{e[0 steps](e)}} &
   \lines{\gabcsnippet{d[0 steps](d)}} &
@@ -2127,12 +2135,12 @@ These settings are illustrated in Figure~\ref{fig:vertical-spacing-between-stave
         label.lft(btex \lab{parskip} etex, (x0, (y2+y3)/2));
       endfig;
     \end{mplibcode}%
-    \llap{\begin{minipage}[b]{1.5cm}\hrule\gabcsnippet{text(gZ) text(g)}\end{minipage}}%
+    \llap{\begin{minipage}[b]{1.5cm}\gabcsnippet{text(gZ) text(g)}\end{minipage}}%
   }%
   \hspace*{1cm}%
   \scalebox{2}{%
     \getdims
-    \rlap{\begin{minipage}[b]{1.5cm}\hrule\gabcsnippet{text(gZ) <alt>alt</alt>text[trans](g)}\end{minipage}}%
+    \rlap{\begin{minipage}[b]{1.5cm}\gabcsnippet{text(gZ) <alt>alt</alt>text[trans](g)}\end{minipage}}%
     \begin{mplibcode}
       beginfig(0);
         pickup pencircle scaled 0.4bp;
