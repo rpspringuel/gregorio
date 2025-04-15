@@ -47,8 +47,26 @@ clean-doc:
 gregoriotex.tds.zip: dist-zip install-gtex.sh
 	./install-gtex.sh tds
 
-ctan: gregoriotex.tds.zip build-ctan.sh
-	./build-ctan.sh
+ctan : gregoriotex.ctan.zip
+gregoriotex.ctan.zip: doc dist-zip gregoriotex.tds.zip build-ctan.sh
+	mkdir -p ctan/gregoriotex
+	cp gregoriotex.tds.zip ctan/gregoriotex.tds.zip
+	cp *.md ctan/gregoriotex/
+	cp gregorio-$(VERSION).zip ctan/gregoriotex
+	./install-gtex.sh dir:ctan/gregoriotex
+	mv ctan/gregoriotex/doc/luatex/gregoriotex/* ctan/gregoriotex/doc
+	rm -rf ctan/gregoriotex/doc/luatex
+	mv ctan/gregoriotex/fonts/source/gregoriotex/* ctan/gregoriotex/fonts/source
+	rm -rf ctan/gregoriotex/fonts/source/gregoriotex ctan/gregoriotex/fonts/source/granapadano-base.sfd ctan/gregoriotex/fonts/source/gregorio-base.sfd
+	mv ctan/gregoriotex/fonts/truetype/public/gregoriotex/* ctan/gregoriotex/fonts/truetype
+	rm -rf ctan/gregoriotex/fonts/truetype/public
+	rm -rf ctan/gregoriotex/scripts
+	mv ctan/gregoriotex/tex/lualatex/gregoriotex/* ctan/gregoriotex/tex/lualatex
+	rm -rf ctan/gregoriotex/tex/lualatex/gregoriotex
+	mv ctan/gregoriotex/tex/luatex/gregoriotex/* ctan/gregoriotex/tex/luatex
+	rm -rf ctan/gregoriotex/tex/luatex/gregoriotex
+	zip -r gregoriotex.ctan.zip ctan/
+	rm -rf ctan/
 
 dist-hook:
 	rm -rf $(distdir)/windows
