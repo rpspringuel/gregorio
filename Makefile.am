@@ -86,6 +86,7 @@ clean-macosx:
 if !WINDOWS
 dist-windows: gregorio doc fonts
 	$(MAKE) -C windows dist-windows
+	./configure
 else
 dist-windows:
 	@echo "The dist-windows target is for cross-compiling from Linux/Mac to Windows,"
