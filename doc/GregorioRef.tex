@@ -172,9 +172,9 @@
 
 \gresetspecial{\string\126\string\126}{\textasciitilde{}}%
 
-\long\def\nabcsnippet#1{%
-  \directlua{gregoriotex.direct_gabc("\luatexluaescapestring{\unexpanded\expandafter{#1}}",
-                                     "nabc-lines:1;", false)}%
+\long\def\nabcsnippet#1#2{%
+  \directlua{gregoriotex.direct_gabc("\luatexluaescapestring{\unexpanded\expandafter{#2}}",
+                                     "nabc-lines:#1;", false)}%
 }%
 
 \begin{document}

@@ -43,10 +43,11 @@
   \gre@trace@end%
 }
 
-% \GreNABCChar#1#2
+% \GreNABCChar[#1]#2
 % #1: voice
 % #2: char
-\def\GreNABCChar#1#2{{%
+\def\GreNABCChar{\@ifnextchar[{\gre@nabcvoicechar}{\gre@nabcvoicechar[1]}}%
+\def\gre@nabcvoicechar[#1]#2{{%
   %\catcode`\~=12{}%
   %\catcode`\@=11{}%
   \csname gre@font@nabcvoice@\romannumeral#1\endcsname
@@ -76,9 +77,9 @@
   \csname ifgre@nabcvoice@\romannumeral#1@visible\endcsname %
     \ifcase#1\relax
       \or % 1
-        \GreSetNabcAboveLines{\GreNABCChar{1}{#2}}%
+        \GreSetNabcAboveLines{\GreNABCChar[1]{#2}}%
       \or % 2
-        \GreSetNabcBelowLines{\GreNABCChar{2}{#2}}%
+        \GreSetNabcBelowLines{\GreNABCChar[2]{#2}}%
       \fi
   \fi %
 }
