@@ -51,9 +51,11 @@
   %\catcode`\~=12{}%
   %\catcode`\@=11{}%
   \csname gre@font@nabcvoice@\romannumeral#1\endcsname
-  \ifcase#1\relax\or\gre@style@nabc\or\gre@style@belowlinesnabc\fi
+  \gre@style@nabc
+  \ifcase#1\relax\or\gre@style@abovelinesnabc\or\gre@style@belowlinesnabc\fi
   \gre@nabccharno{#2}{\csname gre@nabcvoice@\romannumeral#1@fontname\endcsname}{1}%
-  \ifcase#1\relax\or\endgre@style@nabc\or\endgre@style@belowlinesnabc\fi
+  \ifcase#1\relax\or\endgre@style@abovelinesnabc\or\endgre@style@belowlinesnabc\fi
+  \endgre@style@nabc
 }}
 
 \newif\ifgre@nabcvoice@i@visible
