@@ -9,6 +9,8 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 ### Changed
 - Variable line heights are now computed in one pass instead of two. Per-line adjustments using `\grechangenextscorelinedim` and `\grechangenextscorelinecount` are also done in one pass, but only work on dimensions/counts related to line heights.
 - Previously, if a score ended with `Z` (ragged line break) or `z` (justified line break), the appearance of the last line would sometimes depend on `Z` versus `z` and sometimes depend on `\gresetlastline{ragged}` versus `\gresetlastline{justified}`. Now, the appearance of the last line always depends on `\gresetlastline`.
+- The meanings of the distances `spaceabovelines` and `abovelinestextheight` were changed to be (hopefully) easier to use and closer to their descriptions in the documentation.
+- All lengths related to vertical spacing are documented in greater detail in a dedicated section in GregorioRef.pdf.
 
 ### Deprecated
 - The count `grefinalpenalty` no longer has any effect and will be removed in a future release.
