@@ -264,9 +264,6 @@
         \kern -\gre@dimen@eolshift\relax%
       \fi%
     \fi %
-    \ifnum\gre@insidediscretionary=0\relax %
-      \gre@updateleftbox %
-    \fi %
     % If this is the last element, just end the paragraph here, ignoring #1
     % and letting \gre@count@lastline determine justification of the last line.
     \ifgre@endofscore
@@ -280,6 +277,7 @@
     \else
       \ifnum#1=1\relax
         \GreNoBreak
+        \null% prevent the \hfill from getting eaten in case of empty line
         \hfill
       \fi
       \gre@penalty{-10001}%
@@ -346,12 +344,6 @@
   ]%
 }%
 \gresetinitialanchor{baseline}%
-
-\def\gre@updateleftbox{%
-  \gre@trace{gre@updateleftbox}%
-  \gre@updatelinesclef %
-  \gre@trace@end%
-}%
 
 \def\greillumination#1{%
   \setbox\gre@box@initial=\hbox{#1}%
@@ -697,7 +689,6 @@
     \gre@attr@part=7\relax
   \fi%
   \gre@dimen@temp@five=\dimexpr(\gre@dimen@staffheight %
-    + \gre@dimen@interstafflinespace %
     + \gre@space@dimen@spacebeneathtext %
     + \gre@space@dimen@spacelinestext %
     + \gre@space@dimen@abovelinestextraise)\relax%

@@ -14,6 +14,10 @@ The count `grefinalpenalty` no longer has any effect and will be removed in a fu
 
 Forced line breaks (`Z` or `z`) at the very end of a score are discouraged. Please use `\gresetlastline{ragged}` or `\gresetlastline{justified}` instead to set the appearance of the last line.
 
+### `spaceabovelines` and `abovelinestextheight`
+
+The meanings of these distances were changed to be (hopefully) easier to use and closer to their descriptions in the documentation. Please see the section "Vertical spacing" in GregorioRef.pdf for more information. Scores that use the default settings and have above-lines text (`<alt>`) will now have slightly more whitespace above the above-lines text. Scores that set either of these two distances explicitly may experience larger changes in whitespace between staves, and should be checked.
+
 ## 6.1
 
 ### Multiline initials

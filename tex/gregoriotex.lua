@@ -675,7 +675,8 @@ local function compute_line_statistics(line, info)
   if info == nil then
     info = {
       has_translation = false,
-      has_abovelinestext = false,
+      has_alt = false,
+      has_nabc = false,
       glyph_top = 7, -- e = \gre@pitch@dummy
       glyph_bottom = 7 -- e = \gre@pitch@dummy
     }
@@ -683,8 +684,10 @@ local function compute_line_statistics(line, info)
   for n in traverse(line.head) do
     if has_attribute(n, part_attr, part_translation) then
       info.has_translation = true
-    elseif has_attribute(n, part_attr, part_alt) or has_attribute(n, part_attr, part_nabc) then
-      info.has_abovelinestext = true
+    elseif has_attribute(n, part_attr, part_alt) then
+      info.has_alt = true
+    elseif has_attribute(n, part_attr, part_nabc) then
+      info.has_nabc = true
     else
       if has_attribute(n, glyph_top_attr) then
         if info.glyph_top == nil or has_attribute(n, glyph_top_attr) > info.glyph_top then
@@ -698,7 +701,7 @@ local function compute_line_statistics(line, info)
       end
     end
   end
-  debugmessage('compute_line_statistics', 'has_abovelinestext %s has_translation %s glyph_top %s glyph_bottom %s', info.has_abovelinestext, info.has_translation, info.glyph_top, info.glyph_bottom)
+  debugmessage('compute_line_statistics', 'has_alt %s has_nabc %s has_translation %s glyph_top %s glyph_bottom %s', info.has_alt, info.has_nabc, info.has_translation, info.glyph_top, info.glyph_bottom)
   return info
 end
 
@@ -742,18 +745,13 @@ local function adjust_additional_spaces(line, info, linenum)
   local additional_top_space_nabc = math.max(0, info.glyph_top - adjust_top - nabc_threshold) * staffline_distance
   local additional_bottom_space = math.max(0, adjust_bottom - info.glyph_bottom) * note_additional_space_lines_text
 
-  -- abovelinestext and translation heights
-  local abovelinestext_height = 0
-  if info.has_abovelinestext then
-    abovelinestext_height = get_space('abovelinestextheight')
-  end
+  -- translation height
   local translation_height = 0
   if info.has_translation then
     translation_height = get_space('translationheight')
   end
 
   -- per-line changes to other spaces
-  local extra_space_above_lines = get_space('spaceabovelines') - saved_dims['spaceabovelines']
   local extra_above_lines_text_raise = get_space('abovelinestextraise') - saved_dims['abovelinestextraise']
   local extra_space_lines_text = get_space('spacelinestext') - saved_dims['spacelinestext']
   local extra_space_beneath_text = get_space('spacebeneathtext') - saved_dims['spacebeneathtext']
@@ -762,7 +760,15 @@ local function adjust_additional_spaces(line, info, linenum)
   local commentary_raise = additional_top_space_alt
   local alt_raise = additional_top_space_alt + extra_above_lines_text_raise
   local nabc_raise = additional_top_space_nabc + extra_above_lines_text_raise
-  local height_increase = abovelinestext_height + extra_space_above_lines + additional_top_space
+  local height_new = get_space('spaceabovelines') + additional_top_space
+  if info.has_alt then
+    height_new = math.max(height_new, additional_top_space_alt)
+    height_new = height_new + get_space('abovelinestextraise') + get_space('abovelinestextheight')
+  elseif info.has_nabc then
+    height_new = math.max(height_new, additional_top_space_nabc)
+    height_new = height_new + get_space('abovelinestextraise') + get_space('abovelinestextheight')
+  end
+  local height_increase = height_new - saved_dims['spaceabovelines']
   local lyrics_lower = additional_bottom_space + extra_space_lines_text
   local translation_lower = lyrics_lower + translation_height
   local everything_raise = translation_lower + extra_space_beneath_text
