@@ -97,7 +97,7 @@ This is the primary development branch for significant changes to the package.  
 
 We also reserve short-term branch names of the patterns `release-vx.y` and `hotfix-vx.y.z`.  Names of this sort are reserved for preparing releases.  Only PRs for blocking bugs should be submitted against these branches.
 
-Individual bugfixes and features should be developed on their own branch and then a PR submitted in the main repository against the appropriate branch.  New contributors should fork the repository on GitHub under your own username and use branches created there to create PRs against the main repository.  If you don't have a GitHub account (they are free) and don't want to create one, you can submit a patch file to the developers' mailing list: gregorio-devel@googlegroups.com.
+Individual bugfixes and features should be developed on their own branch and then a PR submitted in the main repository against the appropriate branch.  New contributors should fork the repository on GitHub under your own username and use branches created there to create PRs against the main repository.  If you don't have a GitHub account (they are free) and don't want to create one, you can submit a patch file to the developers' mailing list: [gregorio-devel@googlegroups.com](mailto:gregorio-devel@googlegroups.com).
 
 ### Make a pull request
 
