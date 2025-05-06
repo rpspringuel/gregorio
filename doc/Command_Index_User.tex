@@ -303,7 +303,7 @@ Macro to turn on or off scaling with the staff size for a particular distance.
 \textbf{Nota bene:} This macro also can be used to change whether or not the staff line thickness scales with the staff size by specifying \texttt{stafflinefactor} for the first argument.
 
 \macroname{\textbackslash grechangecount}{\{\#1\}\{\#2\}}{gregoriotex-spaces.tex}
-Macro to change one of Gregorio\TeX’s counts or penalities (numeric values).
+Macro to change one of Gregorio\TeX’s counts or penalties (numeric values).
 
 \begin{argtable}
   \#1 & string & The name of the count to be changed.  See \nameref{counts} and \nameref{penalties} below.\\
@@ -2446,7 +2446,7 @@ The value of the last ditch stretch for overfull boxes.  This should be set usin
 Default: \verb=\emergencystretch=
 
 \begin{gcount}{endafterbarpenalty}
-The end after bar penalty.
+The end after bar penalty.  Inserted by Gregorio\TeX after a bar.
 \end{gcount}
 
 \begin{gcount}{endafterbaraltpenalty}{}{gregoriotex-gsp-default.tex}
@@ -2454,19 +2454,19 @@ The alternate end after bar penalty (used when there is no text under the bar).
 \end{gcount}
 
 \begin{gcount}{endofelementpenalty}{}{gregoriotex-gsp-default.tex}
-The end of element penalty.
+The end of element penalty.  Inserted by Gregorio\TeX\ after each element in a score.
 \end{gcount}
 
 \begin{gcount}{endofsyllablepenalty}{}{gregoriotex-gsp-default.tex}
-The end of element penalty.
+The end of syllable penalty.  Inserted by Gregorio\TeX\ after each syllable in a score.
 \end{gcount}
 
 \begin{gcount}{endofwordpenalty}{}{gregoriotex-gsp-default.tex}
-The end of element penalty.
+The end of word penalty.  Inserted by Gregorio\TeX\ after each word in a score.
 \end{gcount}
 
 \begin{gcount}{hyphenpenalty}{}{gregoriotex-gsp-default.tex}
-The hyphen penalty.
+The penalty inserted with a hyphen by \TeX.  \texbf{Note:} \TeX\ does not insert hyphens into the score in most places because Gregorio\TeX\ makes its own decisions on inserting hyphens after syllables in lyrics.  This penalty would only be used when there is a block of text long enough to trigger a line break within a syllable or similarly sized unit.
 \end{gcount}
 
 \begin{gcount}{nobreakpenalty}{}{gregoriotex-gsp-default.tex}
