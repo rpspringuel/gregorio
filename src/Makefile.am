@@ -138,5 +138,7 @@ BUILT_SOURCES = utf8strings.h gabc/gabc-notes-determination-l.c \
 				vowel/vowel-rules-l.h vowel/vowel-rules-y.c \
 				vowel/vowel-rules-y.h
 
-CLEANFILES = encode_utf8strings${EXEEXT}
+OLD_EXECUTABLES = $(shell find . -regextype posix-extended -regex '\./gregorio-[0-9]+.*' -print)
+
+CLEANFILES = encode_utf8strings${EXEEXT} $(OLD_EXECUTABLES)
 MAINTAINERCLEANFILES = $(BUILT_SOURCES)

@@ -233,19 +233,4 @@ function main_install()
   local answer=io.read()
 end
 
-function scribus_config()
-  local f = io.open('contrib'..pathsep..'900_gregorio.xml', 'r')
-  local data = ""
-  for l in f:lines() do
-    if l:match("executable command") then
-      data = data..string.format("	<executable command='texlua \"%s\" \"%%file\" \"%%dir\"'/>\n", lfs.currentdir()..pathsep.."contrib"..pathsep.."gregorio-scribus.lua")
-    else
-      data = data..l.."\n"
-    end
-  end
-  io.savedata('contrib'..pathsep..'900_gregorio.xml', data)
-end
-
 main_install()
-scribus_config()
-
