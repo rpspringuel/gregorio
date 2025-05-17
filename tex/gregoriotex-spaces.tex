@@ -1448,7 +1448,7 @@
   \fi
 }
 
-% a macro for changing a dimension.  Unlike \grecreatedim, this function won’t create a new distance, just change an existing one.
+% a macro for changing a dimension.  Unlike \gre@createdim, this function won’t create a new distance, just change an existing one.
 \def\grechangedim#1#2#3{%
   \edef\gre@prefix{\gre@getprefix{#1}}%
   \ifcsname gre@space@\gre@prefix @#1\endcsname%
@@ -1494,7 +1494,7 @@
   ]% DEPRECATED
 }
 
-% The common internals for \grecreatedim and \grechangedim.
+% The common internals for \gre@createdim and \grechangedim.
 \newif\ifgre@checklength%
 \def\gre@dimension#1#2#3#4{%
   \gre@trace{gre@dimension{#1}{#2}{#3}{#4}}%
