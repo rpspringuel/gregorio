@@ -109,7 +109,7 @@ static char *define_path(char *current_directory, char *string)
         if (!file_name) {
             /* it's not reasonable to cover this failure in testing */
             /* LCOV_EXCL_START */
-            fprintf(stderr, "the directory %s for %s does not exist\n",
+            fprintf(stderr, "error: the directory %s for %s does not exist\n",
                     temp_name, base_name);
             gregorio_exit(1);
             /* LCOV_EXCL_STOP */
@@ -237,7 +237,7 @@ static void check_input_clobber(char *input_file_name, char *output_file_name)
             buf = gregorio_malloc(bufsize);
         }
         if (current_directory == NULL) {
-            fprintf(stderr, _("can't determine current directory\n"));
+            fprintf(stderr, _("error: can't determine current directory\n"));
             free(buf);
             gregorio_exit(1);
         }
@@ -555,7 +555,7 @@ int main(int argc, char **argv)
     } /* end of for */
     if (optind == argc) {
         if (!input_file) { /* input not undefined (could be stdin) */
-            fprintf(stderr, "%s: missing file operand.\n", argv[0]);
+            fprintf(stderr, "error: %s: missing file operand.\n", argv[0]);
             print_short_usage(argv[0]);
             gregorio_exit(1);
         }
@@ -572,7 +572,7 @@ int main(int argc, char **argv)
     }
     if (optind < argc) {
         must_print_short_usage = true;
-        fprintf(stderr, "ignored arguments:");
+        fprintf(stderr, "warning: ignored arguments:");
         for (; optind < argc; ++optind) {
             fprintf(stderr, " %s", argv[optind]);
         }
@@ -689,7 +689,7 @@ int main(int argc, char **argv)
         /* score should never be NULL on return from gabc_read_score */
         /* LCOV_EXCL_START */
         fclose(output_file);
-        fprintf(stderr, "error in file parsing\n");
+        fprintf(stderr, "error: could not parse file\n");
         gregorio_exit(1);
         /* LCOV_EXCL_STOP */
     }
