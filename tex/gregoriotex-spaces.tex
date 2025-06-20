@@ -891,7 +891,7 @@
 \def\gre@calculate@additionalspaces{%
   \gre@trace{gre@calculate@additionalspaces}%
   % Pass in dimensions and counts that are macros
-  \gre@luasavedim{abovelinestextheight}%
+  \gre@luasavedim{spaceabovelines}%
   % \ifgre@noteadditionalspacelinestext is not accessible in Lua, so handle it here
   \ifgre@noteadditionalspacelinestext
     \gre@luasavedim{noteadditionalspacelinestext}%
@@ -899,11 +899,11 @@
     {\grechangedim{noteadditionalspacelinestext}{\the\dimexpr(\gre@dimen@interstafflinedistancebase+\gre@dimen@stafflinethicknessbase)/2 * \gre@factor\relax}{fixed}%
      \gre@luasavedim{noteadditionalspacelinestext}}%
   \fi
-  \gre@luasavedim{spaceabovelines}%
+  \gre@luasavedim{abovelinestextheight}%
   \gre@luasavedim{abovelinestextraise}%
   \gre@luasavedim{spacelinestext}%
-  \gre@luasavedim{spacebeneathtext}%
   \gre@luasavedim{translationheight}%
+  \gre@luasavedim{spacebeneathtext}%
   \gre@generatelines %
   \gre@calculate@constantglyphraise %
   \gre@trace@end%
@@ -1583,8 +1583,8 @@
 % #1 : line number
 % #2-#4 : same as #1-#3 of \grechangedim
 \def\grechangenextscorelinedim#1#2#3#4{%
-  \IfStrEqCase{#2}{{abovelinestextheight}{}{noteadditionalspacelinestext}{}{spaceabovelines}{}{abovelinestextraise}{}{spacelinestext}{}{spacebeneathtext}{}{translationheight}{}}[%
-    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'abovelinestextraise', 'noteadditionalspacelinestext', 'spaceabovelines', 'spacebeneathtext', 'spacelinestext', 'translationheight'}%
+  \IfStrEqCase{#2}{{abovelinestextheight}{}{abovelinestextraise}{}{spaceabovelines}{}{spacelinestext}{}{noteadditionalspacelinestext}{}{translationheight}{}{spacebeneathtext}{}}[%
+    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'abovelinestextheight', 'abovelinestextraise', 'spaceabovelines', 'spacelinestext', 'noteadditionalspacelinestext', 'translationheight', 'spacebeneathtext'}%
   ]%
   {\grechangedim{#2}{#3}{#4}%
    \gre@rubberpermit{#2}%

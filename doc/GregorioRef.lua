@@ -606,8 +606,8 @@ function GregorioRef.emit_extra_glyphs(csname)
 end
 
 function GregorioRef.emit_dimension(value)
-  value = string.gsub(value, '(-?%d+%.%d+)%s*(%a+)', [[\unit[%1]{%2}]])
-  value = string.gsub(value, '(-?%d+%.)%s*(%a+)', [[\unit[%1]{%2}]])
-  value = string.gsub(value, '(-?%.?%d+)%s*(%a+)', [[\unit[%1]{%2}]])
+  value = string.gsub(value, '(-?%d+%.%d+)%s*(%a%a)', [[\unit[%1]{%2} ]])
+  value = string.gsub(value, '(-?%d+%.)%s*(%a%a)', [[\unit[%1]{%2} ]])
+  value = string.gsub(value, '(-?%.?%d+)%s*(%a%a)', [[\unit[%1]{%2} ]])
   tex.sprint(value)
 end
