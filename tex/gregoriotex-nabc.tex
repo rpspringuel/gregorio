@@ -21,19 +21,20 @@
 
 \gre@declarefileversion{gregoriotex-nabc.tex}{6.1.0}% GREGORIO_VERSION
 
+% \gresetnabcfont[#1]#2#3
+% #1: voice
+% #2: font name
+% #3: font size
+\def\gresetnabcfont{\@ifnextchar[{\gre@setnabcvoicefont}{\gre@setnabcvoicefont[1]}}%
 
-\xdef\gre@nabcfontname{gregall}%
-\xdef\gre@nabcfontsize{8}%
-
-\def\gresetnabcfont#1#2{%
-  \xdef\gre@nabcfontname{#1}%
-  \xdef\gre@nabcfontsize{#2}%
-  \global\font\gre@font@nabc={name:#1} at #2 pt\relax %
+\def\gre@setnabcvoicefont[#1]#2#3{%
+  \expandafter\xdef\csname gre@nabcvoice@\romannumeral#1@fontname\endcsname{#2}%
+  \expandafter\font\csname gre@font@nabcvoice@\romannumeral#1\endcsname={name:#2} at #3 pt\relax
+  \global\font\gre@font@nabc={name:#2} at #3 pt\relax %
   {%
-    \gre@font@nabc %
-    \directlua{gregoriotex.init_nabc_font("\luatexluaescapestring{#1}")}%
+    \csname gre@font@nabcvoice@\romannumeral#1\endcsname
+    \directlua{gregoriotex.init_nabc_font("\luatexluaescapestring{#2}")}%
   }%
-  \gre@nabcfontloadedtrue%
 }
 
 \def\gre@nabccharno#1#2#3{%
@@ -42,17 +43,25 @@
   \gre@trace@end%
 }
 
-\def\GreNABCChar#1{{%
+% \GreNABCChar[#1]#2
+% #1: voice
+% #2: char
+\def\GreNABCChar{\@ifnextchar[{\gre@nabcvoicechar}{\gre@nabcvoicechar[1]}}%
+\def\gre@nabcvoicechar[#1]#2{{%
   %\catcode`\~=12{}%
   %\catcode`\@=11{}%
-  \gre@font@nabc %
-  \gre@style@nabc %
-  \gre@nabccharno{#1}{\gre@nabcfontname}{1}%
-  \endgre@style@nabc%
+  \csname gre@font@nabcvoice@\romannumeral#1\endcsname
+  \gre@style@nabc
+  \ifcase#1\relax\or\gre@style@abovelinesnabc\or\gre@style@belowlinesnabc\fi
+  \gre@nabccharno{#2}{\csname gre@nabcvoice@\romannumeral#1@fontname\endcsname}{1}%
+  \ifcase#1\relax\or\endgre@style@abovelinesnabc\or\endgre@style@belowlinesnabc\fi
+  \endgre@style@nabc
 }}
 
 \newif\ifgre@nabcvoice@i@visible
 \gre@nabcvoice@i@visibletrue
+\newif\ifgre@nabcvoice@ii@visible
+\gre@nabcvoice@ii@visibletrue
 % define more of these when more voices are supported
 
 \def\gresetnabc#1#2{%
@@ -68,7 +77,12 @@
 
 \def\GreNABCNeumes#1#2#3#4{%
   \csname ifgre@nabcvoice@\romannumeral#1@visible\endcsname %
-    \GreSetNabcAboveLines{\GreNABCChar{#2}}%
+    \ifcase#1\relax
+      \or % 1
+        \GreSetNabcAboveLines{\GreNABCChar[1]{#2}}%
+      \or % 2
+        \GreSetNabcBelowLines{\GreNABCChar[2]{#2}}%
+      \fi
   \fi %
 }
 
@@ -76,7 +90,10 @@
 \gre@nabcfontloadedfalse%
 
 \def\GreScoreNABCLines#1{%
-  \ifgre@nabcfontloaded\else%
-    \gresetnabcfont{\gre@nabcfontname}{\gre@nabcfontsize}%
-  \fi %
+  \ifcsname gre@font@nabcvoice@i\endcsname\else%
+    \gresetnabcfont[1]{gregall}{8}%
+  \fi
+  \ifcsname gre@font@nabcvoice@ii\endcsname\else%
+    \gresetnabcfont[2]{gregall}{8}%
+  \fi
 }
