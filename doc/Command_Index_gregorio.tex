@@ -1331,11 +1331,12 @@ Macro to print a nabc character above the lines.
   \#4 & integer & The low pitch of the notes covered by the nabc character(s).\\
 \end{argtable}
 
-\macroname{\textbackslash GreNABCChar}{\#1}{gregoriotex-nabc.tex}
+\macroname{\textbackslash GreNABCChar}{[\#1]\{\#2\}}{gregoriotex-nabc.tex}
 Macro to print a nabc character.
 
 \begin{argtable}
-  \#1 & string & The \texttt{nabc} syntax which indicates what neumes are to be printed\\
+  \#1 & integer & the nabc voice: 1 (default) = above staff, 2 = below staff.\\
+  \#2 & string & The \texttt{nabc} syntax which indicates what neumes are to be printed\\
 \end{argtable}
 
 \macroname{\textbackslash GreScoreNABCLines}{\#1}{gregoriotex-nabc.tex}

@@ -794,7 +794,7 @@ Different elements of an include score have different styles applied.  These ele
 \let\stylename\texttt
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \bigskip\rowcolors{1}{lightgray}{lightgray}
-\begin{tabular}{lp{7cm plus .5cm}r}
+\begin{tabular}{lp{7cm}r}
   Element Name & Description & Default\\
   \hline
   \stylename{abovelinestext} & above line text (\texttt{<alt></alt>} in gabc, appears above the staff) & normal\\
@@ -815,7 +815,9 @@ Different elements of an include score have different styles applied.  These ele
   & & \textbf{bold} (Plain\TeX)\\
   \stylename{modemodifier} & the rendered annotation from the \texttt{mode-modifier: ;} header in the gabc file & \parbox[t]{2.2cm}{\raggedleft\textit{\textbf{bold italics}}}\\
   \stylename{nabc} & ancient notation & {\color{gregoriocolor}gregoriocolor}\\
-  \stylename{normalstafflines} & Full length staff lines & none\\
+  \stylename{abovelinesnabc} & ancient notation (above staff) & none\\
+  \stylename{belowlinesnabc} & ancient notation (below staff) & none\\
+  \stylename{normalstafflines} & full length staff lines & none\\
   \stylename{translation} & Translation text (appears below lyrics) & {\it italics}\\
 \end{tabular}
 \end{adjustbox}
@@ -1240,10 +1242,10 @@ Sets the visibility of the notes.
 \textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible.  However, the staff lines and clefs will still show up (since their visibility is controlled by other settings).
 
 \macroname{\textbackslash gresetnabc}{\{\#1\}\{\#2\}}{gregoriotex-nabc.tex}
-Sets the visibility of a nabc voice.
+Sets the visibility of an nabc voice.
 
 \begin{argtable}
-  \#1 & integer & The nabc voice number.\\
+  \#1 & integer & The nabc voice number: 1 = above staff, 2 = below staff.\\
   \#2 & \texttt{visible} & Notes are visible (default).\\
   & \texttt{invisible} & Notes are not visible.\\
 \end{argtable}
@@ -1410,12 +1412,13 @@ will define the behavior at the next set of headers.
 \subsubsection{Ancient Notation}
 For a full description of how to make use of the ancient notation capabilities of Gregorio and Gregorio\TeX, look at the GregorioNabcRef documentation.  The commands listed here allow the manipulation of settings related to that notation.
 
-\macroname{\textbackslash gresetnabcfont}{\{\#1\}\{\#2\}}{gregoriotex-nabc.tex}
+\macroname{\textbackslash gresetnabcfont}{[\#1]\{\#2\}\{\#3\}}{gregoriotex-nabc.tex}
 Macro to set the font to be used for the ancient notation.
 
 \begin{argtable}
-  \#1 & string & the name of the font, either \texttt{gregall}, \texttt{grelaon}, or \texttt{gresgmodern}\\
-  \#2 & integer & point size at which the font should be loaded\\
+  \#1 & integer & the nabc voice: 1 (default) = above staff, 2 = below staff.\\
+  \#2 & string & the name of the font, either \texttt{gregall}, \texttt{grelaon}, or \texttt{gresgmodern}\\
+  \#3 & integer & point size at which the font should be loaded\\
 \end{argtable}
 
 \subsubsection{Alterations (Flats, Naturals, and Sharps)}\label{setalterationeffect}
@@ -1886,8 +1889,11 @@ Space after a clef at the beginning of a line, when the clef and first note are 
   \edef\spaceabovelines{\gre@space@skip@spaceabovelines}%
   \edef\abovelinestextheight{\gre@space@dimen@abovelinestextheight}%
   \edef\abovelinestextraise{\gre@space@dimen@abovelinestextraise}%
+  \edef\abovelinesnabcheight{\gre@space@dimen@abovelinesnabcheight}%
+  \edef\abovelinesnabcraise{\gre@space@dimen@abovelinesnabcraise}%
   \edef\stafflinedistance{\the\dimexpr(\gre@dimen@interstafflinedistancebase+\gre@dimen@stafflinethicknessbase)*\gre@factor/2}%
   \edef\staffheight{\the\dimexpr(\gre@dimen@interstafflinedistancebase*3+\gre@dimen@stafflinethicknessbase*4)*\gre@factor}%
+  \edef\belowlinesnabcheight{\gre@space@dimen@belowlinesnabcheight}%
   \edef\spacelinestext{\the\dimexpr\gre@space@dimen@spacelinestext}%
   \edef\translationheight{\gre@space@dimen@translationheight}%
   \edef\spacebeneathtext{\gre@space@dimen@spacebeneathtext}%
@@ -1905,7 +1911,7 @@ Space after a clef at the beginning of a line, when the clef and first note are 
 \grechangestyle{abovelinestext}{\rmfamily\itshape}
 \grechangestyle{translation}{\rmfamily\itshape}
 
-A staff has text (lyrics) below it, and optionally another line of translation below the text. Above the staff, there can also be a line of text (called the above-lines text) or NABC neumes. The vertical position and height of all these parts are shown in Figure~\ref{fig:vertical-spacing-within-staff} (with \texttt{spaceabovelines} and \texttt{spacebeneathtext} set to 0.2 cm for clarity). The staff together with all the text and neumes above and below it form one box. In this and following examples, the top, baseline, and bottom of this box are drawn in red, although the baseline and bottom often coincide.
+A staff has text (lyrics) below it, and optionally a line of NABC neumes and/or a line of translation below the text. Above the staff, there is optionally a line of NABC neumes and/or a line of text (called the above-lines text). The vertical position and height of all these parts are shown in Figure~\ref{fig:vertical-spacing-within-staff} (with \texttt{spaceabovelines} and \texttt{spacebeneathtext} set to 0.2 cm for clarity). The staff together with all the text and neumes above and below it form one box. In this and following examples, the top, baseline, and bottom of this box are drawn in red, although the baseline and bottom often coincide.
 
 \begin{figure}
 \grechangedim{spaceabovelines}{0.2cm}{scalable}
@@ -1920,10 +1926,13 @@ A staff has text (lyrics) below it, and optionally another line of translation b
         y0 := \spacebeneathtext;
         y1 := y0+\translationheight;
         y2 := y1+\spacelinestext;
-        y3 := y2+\staffheight;
-        y4 := y3+\abovelinestextraise;
-        y5 := y4+\abovelinestextheight;
-        y6 := y5+\spaceabovelines;
+        y3 := y2+\belowlinesnabcheight;
+        y4 := y3+\staffheight;
+        y5 := y4+\abovelinesnabcraise;
+        y6 := y5+\abovelinesnabcheight;
+        y7 := y6+\abovelinestextraise;
+        y8 := y7+\abovelinestextheight;
+        y9 := y8+\spaceabovelines;
         x := 0.1cm;
         draw (-x, 0) -- (x, 0);
         draw (-x,y0) -- (x,y0);
@@ -1933,19 +1942,23 @@ A staff has text (lyrics) below it, and optionally another line of translation b
         draw (-x,y4) -- (x,y4);
         draw (-x,y5) -- (x,y5);
         draw (-x,y6) -- (x,y6);
+        draw (-x,y7) -- (x,y7);
+        draw (-x,y8) -- (x,y8);
+        draw (-x,y9) -- (x,y9);
         drawdblarrow ( 0, 0) -- (0,y0); label.lft(btex \lab{spacebeneathtext} etex, (0, y0/2));
         drawdblarrow ( 0,y0) -- (0,y1); label.lft(btex \lab{translationheight} etex, (0, (y0+y1)/2));
         drawdblarrow ( 0,y1) -- (0,y2); label.lft(btex \lab{spacelinestext} etex, (0, (y1+y2)/2));
-        %drawdblarrow ( 0,y2) -- (0,y3); label.lft(btex \lab{staffheight} etex, (0, (y2+y3)/2));
-        drawdblarrow ( 0,y3) -- (0,y4); label.lft(btex \lab{abovelinestextraise} etex, (0, (y3+y4)/2));
-        drawdblarrow ( 0,y4) -- (0,y5); label.lft(btex \lab{abovelinestextheight} etex, (0, (y4+y5)/2));
-        drawdblarrow ( 0,y5) -- (0,y6); label.lft(btex \lab{spaceabovelines} etex, (0, (y5+y6)/2));
+        drawdblarrow ( 0,y2) -- (0,y3); label.lft(btex \lab{belowlinesnabcheight} etex, (0, (y2+y3)/2));
+        %drawdblarrow ( 0,y3) -- (0,y4); label.lft(btex \lab{staffheight} etex, (0, (y3+y4)/2));
+        drawdblarrow ( 0,y4) -- (0,y5); label.lft(btex \lab{abovelinesnabcraise} etex, (0, (y4+y5)/2));
+        drawdblarrow ( 0,y5) -- (0,y6); label.lft(btex \lab{abovelinesnabcheight} etex, (0, (y5+y6)/2));
+        drawdblarrow ( 0,y6) -- (0,y7); label.lft(btex \lab{abovelinestextraise} etex, (0, (y6+y7)/2));
+        drawdblarrow ( 0,y7) -- (0,y8); label.lft(btex \lab{abovelinestextheight} etex, (0, (y7+y8)/2));
+        drawdblarrow ( 0,y8) -- (0,y9); label.lft(btex \lab{spaceabovelines} etex, (0, (y8+y9)/2));
       endfig;
     \end{mplibcode}%
     \hspace{0.2cm}%
-    \lines{\gabcsnippet{<alt>alt</alt>text[trans](g)}}%
-    \hspace{0.5cm}%
-    \lines{\nabcsnippet{text[trans](g|vi)}}%
+    \lines{\nabcsnippet{2}{<alt>alt</alt>text[trans](g|vi|vi)}}%
   }
 \end{center}
 \caption{The vertical position and height of the various parts above and below the staff. The distances \texttt{spaceabovelines} and \texttt{spacebeneathtext} are set to 0.2 cm for clarity. The staff together with all the text and neumes above and below it form one box, whose top and baseline/bottom are drawn in red.}
@@ -1964,19 +1977,31 @@ The height of the above-lines text. This space appears only if there actually is
 \end{gdimension}
 
 \begin{gdimension}{abovelinestextraise}
-The distance from the top staff line to the baseline of the above-lines text. This space appears only if there actually is above-lines text.
+The distance from the baseline of the above-lines text down to the baseline of the above-lines NABC neumes (if any) or the top staff line (otherwise). This space appears only if there actually is above-lines text.
+\end{gdimension}
+
+\begin{gdimension}{abovelinesnabcheight}
+The height of the above-lines NABC neumes. This space appears only if there actually is above-lines NABC, and it must be larger than the above-line NABC's natural height for it to have an effect.
+\end{gdimension}
+
+\begin{gdimension}{abovelinesnabcraise}
+The distance from the baseline of the above-lines NABC neumes down to the top staff line. This space appears only if there actually is above-lines NABC.
 \end{gdimension}
 
 \begin{gdimension}{spacelinestext}
-The space between the lines and the baseline of the text. This space appears whether or not there is actually text.
+The space between the staff lines and the baseline of the text. This space appears whether or not there is actually text.
+\end{gdimension}
+
+\begin{gdimension}{belowlinesnabcheight}
+The space between the baseline of the text and the baseline of the below-lines NABC neumes (if any). This space appears only if there actually is below-lines NABC.
 \end{gdimension}
 
 \begin{gdimension}{translationheight}
-The space between the baseline of the text and the baseline of the translation. This space appears only if there actually is a translation.
+The space between the baseline of the translation and the baseline of the below-lines NABC neumes (if any) or text (otherwise). This space appears only if there actually is a translation.
 \end{gdimension}
 
 \begin{gdimension}{spacebeneathtext}
-The space beneath the text (and beneath the translation, if any). It must be larger than the natural depth of the text (or translation) for it to have an effect.
+The space beneath the text (and beneath the NABC neumes and/or translation, if any). It must be larger than the natural depth of the text (or NABC neumes or translation) for it to have an effect.
 \end{gdimension}
 
 \paragraph{Additional top space}
@@ -2054,10 +2079,10 @@ NABC neumes use a different threshold, \texttt{additionaltopspacenabcthreshold}.
 \rowcolors{1}{white}{white}%
 \ttfamily
 \begin{tabular}{ccccc}
-  \lines{\nabcsnippet{m|vi[0 steps](m|vi)}} &
-  \lines{\nabcsnippet{m_1|vi[0 steps](m_1|vi)}} &
-  \lines{\nabcsnippet{m<v>\textquotesingle</v>1|vi[1 step](m'1|vi)}} &
-  \lines{\nabcsnippet{m_1<v>\textquotesingle</v>1|vi[2 steps](m_1'1|vi)}}
+  \lines{\nabcsnippet{1}{m|vi[0 steps](m|vi)}} &
+  \lines{\nabcsnippet{1}{m_1|vi[0 steps](m_1|vi)}} &
+  \lines{\nabcsnippet{1}{m<v>\textquotesingle</v>1|vi[1 step](m'1|vi)}} &
+  \lines{\nabcsnippet{1}{m_1<v>\textquotesingle</v>1|vi[2 steps](m_1'1|vi)}}
 \end{tabular}
 \end{center}
 \end{quote}
@@ -2441,7 +2466,7 @@ The end of word penalty.  Inserted by Gregorio\TeX\ after each word in a score.
 \end{gcount}
 
 \begin{gcount}{hyphenpenalty}{}{gregoriotex-gsp-default.tex}
-The penalty inserted with a hyphen by \TeX.  \texbf{Note:} \TeX\ does not insert hyphens into the score in most places because Gregorio\TeX\ makes its own decisions on inserting hyphens after syllables in lyrics.  This penalty would only be used when there is a block of text long enough to trigger a line break within a syllable or similarly sized unit.
+The penalty inserted with a hyphen by \TeX.  \textbf{Note:} \TeX\ does not insert hyphens into the score in most places because Gregorio\TeX\ makes its own decisions on inserting hyphens after syllables in lyrics.  This penalty would only be used when there is a block of text long enough to trigger a line break within a syllable or similarly sized unit.
 \end{gcount}
 
 \begin{gcount}{nobreakpenalty}{}{gregoriotex-gsp-default.tex}

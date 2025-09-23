@@ -213,6 +213,13 @@
   {\begingroup\color{gregoriocolor}}%
   {\endgroup}%
 
+\newenvironment{gre@style@abovelinesnabc}%
+  {\begingroup}%
+  {\endgroup}%
+\newenvironment{gre@style@belowlinesnabc}%
+  {\begingroup}%
+  {\endgroup}%
+
 \def\gre@changestyle#1#2[#3]{%
   \renewenvironment{gre@style@#1}{\begingroup#2}{#3\endgroup}%
 }%

@@ -140,13 +140,8 @@
 
 \makeatletter%
 \NewDocumentEnvironment{gdimension}{m}{\macroname{#1}{}{gregoriotex-gsp-default.tex}}{%
-
-  \gre@rubberpermit{#1}%
-  \ifgre@rubber%
-    Default: \directlua{GregorioRef.emit_dimension("\luaescapestring{\csname gre@space@skip@#1\endcsname}")}
-  \else%
-    Default: \directlua{GregorioRef.emit_dimension("\luaescapestring{\csname gre@space@dimen@#1\endcsname}")}
-  \fi%
+  \par
+  Default: \directlua{GregorioRef.emit_dimension("\luaescapestring{\csname gre@space@\gre@getprefix{#1}@#1\endcsname}")}
 }
 
 \NewDocumentEnvironment{gcount}{m}{\macroname{#1}{}{gregoriotex-gsp-default.tex}}{%
@@ -172,9 +167,9 @@
 
 \gresetspecial{\string\126\string\126}{\textasciitilde{}}%
 
-\long\def\nabcsnippet#1{%
-  \directlua{gregoriotex.direct_gabc("\luatexluaescapestring{\unexpanded\expandafter{#1}}",
-                                     "nabc-lines:1;", false)}%
+\long\def\nabcsnippet#1#2{%
+  \directlua{gregoriotex.direct_gabc("\luatexluaescapestring{\unexpanded\expandafter{#2}}",
+                                     "nabc-lines:#1;", false)}%
 }%
 
 \begin{document}

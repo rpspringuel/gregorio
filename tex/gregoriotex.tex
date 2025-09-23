@@ -274,6 +274,12 @@
 }
 \def\endgre@style@nabc{\endgroup}%
 
+\def\gre@style@abovelinesnabc{\begingroup}%
+\def\endgre@style@abovelinesnabc{\endgroup}%
+
+\def\gre@style@belowlinesnabc{\begingroup}%
+\def\endgre@style@belowlinesnabc{\endgroup}%
+
 \def\gre@changestyle#1#2[#3]{%
   \expandafter\gdef\csname gre@style@#1\endcsname{\begingroup#2}%
   \expandafter\gdef\csname endgre@style@#1\endcsname{#3\endgroup}%

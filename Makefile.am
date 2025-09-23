@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Gregorio.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = src examples tex contrib fonts doc macosx
+SUBDIRS = src examples tex contrib fonts doc macosx windows
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -23,11 +23,9 @@ EXTRA_DIST = README.md CHANGELOG.md CONTRIBUTING.md CONTRIBUTORS.md \
 			 UPGRADE.md COPYING.md .gregorio-version VersionManager.py \
 			 build.sh install.sh install-gtex.sh
 
-MAINTAINERCLEANFILES = gregoriotex.ctan.zip
+MOSTLYCLEANFILES = res.txt
 
-VERSION := $(shell ./VersionManager.py --get-current)
-TOP := $(shell pwd)
-export TOP
+CLEANFILES = gregoriotex.ctan.zip $(wildcard gregorio-*.zip) $(wildcard gregorio-*.tar.bz2)
 
 export TOP_LEVEL_MAKE = true
 
@@ -49,8 +47,26 @@ clean-doc:
 gregoriotex.tds.zip: dist-zip install-gtex.sh
 	./install-gtex.sh tds
 
-ctan: gregoriotex.tds.zip build-ctan.sh
-	./build-ctan.sh
+ctan : gregoriotex.ctan.zip
+gregoriotex.ctan.zip: doc dist-zip gregoriotex.tds.zip build-ctan.sh
+	mkdir -p ctan/gregoriotex
+	cp gregoriotex.tds.zip ctan/gregoriotex.tds.zip
+	cp *.md ctan/gregoriotex/
+	cp gregorio-$(VERSION).zip ctan/gregoriotex
+	./install-gtex.sh dir:ctan/gregoriotex
+	mv ctan/gregoriotex/doc/luatex/gregoriotex/* ctan/gregoriotex/doc
+	rm -rf ctan/gregoriotex/doc/luatex
+	mv ctan/gregoriotex/fonts/source/gregoriotex/* ctan/gregoriotex/fonts/source
+	rm -rf ctan/gregoriotex/fonts/source/gregoriotex ctan/gregoriotex/fonts/source/granapadano-base.sfd ctan/gregoriotex/fonts/source/gregorio-base.sfd
+	mv ctan/gregoriotex/fonts/truetype/public/gregoriotex/* ctan/gregoriotex/fonts/truetype
+	rm -rf ctan/gregoriotex/fonts/truetype/public
+	rm -rf ctan/gregoriotex/scripts
+	mv ctan/gregoriotex/tex/lualatex/gregoriotex/* ctan/gregoriotex/tex/lualatex
+	rm -rf ctan/gregoriotex/tex/lualatex/gregoriotex
+	mv ctan/gregoriotex/tex/luatex/gregoriotex/* ctan/gregoriotex/tex/luatex
+	rm -rf ctan/gregoriotex/tex/luatex/gregoriotex
+	zip -r gregoriotex.ctan.zip ctan/
+	rm -rf ctan/
 
 dist-hook:
 	rm -rf $(distdir)/windows
@@ -61,7 +77,39 @@ dist-macosx: gregorio doc fonts
 else
 dist-macosx:
 	@echo "macOS packages can only be built on Mac systems."
+	@false
 endif
 
 clean-macosx:
 	$(MAKE) -C macosx clean-local
+
+if !WINDOWS
+dist-windows: gregorio doc fonts
+	$(MAKE) -C windows dist-windows
+	./configure
+else
+dist-windows:
+	@echo "The dist-windows target is for cross-compiling from Linux/Mac to Windows,"
+	@echo "not for building natively on Windows."
+	@echo "If you're building natively on Windows, you should probably be using the"
+	@echo "normal build targets."
+	@false
+endif
+
+clean-windows:
+	$(MAKE) -C windows clean-local
+
+clean-local:
+	rm -rf $(wildcard release-*)
+
+release-$(FILENAME_VERSION):
+	mkdir -p release-$(FILENAME_VERSION)
+
+release: release-$(FILENAME_VERSION) dist dist-macosx dist-windows ctan
+	$(MAKE) -C fonts supp-fonts-dist
+	cp gregorio-$(VERSION).tar.bz2 release-$(FILENAME_VERSION)/
+	cp fonts/supp_fonts-$(FILENAME_VERSION).zip release-$(FILENAME_VERSION)/
+	cp macosx/Gregorio-$(FILENAME_VERSION).pkg release-$(FILENAME_VERSION)/
+	cp macosx/Uninstall-Gregorio-$(FILENAME_VERSION).pkg release-$(FILENAME_VERSION)/
+	cp windows/GregorioSetup-$(FILENAME_VERSION).exe release-$(FILENAME_VERSION)/
+	cp doc/*.pdf release-$(FILENAME_VERSION)/

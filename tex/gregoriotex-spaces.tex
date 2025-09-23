@@ -901,6 +901,9 @@
   \fi
   \gre@luasavedim{abovelinestextheight}%
   \gre@luasavedim{abovelinestextraise}%
+  \gre@luasavedim{abovelinesnabcheight}%
+  \gre@luasavedim{abovelinesnabcraise}%
+  \gre@luasavedim{belowlinesnabcheight}%
   \gre@luasavedim{spacelinestext}%
   \gre@luasavedim{translationheight}%
   \gre@luasavedim{spacebeneathtext}%
@@ -1404,38 +1407,54 @@
 %% dimension changing macros
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% This macro creates one dim (#1), setting its value to #2 and sets whether it should scale when the \gre@factor changes (#3, scalable or fixed).  Checks that #1 can accept the kind of distance given in #2.
-%% Note: the distances created by this function are stored as strings, not skip or dimension registers.  This allows the user to specify a distance in em or ex units even though the font parameters may not be the same at the time the distance is specified and the time the distance is used.
-\newif\ifgre@checklength%
-\def\gre@createdim#1#2#3{%
-  \csname newif\expandafter\endcsname\csname ifgre@scale@#1\endcsname%
-  \IfStrEqCase{#3}{%
+% \gre@createdim#1#2#3#4
+% Create a new dim.
+%
+% #1: 'dimen' (no glue allowed) or 'skip' (glue allowed)
+% #2: name of the new dim
+% #3: initial value of the new dim
+% #4: whether it should scale when the \gre@factor changes ('scalable') or not ('fixed') or inherits its value from another dim ('inherited').
+% Checks that #1 can accept the kind of distance given in #2.
+% Note: the distances created by this function are stored as strings, not skip or dimension registers.  This allows the user to specify a distance in em or ex units even though the font parameters may not be the same at the time the distance is specified and the time the distance is used.
+\def\gre@createdim#1#2#3#4{%
+  \IfStrEqCase{#1}{%
+    {dimen}{}%
+    {skip}{}%
+  }[% all other cases
+      \gre@error{Unrecognized option "#1" for \protect\gre@createdim\MessageBreak Possible options are: 'dimen' or 'skip'}%
+  ]%
+  \csname newif\expandafter\endcsname\csname ifgre@scale@#2\endcsname%
+  \IfStrEqCase{#4}{%
     {scalable}%
-      {\grescaledim{#1}{true}}%
+      {\grescaledim{#2}{true}}%
     {fixed}%
-      {\grescaledim{#1}{false}}%
+      {\grescaledim{#2}{false}}%
     {inherited}%
-      {\grescaledim{#1}{false}}%
+      {\grescaledim{#2}{false}}%
     }[% all other cases
-      \gre@error{Unrecognized option "#3" for \protect\gre@createdim\MessageBreak Possible options are: 'scalable' and 'fixed' and 'inherited'}%
+      \gre@error{Unrecognized option "#4" for \protect\gre@createdim\MessageBreak Possible options are: 'scalable' and 'fixed' and 'inherited'}%
     ]%
-  \gre@dimension{#1}{#2}{#3}%
+  \gre@dimension{#1}{#2}{#3}{#4}%
 }%
 
+% \gre@getprefix#1
+% If dim #1 allows glue, expands to 'skip'; otherwise, expands to 'dimen'.
+\def\gre@getprefix#1{%
+  \ifcsname gre@space@dimen@#1\endcsname
+    dimen%
+  \else
+    \ifcsname gre@space@skip@#1\endcsname
+      skip%
+    \else
+      ERROR%
+    \fi
+  \fi
+}
 
-% a macro for changing a dimension.  Unlike \grecreatedim, this function won’t create a new distance, just change an existing one.
+% a macro for changing a dimension.  Unlike \gre@createdim, this function won’t create a new distance, just change an existing one.
 \def\grechangedim#1#2#3{%
-  \gre@rubberpermit{#1}%
-  % figure out our prefix
-  \ifgre@rubber%
-    \gre@debugmsg{spacing}{Changing a skip.}%
-    \def\gre@prefix{skip}%
-  \else%
-    \gre@debugmsg{spacing}{Changing a dimen.}%
-    \def\gre@prefix{dimen}%
-  \fi%
+  \edef\gre@prefix{\gre@getprefix{#1}}%
   \ifcsname gre@space@\gre@prefix @#1\endcsname%
-    \gre@debugmsg{spacing}{It does exist.}%
     \IfStrEqCase{#3}{%
       {scalable}%
         {\grescaledim{#1}{true}}%
@@ -1443,12 +1462,7 @@
         {\grescaledim{#1}{false}}%
       {inherited}%
         {%
-          \gre@rubberpermit{#2}%
-          \ifgre@rubber%
-            \def\gre@prefixII{skip}%
-          \else%
-            \def\gre@prefixII{dimen}%
-          \fi%
+          \edef\gre@prefixII{\gre@getprefix{#2}}%
           \ifcsname gre@space@\gre@prefixII @#2\endcsname%
             \grescaledim{#1}{false}%
           \else%
@@ -1457,7 +1471,7 @@
         }%
       % all other cases
       }[\gre@error{Unrecognized option "#3" for \protect\grechangedim\MessageBreak Possible options are: 'scalable', 'fixed', and 'inherited'}]%
-    \gre@dimension{#1}{#2}{#3}%
+    \gre@dimension{\gre@prefix}{#1}{#2}{#3}%
     %If we are calling grechangedim from a space configuration file (greconffactor is not 0)
     % and the space configuration file is designed for a \gre@factor other than the current
     % one, then we need to rescale the distance being changed.
@@ -1467,7 +1481,7 @@
       \fi%
     \fi%
   \else%
-    \gre@error{#1 is not a recognized distance.}%
+    \gre@error{"#1" is not a recognized distance.}%
   \fi%
 }%
 
@@ -1483,59 +1497,34 @@
   ]% DEPRECATED
 }
 
-% The common internals for \grecreatedim and \grechangedim.
-\def\gre@dimension#1#2#3{%
-  \gre@trace{gre@dimension{#1}{#2}{#3}}%
-  \IfStrEq{#3}{inherited}{%
+% The common internals for \gre@createdim and \grechangedim.
+\newif\ifgre@checklength%
+\def\gre@dimension#1#2#3#4{%
+  \gre@trace{gre@dimension{#1}{#2}{#3}{#4}}%
+  \edef\gre@prefix{#1}%
+  \IfStrEq{#4}{inherited}{%
     \gre@debugmsg{spacing}{setting inherited distance}%
-    \gre@rubberpermit{#1}%
-    \ifgre@rubber%
-      \def\gre@prefix{skip}%
-    \else%
-      \def\gre@prefix{dimen}%
-    \fi%
-    \gre@rubberpermit{#2}%
-    \ifgre@rubber%
-      \def\gre@prefixII{skip}%
-    \else%
-      \def\gre@prefixII{dimen}%
-    \fi%
-    \expandafter\edef\csname gre@space@\gre@prefix @#1\endcsname{\expandafter\unexpanded{\csname gre@space@\gre@prefixII @#2\endcsname}}%
+    \edef\gre@prefixII{\gre@getprefix{#3}}%
+    \expandafter\edef\csname gre@space@\gre@prefix @#2\endcsname{\expandafter\unexpanded{\csname gre@space@\gre@prefixII @#3\endcsname}}%
   }{%
-    \gre@rubberpermit{#2}%
-    \ifgre@rubber%
-      \def\gre@prefixII{skip}%
-    \else%
-      \def\gre@prefixII{dimen}%
-    \fi%
-    \ifcsname gre@space@\gre@prefixII @#2\endcsname%
-      \gre@error{'#1' cannot be '#3' and depend on '#2' at the same time\MessageBreak Either use 'inherited' in the third argument\MessageBreak or give an actual distance in the second}%
+    \edef\gre@prefixII{\gre@getprefix{#3}}%
+    \ifcsname gre@space@\gre@prefixII @#3\endcsname%
+      \gre@error{'#2' cannot be '#4' and depend on '#3' at the same time\MessageBreak Either use 'inherited' in the fourth argument\MessageBreak or give an actual distance in the third}%
     \fi%
     \gre@checklengthfalse%
-    %check if #2 is a rubber length (contains plus and/or minus)
-    \IfSubStr{#2}{plus}{\gre@checklengthtrue}{\relax}%
-    \IfSubStr{#2}{minus}{\gre@checklengthtrue}{\relax}%
-    %if #1 is one of the distances which cannot be rubber.
-    \gre@rubberpermit{#1}%
-    % do we try to assign a rubber to one where it's not permitted?
-    \ifgre@rubber%
-      \def\gre@prefix{skip}%
-    \else%
-      \ifgre@checklength%
-        \gre@error{#1 cannot be a rubber length.}%
-      \else%
-        \def\gre@prefix{dimen}%
-      \fi%
-    \fi%
+    %check if #3 is a rubber length (contains plus and/or minus)
+    \IfSubStr{#3}{plus}{\gre@checklengthtrue}{\relax}%
+    \IfSubStr{#3}{minus}{\gre@checklengthtrue}{\relax}%
+    %if #2 is one of the distances which cannot be rubber.
     % special check for bar@rubber
-    \IfStrEq*{#1}{bar@rubber}%
+    \IfStrEq*{#2}{bar@rubber}%
       {%
-        \gre@skip@temp@one = #2\relax%
+        \gre@skip@temp@one = #3\relax%
         \ifdim\gre@skip@temp@one=0pt\relax\else%
           \gre@error{bar@rubber cannot have a non-zero base}%
         \fi%
       }{}%
-    \expandafter\edef\csname gre@space@\gre@prefix @#1\endcsname{#2}%
+    \expandafter\edef\csname gre@space@\gre@prefix @#2\endcsname{#3}%
     \relax %
   }%
   \gre@trace@end%
@@ -1566,12 +1555,7 @@
 % used in Lua.
 % #1: name of dim
 \def\gre@luasavedim#1{%
-  \gre@rubberpermit{#1}%
-  \ifgre@rubber%
-    \def\gre@prefix{skip}%
-  \else%
-    \def\gre@prefix{dimen}%
-  \fi%
+  \edef\gre@prefix{\gre@getprefix{#1}}%
   \directlua{%
     gregoriotex.save_dim(%
       "\luatexluaescapestring{#1}",%
@@ -1583,16 +1567,11 @@
 % #1 : line number
 % #2-#4 : same as #1-#3 of \grechangedim
 \def\grechangenextscorelinedim#1#2#3#4{%
-  \IfStrEqCase{#2}{{abovelinestextheight}{}{abovelinestextraise}{}{spaceabovelines}{}{spacelinestext}{}{noteadditionalspacelinestext}{}{translationheight}{}{spacebeneathtext}{}}[%
-    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'abovelinestextheight', 'abovelinestextraise', 'spaceabovelines', 'spacelinestext', 'noteadditionalspacelinestext', 'translationheight', 'spacebeneathtext'}%
+  \IfStrEqCase{#2}{{abovelinestextheight}{}{abovelinestextraise}{}{abovelinesnabcheight}{}{abovelinesnabcraise}{}{spaceabovelines}{}{belowlinesnabcheight}{}{spacelinestext}{}{noteadditionalspacelinestext}{}{translationheight}{}{spacebeneathtext}{}}[%
+    \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinedim\MessageBreak Possible options are: 'spaceabovelines', 'abovelinestextheight', 'abovelinestextraise', 'abovelinesnabcheight', 'abovelinesnabcraise', 'belowlinesnabcheight', 'spacelinestext', 'noteadditionalspacelinestext', 'translationheight', 'spacebeneathtext'}%
   ]%
   {\grechangedim{#2}{#3}{#4}%
-   \gre@rubberpermit{#2}%
-   \ifgre@rubber%
-     \def\gre@prefix{skip}%
-   \else%
-     \def\gre@prefix{dimen}%
-   \fi%
+   \edef\gre@prefix{\gre@getprefix{#2}}%
    \directlua{%
      gregoriotex.change_next_score_line_dim(%
        "\luatexluaescapestring{#1}",%
@@ -1670,96 +1649,26 @@
 %% Rescaling dimensions (for when \gre@factor changes)
 %%%%%%%%%%%%%%
 
-% This function checks to see if the length is one of the ones which cannot be a rubber length.  The assumption is that any length not listed here is allowed to be rubber.
-\newif\ifgre@rubber%
-\def\gre@rubberpermit#1{%
-  \gre@trace{gre@rubberpermit{#1}}%
-  % is length one that cannot be rubber?
-  \IfStrEqCase*{#1}{%
-    {additionallineswidth}{\gre@rubberfalse}%
-    {additionalcustoslineswidth}{\gre@rubberfalse}%
-    {zerowidthspace}{\gre@rubberfalse}%
-    {maximumspacewithoutdash}{\gre@rubberfalse}%
-    {afterinitialshift}{\gre@rubberfalse}%
-    {beforeinitialshift}{\gre@rubberfalse}%
-    {minimalspaceatlinebeginning}{\gre@rubberfalse}%
-    {manualinitialwidth}{\gre@rubberfalse}%
-    {minimalinitialwidth}{\gre@rubberfalse}%
-    {annotationseparation}{\gre@rubberfalse}%
-    {intersyllablespacenotes}{\gre@rubberfalse}%
-    {intersyllablespacenotes@alteration}{\gre@rubberfalse}%
-    {annotationraise}{\gre@rubberfalse}%
-    {commentaryseparation}{\gre@rubberfalse}%
-    {commentaryraise}{\gre@rubberfalse}%
-    {noclefspace}{\gre@rubberfalse}%
-    {clivisalignmentmin}{\gre@rubberfalse}%
-    {choralsigndownshift}{\gre@rubberfalse}%
-    {choralsignupshift}{\gre@rubberfalse}%
-    {translationheight}{\gre@rubberfalse}%
-    {spacelinestext}{\gre@rubberfalse}%
-    {spacebeneathtext}{\gre@rubberfalse}%
-    {abovelinestextraise}{\gre@rubberfalse}%
-    {abovelinestextheight}{\gre@rubberfalse}%
-    {braceshift}{\gre@rubberfalse}%
-    {curlybraceaccentusshift}{\gre@rubberfalse}%
-    {initialraise}{\gre@rubberfalse}%
-    {beforealterationspace}{\gre@rubberfalse}%
-    {alterationspace}{\gre@rubberfalse}%
-    {overslurshift}{\gre@rubberfalse}%
-    {underslurshift}{\gre@rubberfalse}%
-    {maxbaroffsettextleft}{\gre@rubberfalse}%
-    {maxbaroffsettextright}{\gre@rubberfalse}%
-    {maxbaroffsettextleft@nobar}{\gre@rubberfalse}%
-    {maxbaroffsettextright@nobar}{\gre@rubberfalse}%
-    {maxbaroffsettextleft@eol}{\gre@rubberfalse}%
-    {maxbaroffsettextright@eol}{\gre@rubberfalse}%
-    {interwordspacetext@bars@euouae}{\gre@rubberfalse}%
-    {interwordspacetext@bars}{\gre@rubberfalse}%
-    {interwordspacetext@bars@notext@euouae}{\gre@rubberfalse}%
-    {interwordspacetext@bars@notext}{\gre@rubberfalse}%
-    {overhepisemalowshift}{\gre@rubberfalse}%
-    {overhepisemahighshift}{\gre@rubberfalse}%
-    {underhepisemalowshift}{\gre@rubberfalse}%
-    {underhepisemahighshift}{\gre@rubberfalse}%
-    {hepisemamiddleshift}{\gre@rubberfalse}%
-    {vepisemalowshift}{\gre@rubberfalse}%
-    {vepisemahighshift}{\gre@rubberfalse}%
-    {linepunctummorashift}{\gre@rubberfalse}%
-    {spacepunctummorashift}{\gre@rubberfalse}%
-    {spaceamonepespunctummorashift}{\gre@rubberfalse}%
-    {lineporrectuspunctummorashift}{\gre@rubberfalse}%
-    {spaceporrectuspunctummorashift}{\gre@rubberfalse}%
-    {raresignshift}{\gre@rubberfalse}%
-    {divisiofinalissep}{\gre@rubberfalse}%
-    {alterationadjustmentbar}{\gre@rubberfalse}%
-    {bracketupshift}{\gre@rubberfalse}%
-    {bracketdownshift}{\gre@rubberfalse}%
-    {noteadditionalspacelinestext}{\gre@rubberfalse}%
-  }[\gre@rubbertrue]%
-  \gre@trace@end%
-}%
-
 %% an aux function adapting the value #1 from the factor #2 to the factor #3
 \def\gre@changeonedimenfactor#1#2#3{%
   \gre@trace{gre@changeonedimenfactor{#1}{#2}{#3}}%
+  \edef\gre@prefix{\gre@getprefix{#1}}%
   % Math
-  \gre@rubberpermit{#1}%
-  \ifgre@rubber%
+  \IfStrEq{\gre@prefix}{skip}{%
     \gre@debugmsg{gsp}{scaling a rubber}%
     % if we have a rubber allowed length we create a temporary skip
     \let\gre@scaledist\gre@skip@temp@one%
     \edef\gre@convert{\csname gre@space@skip@#1\endcsname}%
     \gre@scaledist=\glueexpr(\gre@convert * \number#3 / \number#2)\relax %
-  \else%
+  }{%
     \gre@debugmsg{gsp}{scaling a fixed distance}%
     % otherwise we create a temporary dimen
     \let\gre@scaledist\gre@dimen@temp@one%
     \edef\gre@convert{\csname gre@space@dimen@#1\endcsname}%
     \gre@scaledist=\dimexpr(\gre@convert * \number#3 / \number#2)\relax %
-  \fi%
+  }%
   \gre@consistentunits{\gre@convert}{\gre@scaledist}%
-  \gre@dimension{#1}{\gre@stringdist}%
-  \relax %
+  \gre@dimension{\gre@prefix}{#1}{\gre@stringdist}{}%
   \gre@trace@end%
 }%
 
@@ -2126,23 +2035,32 @@
   \ifgre@scale@choralsignupshift%
     \gre@changeonedimenfactor{choralsignupshift}{#1}{#2}%
   \fi%
-  \ifgre@scale@translationheight%
-    \gre@changeonedimenfactor{translationheight}{#1}{#2}%
-  \fi%
-  \ifgre@scale@spaceabovelines%
-    \gre@changeonedimenfactor{spaceabovelines}{#1}{#2}%
-  \fi%
-  \ifgre@scale@spacelinestext%
-    \gre@changeonedimenfactor{spacelinestext}{#1}{#2}%
-  \fi%
-  \ifgre@scale@spacebeneathtext%
-    \gre@changeonedimenfactor{spacebeneathtext}{#1}{#2}%
-  \fi%
   \ifgre@scale@abovelinestextraise%
     \gre@changeonedimenfactor{abovelinestextraise}{#1}{#2}%
   \fi%
   \ifgre@scale@abovelinestextheight%
     \gre@changeonedimenfactor{abovelinestextheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@abovelinesnabcraise%
+    \gre@changeonedimenfactor{abovelinesnabcraise}{#1}{#2}%
+  \fi%
+  \ifgre@scale@abovelinesnabcheight%
+    \gre@changeonedimenfactor{abovelinesnabcheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@spaceabovelines%
+    \gre@changeonedimenfactor{spaceabovelines}{#1}{#2}%
+  \fi%
+  \ifgre@scale@belowlinesnabcheight%
+    \gre@changeonedimenfactor{belowlinesnabcheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@spacelinestext%
+    \gre@changeonedimenfactor{spacelinestext}{#1}{#2}%
+  \fi%
+  \ifgre@scale@translationheight%
+    \gre@changeonedimenfactor{translationheight}{#1}{#2}%
+  \fi%
+  \ifgre@scale@spacebeneathtext%
+    \gre@changeonedimenfactor{spacebeneathtext}{#1}{#2}%
   \fi%
   \ifgre@scale@braceshift%
     \gre@changeonedimenfactor{braceshift}{#1}{#2}%

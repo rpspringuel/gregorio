@@ -1169,18 +1169,17 @@ Macro to generate the point-and-click links.
   \#2 & link target & line:char:column for the link\\
 \end{argtable}
 
+\macroname{\textbackslash gre@getprefix}{}{gregoriotet-spaces.tex}
+If the given distance allows glue, expands to \texttt{skip}; otherwise, expands to \texttt{dimen}.
+\begin{argtable}
+  \#1 & name of distance
+\end{argtable}
+
 \macroname{\textbackslash gre@prefix}{}{gregoriotex-spaces.tex}
 Either \texttt{skip} or \texttt{dimen} according to the distance being set or changed at the given moment.
 
 \macroname{\textbackslash gre@prefixII}{}{gregoriotex-spaces.tex}
 Same as \verb=\gre@prefix=.  Used when we were dealing with two distances simultaneously.
-
-\macroname{\textbackslash gre@rubberpermit}{\#1}{gregoriotex-spaces.tex}
-Determines whether the given distance is allowed to take a rubber length.
-
-\begin{argtable}
-  \#1 & string & the name of the distance to check\\
-\end{argtable}
 
 \macroname{\textbackslash gre@setgregoriofont}{[\#1]\#2}{gregoriotex-main.tex}
 Workhorse function behind \verb=\gresetgregoriofont=.
@@ -1382,17 +1381,6 @@ Runs a command for each string in a comma-separated list of strings.
 
 \macroname{\textbackslash gre@parsecommas@options}{}{gregoriotex-common.tex}
 Internal to \verb|\gre@parsecommas|.
-
-\macroname{\textbackslash gre@makeparshape}{}{gregoriotex-main.tex}
-Sets the shape of the paragraph shape using \verb|\parshape|.
-
-\begin{argtable}
-  \#1 & integer & How many lines are indented \\
-  \#2 & dimen & The amount of the indentation \\
-\end{argtable}  
-
-\macroname{\textbackslash gre@parshape@dims}{}{gregoriotex-main.tex}
-Used inside \verb|\gre@makeparshape| to hold the \verb=\parshape= information needed to shape the score around the initial.
 
 \subsection{Auxiliary File}
 Gregorio\TeX\ creates its own auxiliary file (extension \texttt{gaux}) which it uses to store information between successive typesetting runs.  This allows for such features as the dynamic interline spacing.  The following functions are used to interact with that auxiliary file.
@@ -1652,9 +1640,6 @@ Boolean used to indicate if hyphens should be forced between all syllables in a 
 
 \macroname{\textbackslash ifgre@checklength}{}{gregoriotex-spaces.tex}
 Boolean used in \verb=\gresetdim= to indicate if we are attempting to set a rubber length.
-
-\macroname{\textbackslash ifgre@rubber}{}{gregoriotex-spaces.tex}
-Boolean used in \verb=\gre@changeonedimenfactor= to indicate if we are dealing with one of the distances which can accept a rubber length.
 
 \macroname{\textbackslash ifgre@stretch}{}{gregoriotex-spaces.tex}
 Boolean used in \verb=\gre@changeonedimenfactor= as we test for the presence of a stretch.
@@ -2034,13 +2019,15 @@ Macros that store the protrusion factors created by
 
 \subsection{Distances}
 
-\macroname{\textbackslash gre@createdim}{\{\#1\}\{\#2\}\{\#3\}}{gregoriotex-spaces.tex}
+\macroname{\textbackslash gre@createdim}{\{\#1\}\{\#2\}\{\#3\}\{\#4\}}{gregoriotex-spaces.tex}
 Macro to create one of Gregorio\TeX’s distances.  Used to initialize distances in \textit{gregoriotex-gsp-default.tex}.
 
 \begin{argtable}
-  \#1 & string & The name of the distance to be changed.  See \nameref{distances} below.\\
-  \#2 & string & The distance in string format.  \textbf{Note:} You cannot use a length register for this argument.  You \emph{must} use a string because of the way that Gregorio\TeX\ handles spaces.\\
-  \#3 & \texttt{fixed} & Distance will not scale when staff size is changed.\\
+  \#1 & \texttt{dimen} & Distance does not allow stretch (\texttt{plus}) or shrink (\texttt{minus}).\\
+      & \texttt{skip} & Distance does allow stretch (\texttt{plus}) or shrink (\texttt{minus}).\\
+  \#2 & string & The name of the distance to be created.  See \nameref{distances} below.\\
+  \#3 & string & The distance in string format.  \textbf{Note:} You cannot use a length register for this argument.  You \emph{must} use a string because of the way that Gregorio\TeX\ handles spaces.\\
+  \#4 & \texttt{fixed} & Distance will not scale when staff size is changed.\\
   & \texttt{scalable} & Distance will scale when staff size is changed.\\
   & \texttt{inherited} & Distance will inherit its value from another distance.  When this argument is used, then \#2 should be the name of another Gregorio\TeX\ distance.
 \end{argtable}
@@ -2069,10 +2056,6 @@ Width of the clef used to compute bolshift.
 
 \macroname{\textbackslash gre@dimen@constantglyphraise}{}{gregoriotex-spaces.tex}
 Dimension representing the space between the 0 of the gregorian fonts and the effective 0 of the TeX score.
-
-\macroname{\textbackslash gre@dimen@stafflinewidth}{}{gregoriotex-spaces.tex}
-Dimension representing the width of a line of staff.  Can vary, for
-example, at the first line.
 
 \macroname{\textbackslash gre@dimen@linewidth}{}{gregoriotex-spaces.tex}
 Dimension representing the width of the score (including initial).
