@@ -124,7 +124,6 @@ local capture_header_macro = {}
 
 local per_line_dims = {}
 local per_line_counts = {}
-local saved_dims = {}
 
 local catcode_at_letter = luatexbase.catcodetables['gre@atletter']
 
@@ -709,19 +708,37 @@ local function compute_line_statistics(line, info)
   return info
 end
 
+local function get_space(name)
+  -- Get the value of a dim, measured in sp.
+  local value
+  value = token.get_macro('gre@space@dimen@'..name)
+  if value ~= nil then return tex.sp(value) end
+  value = token.get_macro('gre@space@skip@'..name)
+  if value ~= nil then return tex.sp(value) end
+  err("couldn't get value of space %s", name)
+end
+
+local iftrue_token = token.create('iftrue')
+local function get_if(name)
+  -- Get the value of a TeX conditional, as a boolean.
+  -- The 'mode' attribute of tokens is not well-documented, but appears to distinguish \iftrue from \iffalse.
+  if not token.is_defined('if'..name) then err("couldn't get value of %s") end
+  return token.create('if'..name).mode == iftrue_token.mode
+end
+
 local function adjust_additional_spaces(line, info, linenum)
   -- Adjust the vertical positioning of all the parts of line, as well
   -- as its total height and the interline skip above the line.
   
-  local function get_space(name)
+  local function get_per_line_space(name)
     if per_line_dims[linenum] ~= nil and per_line_dims[linenum][name] ~= nil then
       return per_line_dims[linenum][name]
     else
-      return saved_dims[name]
+      return get_space(name)
     end
   end
   
-  local function get_count(name)
+  local function get_per_line_count(name)
     if per_line_counts[linenum] ~= nil and per_line_counts[linenum][name] ~= nil then
       return per_line_counts[linenum][name]
     else
@@ -730,16 +747,21 @@ local function adjust_additional_spaces(line, info, linenum)
   end
 
   -- distance between stafflines
-  local staffline_distance = math.floor((tex.dimen['gre@dimen@interstafflinedistancebase'] + tex.dimen['gre@dimen@stafflinethicknessbase']+1)/2) * tex.count['gre@factor'] -- rounding to get same result as the TeX \dimexpr this is based on
-  local note_additional_space_lines_text = get_space('noteadditionalspacelinestext') -- this may be different from staffline_distance under the legacy option \gresetnoteadditionalspacelinestext{manual}
+  local staffline_distance = tex.round((tex.dimen['gre@dimen@interstafflinedistancebase'] + tex.dimen['gre@dimen@stafflinethicknessbase'])/2) * tex.count['gre@factor']
+  local note_additional_space_lines_text
+  if get_if('gre@noteadditionalspacelinestext') then
+    note_additional_space_lines_text = get_per_line_space('noteadditionalspacelinestext') -- this may be different from staffline_distance under the legacy option \gresetnoteadditionalspacelinestext{manual}
+  else
+    note_additional_space_lines_text = staffline_distance
+  end
 
   -- thresholds for additional top/bottom spaces
-  local top_threshold = get_count('additionaltopspacethreshold')
-  local alt_threshold = get_count('additionaltopspacealtthreshold')
-  local nabc_threshold = get_count('additionaltopspacenabcthreshold')
-  local bottom_threshold = get_count('noteadditionalspacelinestextthreshold')
+  local top_threshold = get_per_line_count('additionaltopspacethreshold')
+  local alt_threshold = get_per_line_count('additionaltopspacealtthreshold')
+  local nabc_threshold = get_per_line_count('additionaltopspacenabcthreshold')
+  local bottom_threshold = get_per_line_count('noteadditionalspacelinestextthreshold')
   
-  -- recompute top and bottom pitches, since we can't access \gre@pitch@adjust@top and \gre@pitch@adjust@bottom
+  -- compute top and bottom pitches
   local adjust_bottom = bottom_threshold + 3
   local adjust_top = 4 + 2*tex.count['gre@count@stafflines']
 
@@ -752,12 +774,12 @@ local function adjust_additional_spaces(line, info, linenum)
   -- translation height
   local translation_height = 0
   if info.has_translation then
-    translation_height = get_space('translationheight')
+    translation_height = get_per_line_space('translationheight')
   end
 
   -- per-line changes to other spaces
-  local extra_space_lines_text = get_space('spacelinestext') - saved_dims['spacelinestext']
-  local extra_space_beneath_text = get_space('spacebeneathtext') - saved_dims['spacebeneathtext']
+  local extra_space_lines_text = get_per_line_space('spacelinestext') - get_space('spacelinestext')
+  local extra_space_beneath_text = get_per_line_space('spacebeneathtext') - get_space('spacebeneathtext')
 
   -- how much to raise/lower each part
   local commentary_raise = additional_top_space_alt
@@ -767,29 +789,29 @@ local function adjust_additional_spaces(line, info, linenum)
 
   local nabc_raise
   if info.has_nabc then
-    cur = cur + get_space('abovelinesnabcraise')
+    cur = cur + get_per_line_space('abovelinesnabcraise')
     add = math.max(add, cur + additional_top_space_nabc)
     nabc_raise = add
-    cur = cur + get_space('abovelinesnabcheight')
-    add = add + get_space('abovelinesnabcheight')
+    cur = cur + get_per_line_space('abovelinesnabcheight')
+    add = add + get_per_line_space('abovelinesnabcheight')
   end
 
   local alt_raise
   if info.has_alt then
-    cur = cur + get_space('abovelinestextraise')
+    cur = cur + get_per_line_space('abovelinestextraise')
     add = math.max(add, cur + additional_top_space_alt)
     alt_raise = add
-    cur = cur + get_space('abovelinestextheight')
-    add = add + get_space('abovelinestextheight')
+    cur = cur + get_per_line_space('abovelinestextheight')
+    add = add + get_per_line_space('abovelinestextheight')
   end
 
-  cur = cur + get_space('spaceabovelines')
+  cur = cur + get_per_line_space('spaceabovelines')
   add = math.max(add, cur + additional_top_space)
-  local height_increase = add - saved_dims['spaceabovelines']
+  local height_increase = add - get_per_line_space('spaceabovelines')
 
   local blnabc_lower = 0
   if info.has_blnabc then
-    blnabc_lower = get_space('belowlinesnabcheight')
+    blnabc_lower = get_per_line_space('belowlinesnabcheight')
   end
   local lyrics_lower = blnabc_lower + extra_space_lines_text + additional_bottom_space
   local translation_lower = lyrics_lower + translation_height
@@ -1130,7 +1152,6 @@ local function at_score_end()
   luatexbase.remove_from_callback("hyphenate", "gregoriotex.disable_hyphenation")
   per_line_dims = {}
   per_line_counts = {}
-  saved_dims = {}
 end
 
 --- Toggle the state of GregorioTeX callbacks.
@@ -1651,11 +1672,6 @@ end
 
 local function font_size()
   tex.print(string.format('%.2f', (unsafe_get_font_by_id(font.current()).size / 65536.0)))
-end
-
-local function save_dim(name, value)
-  debugmessage('save_dim', 'dim %s value %spt', name, tex.sp(value)/2^16)
-  saved_dims[name] = tex.sp(value)
 end
 
 local function change_next_score_line_dim(line_expr, name, value)
