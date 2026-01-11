@@ -19,8 +19,8 @@
 
 \gre@declarefileversion{gregoriotex-common.tex}{6.1.0}% GREGORIO_VERSION
 
-\ifnum\luatexversion<76%
-  \gre@error{Error: this document must be compiled with LuaTeX (lualatex) 0.76 or later}%
+\ifnum\luatexversion<100%
+  \gre@error{Error: this document must be compiled with LuaTeX 1.0 or later}%
 \fi%
 
 % Run a command for each string in a comma-separated list of strings.
