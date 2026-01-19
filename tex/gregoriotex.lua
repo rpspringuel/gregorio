@@ -53,6 +53,13 @@ local whatsit = node.id('whatsit')
 local rule = node.id('rule')
 local disc = node.id('disc')
 
+local subtype_lineskip, subtype_baselineksip
+for i, t in ipairs(node.subtypes('glue')) do
+  if t == 'lineskip' then subtype_lineskip = i
+  elseif t == 'baselineskip' then subtype_baselineskip = i
+  end
+end
+
 local hyphen = tex.defaulthyphenchar or 45
 
 local part_attr = luatexbase.attributes['gre@attr@part']
@@ -561,9 +568,9 @@ local function find_attr(cur, attr, val)
 end
 
 -- Recompute interline glue
-local function adjust_glue(glue)
+local function adjust_glue(g)
   -- Find previous line and its depth
-  local prevline = glue.prev
+  local prevline = g.prev
   while prevline ~= nil and prevline.id ~= hlist do
     prevline = prevline.prev
   end
@@ -574,25 +581,23 @@ local function adjust_glue(glue)
     prevdepth = prevline.depth
   end
     
-  debugmessage('adjust_glue', 'prev depth %.2f, cur height %.2f', prevdepth/2^16, glue.next.height/2^16)
+  debugmessage('adjust_glue', 'prev depth %.2f, cur height %.2f', prevdepth/2^16, g.next.height/2^16)
   debugmessage('adjust_glue', 'baselineskip width=%.2f', tex.baselineskip.width/2^16)
 
   local subtype = 'baselineskip'
-  debugmessage('adjust_glue', 'old glue is %s %spt plus %spt minus %spt', subtype, glue.width/2^16, glue.stretch/2^16, glue.shrink/2^16)
+  debugmessage('adjust_glue', 'old glue is %s %spt plus %spt minus %spt', subtype, g.width/2^16, g.stretch/2^16, g.shrink/2^16)
   
-  local new_width = tex.baselineskip.width - prevdepth - glue.next.height
+  local new_width = tex.baselineskip.width - prevdepth - g.next.height
   if new_width < tex.lineskiplimit then
-    glue.subtype = 1 -- lineskip
-    subtype = 'lineskip'
-    node.setglue(glue, node.getglue(tex.lineskip))
+    g.subtype = subtype_lineskip
+    node.setglue(g, node.getglue(tex.lineskip))
   else
-    new_subtype = 2 -- baselineskip
-    subtype = 'baselineskip'
-    node.setglue(glue, node.getglue(tex.baselineskip))
-    glue.width = new_width
+    g.subtype = subtype_baselineskip
+    node.setglue(g, node.getglue(tex.baselineskip))
+    g.width = new_width
   end
   
-  debugmessage('adjust_glue', 'new glue is %s %spt plus %spt minus %spt', subtype, glue.width/2^16, glue.stretch/2^16, glue.shrink/2^16)
+  debugmessage('adjust_glue', 'new glue is %s %spt plus %spt minus %spt', node.subtypes(glue)[g.id], g.width/2^16, g.stretch/2^16, g.shrink/2^16)
 end
 
 local function drop_initial(h)
