@@ -163,14 +163,22 @@
   \gre@skip@temp@one = \gre@dimen@lastglyphwidth\relax%
   \kern\gre@skip@temp@one %
   % #5 contains things like ledger lines, but also calls to \GreGlyphHeights
-  #5\relax %
+  \ifgre@notes@invisrender
+    \phantom{#5}\relax %
+  \else
+    #5\relax %
+  \fi
   \kern-\gre@skip@temp@one %
   \gre@calculate@glyphraisevalue{#2}{0}{}%
   \raise\gre@dimen@glyphraisevalue%
   % Since \gre@box@temp@width was created before the calls
   % to \GreGlyphHeights, we need to rebox it to
   % set \gre@attr@glyph@top and \gre@attr@glyph@bottom correctly.
-  \hbox{\unhcopy\gre@box@temp@width}%
+  \ifgre@notes@invisrender
+    \hbox{\phantom{\unhcopy\gre@box@temp@width}}%
+  \else
+    \hbox{\unhcopy\gre@box@temp@width}%
+  \fi
   \ifgre@endofscore\else\ifgre@boxing\else %
     #3%
   \fi\fi %
@@ -178,7 +186,11 @@
     \gre@calculate@notesaligncenter{#4}%
     \global\gre@firstglyphfalse%
   \fi%
-  #6\relax %
+  \ifgre@notes@invisrender
+    \phantom{#6}\relax %
+  \else
+    #6\relax %
+  \fi
   \gre@endofglyphcommon %
   \relax%
 }%
@@ -358,6 +370,40 @@
 \gre@shownotestrue%
 \newcount\gre@notes@phantomwrapper%
 \gre@notes@phantomwrapper=0\relax%
+\newif\ifgre@notes@invisrender%
+\gre@notes@invisrenderfalse%
+
+% Helpers to render NABC while suppressing note glyphs
+\def\gre@noopglyph#1#2#3#4#5#6#7{\gre@newglyphcommon\gre@endofglyphcommon}%
+\def\gre@noopglyphheights#1#2{}%
+\def\gre@notes@rendernabc#1{%
+  \begingroup
+    \let\GreGlyph\gre@noopglyph
+    \let\GreGlyphHeights\gre@noopglyphheights
+    % Suppress bar glyphs while keeping spacing logic
+    \def\GreInDivisioMinimis##1##2##3{}%
+    \def\GreDivisioMinimis##1##2##3{}%
+    \def\GreInDivisioMinimisHigh##1##2##3{}%
+    \def\GreDivisioMinimisHigh##1##2##3{}%
+    \def\GreInDivisioMinima##1##2##3{}%
+    \def\GreDivisioMinima##1##2##3{}%
+    \def\GreInDivisioMinimaHigh##1##2##3{}%
+    \def\GreDivisioMinimaHigh##1##2##3{}%
+    \def\GreInDivisioMinimaParen##1##2##3{}%
+    \def\GreDivisioMinimaParen##1##2##3{}%
+    \def\GreInDivisioMinimaParenHigh##1##2##3{}%
+    \def\GreDivisioMinimaParenHigh##1##2##3{}%
+    \def\GreInDivisioMinor##1##2{}%
+    \def\GreDivisioMinor##1##2{}%
+    \def\GreInDivisioMaior##1##2{}%
+    \def\GreDivisioMaior##1##2{}%
+    \def\GreInDivisioFinalis##1##2{}%
+    \def\GreDivisioFinalis##1##2{}%
+    \def\GreBarBrace##1{}%
+    \def\GreBarVEpisema##1{}%
+    #1%
+  \endgroup
+}%
 
 \def\gresetnotes#1{%
   \gre@processvisibility{#1}%
@@ -367,11 +413,24 @@
     {\protect\gresetnotes}%
 }%
 
-% Notes-specific phantom wrapper
+% Notes-specific phantom wrapper that keeps NABC visible by using
+% invisible text rendering for notes and restoring normal rendering inside NABC.
 % #1 - phantom wrapper counter (1=phantom, 2=hphantom, 3=vphantom)
 % #2 - content to wrap
 \def\gre@applynotesphantom#1#2{%
-  \gre@applyphantomwrapper{#1}{#2}%
+  \begingroup
+    \gre@notes@invisrendertrue%
+    \setbox0=\hbox{#2}%
+    \ifcase#1\relax
+      \box0%
+    \or
+      \box0%
+    \or
+      \ht0=0pt\relax \dp0=0pt\relax \box0%
+    \or
+      \wd0=0pt\relax \box0%
+    \fi
+  \endgroup
 }%
 
 % Macro used to fill \gre@box@syllablenotes with everything contained in #1. This
@@ -1101,6 +1160,9 @@
   \else%
     \ifnum\gre@notes@phantomwrapper>0\relax
       \gre@applynotesphantom{\gre@notes@phantomwrapper}{#9}%
+    \else
+      % Notes disabled: render NABC without affecting spacing
+      \hbox to 0pt{\gre@notes@rendernabc{#9}\hss}%
     \fi
   \fi%
   \GreNoBreak % no line breaks between notes and end of syllable skips
@@ -1382,6 +1444,9 @@
     \else%
       \ifnum\gre@notes@phantomwrapper>0\relax
         \gre@applyphantomwrapper{\gre@notes@phantomwrapper}{#9}%
+      \else
+        % Notes disabled: render NABC without affecting spacing
+        \hbox to 0pt{\gre@notes@rendernabc{#9}\hss}%
       \fi
     \fi%
     \global\let\gre@newlinecommon\gre@saved@prelinedelay@newlinecommon %

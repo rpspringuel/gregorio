@@ -683,28 +683,37 @@ local function compute_line_statistics(line, info)
       glyph_bottom = 7 -- e = \gre@pitch@dummy
     }
   end
-  for n in traverse(line.head) do
-    if has_attribute(n, part_attr, part_translation) then
-      info.has_translation = true
-    elseif has_attribute(n, part_attr, part_alt) then
-      info.has_alt = true
-    elseif has_attribute(n, part_attr, part_nabc) then
-      info.has_nabc = true
-    elseif has_attribute(n, part_attr, part_blnabc) then
-      info.has_blnabc = true
-    else
-      if has_attribute(n, glyph_top_attr) then
-        if info.glyph_top == nil or has_attribute(n, glyph_top_attr) > info.glyph_top then
-          info.glyph_top = has_attribute(n, glyph_top_attr)
+  local function visit(list)
+    for n in traverse(list) do
+      if has_attribute(n, part_attr, part_translation) then
+        info.has_translation = true
+      elseif has_attribute(n, part_attr, part_alt) then
+        info.has_alt = true
+      elseif has_attribute(n, part_attr, part_nabc) then
+        info.has_nabc = true
+      elseif has_attribute(n, part_attr, part_blnabc) then
+        info.has_blnabc = true
+      else
+        if has_attribute(n, glyph_top_attr) then
+          if info.glyph_top == nil or has_attribute(n, glyph_top_attr) > info.glyph_top then
+            info.glyph_top = has_attribute(n, glyph_top_attr)
+          end
+        end
+        if has_attribute(n, glyph_bottom_attr) then
+          if info.glyph_bottom == nil or has_attribute(n, glyph_bottom_attr) < info.glyph_bottom then
+            info.glyph_bottom = has_attribute(n, glyph_bottom_attr)
+          end
         end
       end
-      if has_attribute(n, glyph_bottom_attr) then
-        if info.glyph_bottom == nil or has_attribute(n, glyph_bottom_attr) < info.glyph_bottom then
-          info.glyph_bottom = has_attribute(n, glyph_bottom_attr)
-        end
+      if n.id == hlist then
+        visit(n.head)
+      elseif n.id == disc then
+        visit(n.replace)
       end
     end
   end
+
+  visit(line.head)
   debugmessage('compute_line_statistics', 'has_alt %s has_nabc %s has_translation %s glyph_top %s glyph_bottom %s', info.has_alt, info.has_nabc, info.has_translation, info.glyph_top, info.glyph_bottom)
   return info
 end
@@ -765,7 +774,7 @@ local function adjust_additional_spaces(line, info, linenum)
   local cur = 0 -- vertical position without any additional space
   local add = 0 -- with additional space
 
-  local nabc_raise
+  local nabc_raise = 0
   if info.has_nabc then
     cur = cur + get_space('abovelinesnabcraise')
     add = math.max(add, cur + additional_top_space_nabc)

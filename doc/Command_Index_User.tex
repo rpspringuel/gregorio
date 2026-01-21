@@ -1302,7 +1302,7 @@ Sets the visibility of the notes.
 
 \textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated and will be removed in version 7.0.0. Use \texttt{enabled} and \texttt{disabled} instead.
 
-\textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible. However, the staff lines and clefs will still show up (since their visibility is controlled by other settings).
+\textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible. However, the staff lines and clefs will still show up (since their visibility is controlled by other settings). NABC neumes are also unaffected and remain controlled independently by \verb=\gresetnabc=.
 
 \macroname{\textbackslash gresetnabc}{\{\#1\}\{\#2\}}{gregoriotex-nabc.tex}
 Sets the visibility of an nabc voice.
@@ -1320,7 +1320,7 @@ Sets the visibility of an nabc voice.
 
 \textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated and will be removed in version 7.0.0. Use \texttt{enabled} and \texttt{disabled} instead.
 
-
+\textbf{Important:} NABC visibility is controlled independently from notes visibility (\verb=\gresetnotes=). This allows you to hide the main notes (e.g., using \verb=\gresetnotes{hphantom}=) while keeping NABC neumes visible, which is useful for producing NABC-only output with lyrics.
 
 \macroname{\textbackslash greprintsigns}{\{\#1\}\{\#2\}}{gregoriotex-signs.tex}
 Macro to prevent rythmic signs from printing (all signs are printed by default):
