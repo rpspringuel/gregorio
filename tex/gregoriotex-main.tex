@@ -655,14 +655,15 @@
 
 \newif\ifgre@showabovelinestext%
 \gre@showabovelinestexttrue%
+\newcount\gre@abovelinestext@phantomwrapper%
+\gre@abovelinestext@phantomwrapper=0\relax%
 
 \def\gresetabovelinestext#1{%
-  \IfStrEqCase{#1}{%
-    {visible}{\gre@showabovelinestexttrue}%
-    {invisible}{\gre@showabovelinestextfalse}%
-    }[% all other cases
-      \gre@error{Unknown option, "#1" for \protect\gresetabovelinestext\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@showabovelinestexttrue}%
+    {\gre@showabovelinestextfalse}%
+    {\gre@abovelinestext@phantomwrapper}%
+    {\protect\gresetabovelinestext}%
 }%
 
 \xdef\gre@currenttextabovelines{}%
@@ -735,16 +736,15 @@
 %% first a macro to prevent the typesetting of the lines (useful for some people)
 \newif\ifgre@showlines%
 \gre@showlinestrue
+\newcount\gre@lines@phantomwrapper%
+\gre@lines@phantomwrapper=0\relax%
 
 \def\gresetlines#1{%
-  \IfStrEqCase{#1}{%
-    {visible}%
-      {\gre@showlinestrue}%
-    {invisible}%
-      {\gre@showlinesfalse}%
-    }[% all other cases
-      \gre@error{Unrecognized option "#1" for \protect\gresetlines\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@showlinestrue}%
+    {\gre@showlinesfalse}%
+    {\gre@lines@phantomwrapper}%
+    {\protect\gresetlines}%
 }
 
 %% box containing the stafflines for other lines than the first
@@ -880,14 +880,15 @@
 
 \newif\ifgre@showtranslation%
 \gre@showtranslationtrue%
+\newcount\gre@translation@phantomwrapper%
+\gre@translation@phantomwrapper=0\relax%
 
 \def\gresettranslation#1{%
-  \IfStrEqCase{#1}{%
-    {visible}{\gre@showtranslationtrue}%
-    {invisible}{\gre@showtranslationfalse}%
-    }[% all other cases
-      \gre@error{Unknown option, "#1" for \protect\gresettranslation\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@showtranslationtrue}%
+    {\gre@showtranslationfalse}%
+    {\gre@translation@phantomwrapper}%
+    {\protect\gresettranslation}%
 }%
 
 \def\GreWriteTranslation#1{%

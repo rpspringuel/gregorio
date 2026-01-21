@@ -135,17 +135,19 @@
 % flag for showing the clef
 \newif\ifgre@showclef%
 \gre@showcleftrue
+\newcount\gre@clef@phantomwrapper%
+\gre@clef@phantomwrapper=0\relax%
 
 \def\gresetclef#1{%
   \gre@trace{gresetclef{#1}}%
-  \IfStrEqCase{#1}{%
-    {visible}%
-      {\gre@showcleftrue}%
-    {invisible}%
-      {\gre@showcleffalse}%
-    }[% all other cases
-      \gre@error{Unrecognized option "#1" for \protect\gresetclef\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@showcleftrue}%
+    {\gre@showcleffalse}%
+    {\gre@clef@phantomwrapper}%
+    {\protect\gresetclef}%
+  \ifnum\gre@clef@phantomwrapper>0\relax
+    \gre@showcleftrue%
+  \fi
   \gre@trace@end%
 }%
 
@@ -163,7 +165,11 @@
     \unkern %
     \ifgre@showclef%
       \gre@skip@temp@four = \gre@space@skip@afterclefnospace\relax%
-      \hbox{\gre@typeclef{#1}{#2}{0}{#3}{#4}{#5}{#6}{#7}\gre@hskip\gre@skip@temp@four}%
+      \ifnum\gre@clef@phantomwrapper>0\relax
+        \hbox{\gre@applyphantomwrapper{\gre@clef@phantomwrapper}{\gre@typeclef{#1}{#2}{0}{#3}{#4}{#5}{#6}{#7}\gre@hskip\gre@skip@temp@four}}%
+      \else
+        \hbox{\gre@typeclef{#1}{#2}{0}{#3}{#4}{#5}{#6}{#7}\gre@hskip\gre@skip@temp@four}%
+      \fi
     \else %
       \gre@skip@temp@four = \gre@space@dimen@noclefspace\relax%
       \hbox{\kern\gre@skip@temp@four}%
@@ -381,12 +387,24 @@
   \ifgre@showclef%
     \ifnum\gre@count@initiallines=1\relax %
       \ifnum#7=1\relax %
-        \gre@typeclef{#1}{#2}{0}{1}{#3}{#4}{#5}{#6}%
+        \ifnum\gre@clef@phantomwrapper>0\relax
+          \gre@applyphantomwrapper{\gre@clef@phantomwrapper}{\gre@typeclef{#1}{#2}{0}{1}{#3}{#4}{#5}{#6}}%
+        \else
+          \gre@typeclef{#1}{#2}{0}{1}{#3}{#4}{#5}{#6}%
+        \fi
       \else %
-        \gre@typeclef{#1}{#2}{0}{2}{#3}{#4}{#5}{#6}%
+        \ifnum\gre@clef@phantomwrapper>0\relax
+          \gre@applyphantomwrapper{\gre@clef@phantomwrapper}{\gre@typeclef{#1}{#2}{0}{2}{#3}{#4}{#5}{#6}}%
+        \else
+          \gre@typeclef{#1}{#2}{0}{2}{#3}{#4}{#5}{#6}%
+        \fi
       \fi %
     \else %
-      \gre@typeclef{#1}{#2}{0}{1}{#3}{#4}{#5}{#6}%
+      \ifnum\gre@clef@phantomwrapper>0\relax
+        \gre@applyphantomwrapper{\gre@clef@phantomwrapper}{\gre@typeclef{#1}{#2}{0}{1}{#3}{#4}{#5}{#6}}%
+      \else
+        \gre@typeclef{#1}{#2}{0}{1}{#3}{#4}{#5}{#6}%
+      \fi
     \fi %
   \else%
     \gre@skip@temp@four = \gre@space@dimen@noclefspace\relax%
@@ -642,14 +660,15 @@
 
 \newif\ifgre@usecustosalteration%
 \gre@usecustosalterationtrue%
+\newcount\gre@custosalteration@phantomwrapper%
+\gre@custosalteration@phantomwrapper=0\relax%
 \def\gresetcustosalteration#1{%
   \gre@trace{gresetcustosalteration{#1}}%
-  \IfStrEqCase{#1}{%
-    {visible}{\gre@usecustosalterationtrue}%
-    {invisible}{\gre@usecustosalterationfalse}%
-  }[% all other cases
-    \gre@error{Unrecognized option "#1" for \protect\gresetcustosalteration\MessageBreak Possible options are: 'visible' and 'invisible'}%
-  ]%
+  \gre@processvisibility{#1}%
+    {\gre@usecustosalterationtrue}%
+    {\gre@usecustosalterationfalse}%
+    {\gre@custosalteration@phantomwrapper}%
+    {\protect\gresetcustosalteration}%
   \gre@trace@end%
 }%
 \def\gre@custosalteration#1#2{%
@@ -1773,16 +1792,15 @@
 \gre@hidedottedbarlinestrue
 
 % macro for manipulating above flag
+\newcount\gre@dottedbarlines@phantomwrapper%
+\gre@dottedbarlines@phantomwrapper=0\relax%
 \def\gresetlinesbehinddottedbar#1{%
   \gre@trace{gresetlinesbehinddottedbar{#1}}%
-  \IfStrEqCase{#1}{%
-    {visible}%
-      {\gre@hidedottedbarlinesfalse}%
-    {invisible}%
-      {\gre@hidedottedbarlinestrue}%
-    }[% all other cases
-      \gre@error{Unrecognized option "#1" for \protect\gresetlinesbehinddottedbar\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@hidedottedbarlinesfalse}%
+    {\gre@hidedottedbarlinestrue}%
+    {\gre@dottedbarlines@phantomwrapper}%
+    {\protect\gresetlinesbehinddottedbar}%
   \gre@trace@end%
 }%
 
@@ -2602,16 +2620,15 @@
 \gre@hidepclinesfalse
 
 % macro for manipulating above flag
+\newcount\gre@pclines@phantomwrapper%
+\gre@pclines@phantomwrapper=0\relax%
 \def\gresetlinesbehindpunctumcavum#1{%
   \gre@trace{gresetlinesbehindpunctumcavum{#1}}%
-  \IfStrEqCase{#1}{%
-    {visible}%
-      {\gre@hidepclinesfalse}%
-    {invisible}%
-      {\gre@hidepclinestrue}%
-    }[% all other cases
-      \gre@error{Unrecognized option "#1" for \protect\gresetlinesbehindpunctumcavum\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@hidepclinesfalse}%
+    {\gre@hidepclinestrue}%
+    {\gre@pclines@phantomwrapper}%
+    {\protect\gresetlinesbehindpunctumcavum}%
   \gre@trace@end%
 }%
 
@@ -2621,16 +2638,15 @@
 \gre@hidealtlinesfalse
 
 % macro for manipulating above flag
+\newcount\gre@altlines@phantomwrapper%
+\gre@altlines@phantomwrapper=0\relax%
 \def\gresetlinesbehindalteration#1{%
   \gre@trace{gresetlinesbehindalteration{#1}}%
-  \IfStrEqCase{#1}{%
-    {visible}%
-      {\gre@hidealtlinesfalse}%
-    {invisible}%
-      {\gre@hidealtlinestrue}%
-    }[% all other cases
-      \gre@error{Unrecognized option "#1" for \protect\gresetlinesbehindalteration\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@hidealtlinesfalse}%
+    {\gre@hidealtlinestrue}%
+    {\gre@altlines@phantomwrapper}%
+    {\protect\gresetlinesbehindalteration}%
   \gre@trace@end%
 }%
 

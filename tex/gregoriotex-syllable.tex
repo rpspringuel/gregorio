@@ -343,26 +343,35 @@
 
 \newif\ifgre@showlyrics%
 \gre@showlyricstrue%
+\newcount\gre@lyrics@phantomwrapper%
+\gre@lyrics@phantomwrapper=0\relax%
 
 \def\gresetlyrics#1{%
-  \IfStrEqCase{#1}{%
-    {visible}{\gre@showlyricstrue}%
-    {invisible}{\gre@showlyricsfalse}%
-    }[% all other cases
-      \gre@error{Unknown option, "#1" for \protect\gresetlyrics\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@showlyricstrue}%
+    {\gre@showlyricsfalse}%
+    {\gre@lyrics@phantomwrapper}%
+    {\protect\gresetlyrics}%
 }%
 
 \newif\ifgre@shownotes%
 \gre@shownotestrue%
+\newcount\gre@notes@phantomwrapper%
+\gre@notes@phantomwrapper=0\relax%
 
 \def\gresetnotes#1{%
-  \IfStrEqCase{#1}{%
-    {visible}{\gre@shownotestrue}%
-    {invisible}{\gre@shownotesfalse}%
-    }[% all other cases
-      \gre@error{Unknown option, "#1" for \protect\gresetnotes\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@shownotestrue}%
+    {\gre@shownotesfalse}%
+    {\gre@notes@phantomwrapper}%
+    {\protect\gresetnotes}%
+}%
+
+% Notes-specific phantom wrapper
+% #1 - phantom wrapper counter (1=phantom, 2=hphantom, 3=vphantom)
+% #2 - content to wrap
+\def\gre@applynotesphantom#1#2{%
+  \gre@applyphantomwrapper{#1}{#2}%
 }%
 
 % Macro used to fill \gre@box@syllablenotes with everything contained in #1. This
@@ -380,7 +389,11 @@
   \ifgre@shownotes%
     \setbox\gre@box@syllablenotes=\hbox{#1}%
   \else%
-    \setbox\gre@box@syllablenotes=\box\voidb@x%
+    \ifnum\gre@notes@phantomwrapper>0\relax
+      \setbox\gre@box@syllablenotes=\hbox{\gre@applynotesphantom{\gre@notes@phantomwrapper}{#1}}%
+    \else
+      \setbox\gre@box@syllablenotes=\box\voidb@x%
+    \fi
   \fi%
   \gre@debugmsg{spacing}{Width of notes: \the\wd\gre@box@syllablenotes}%
   \global\gre@boxingfalse%
@@ -939,7 +952,11 @@
         {}% do nothing if not debugging
     }%
   \else%
-    \setbox\gre@box@syllabletext=\box\voidb@x%
+    \ifnum\gre@lyrics@phantomwrapper>0\relax
+      \setbox\gre@box@syllabletext=\hbox{\gre@applyphantomwrapper{\gre@lyrics@phantomwrapper}{\gre@emit@syllabletext{\gre@pointandclick{\gre@firstsyllablepart\gre@middlesyllablepart\gre@emit@endsyllablepart}{#6}}}}%
+    \else
+      \setbox\gre@box@syllabletext=\box\voidb@x%
+    \fi
   \fi%
   \gre@calculate@enddifference{\wd\gre@box@syllablenotes}{\wd\gre@box@syllabletext}{\gre@dimen@textaligncenter}{\gre@dimen@notesaligncenter}{1}%
   % gre@count@temp@one holds 1 if next is a bar, 2 if an alteration, else 0
@@ -991,7 +1008,11 @@
             {}% do nothing if not debugging
         }%
       \else%
-        \setbox\gre@box@syllabletext=\box\voidb@x%
+        \ifnum\gre@lyrics@phantomwrapper>0\relax
+          \setbox\gre@box@syllabletext=\hbox{\gre@applyphantomwrapper{\gre@lyrics@phantomwrapper}{\gre@emit@syllabletext{\gre@pointandclick{\gre@firstsyllablepart\gre@middlesyllablepart\gre@emit@endsyllablepart#3{\GreHyph}\relax}{#6}}}}%
+        \else
+          \setbox\gre@box@syllabletext=\box\voidb@x%
+        \fi
       \fi%
     \else %
       \ifgre@showlyrics%
@@ -1007,7 +1028,11 @@
             {}% do nothing if not debugging
         }%
       \else%
-        \setbox\gre@box@syllabletext=\box\voidb@x%
+        \ifnum\gre@lyrics@phantomwrapper>0\relax
+          \setbox\gre@box@syllabletext=\hbox{\gre@applyphantomwrapper{\gre@lyrics@phantomwrapper}{\gre@emit@syllabletext{\gre@pointandclick{\gre@firstsyllablepart\gre@middlesyllablepart\gre@emit@endsyllablepart#3{-}}{#6}}}}%
+        \else
+          \setbox\gre@box@syllabletext=\box\voidb@x%
+        \fi
       \fi%
     \fi %
     % recomputing end difference and final skip with the final hyphen
@@ -1073,6 +1098,10 @@
       % when debugging we add a zero-width line to mark the syllable bound
       {\raise 12pt\hbox to 0pt{\rule{0.4pt}{12pt}\hss}}%
       {}% do nothing if not debugging
+  \else%
+    \ifnum\gre@notes@phantomwrapper>0\relax
+      \gre@applynotesphantom{\gre@notes@phantomwrapper}{#9}%
+    \fi
   \fi%
   \GreNoBreak % no line breaks between notes and end of syllable skips
   \gre@debugmsg{ifdim}{ enddifference < 0pt}%
@@ -1269,7 +1298,11 @@
         {}% do nothing if not debugging
       }%
   \else%
-    \setbox\gre@box@syllabletext=\box\voidb@x%
+    \ifnum\gre@lyrics@phantomwrapper>0\relax
+      \setbox\gre@box@syllabletext=\hbox{\gre@applyphantomwrapper{\gre@lyrics@phantomwrapper}{\gre@emit@syllabletext{\gre@pointandclick{\gre@firstsyllablepart\gre@middlesyllablepart\gre@emit@endsyllablepart}{#6}}}}%
+    \else
+      \setbox\gre@box@syllabletext=\box\voidb@x%
+    \fi
   \fi%
   \gre@debugmsg{barspacing}{Width of bar text: \the\wd\gre@box@syllabletext}%
   \global\let\gre@saved@prelinedelay@newlinecommon\gre@newlinecommon %
@@ -1346,6 +1379,10 @@
         % when debugging we add a zero-width line to mark the syllable bound
         {\raise 12pt\hbox to 0pt{\rule{0.4pt}{12pt}\hss}}%
         {}% do nothing if not debugging
+    \else%
+      \ifnum\gre@notes@phantomwrapper>0\relax
+        \gre@applyphantomwrapper{\gre@notes@phantomwrapper}{#9}%
+      \fi
     \fi%
     \global\let\gre@newlinecommon\gre@saved@prelinedelay@newlinecommon %
     \GreNoBreak%

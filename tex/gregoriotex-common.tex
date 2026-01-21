@@ -122,6 +122,70 @@
 }%
 
 %%%%%%%%%%%%%
+% Helper macro for visibility values
+%%%%%%%%%%%%%
+
+% Helper macro to process visibility values with phantom support and deprecation warnings
+% #1 - the value to process (visible/invisible/enabled/disabled/phantom/hphantom/vphantom)
+% #2 - command to execute for visible/enabled (e.g., \gre@showlyricstrue)
+% #3 - command to execute for invisible/disabled (e.g., \gre@showlyricsfalse)
+% #4 - phantom wrapper count variable name (e.g., \gre@lyrics@phantomwrapper)
+% #5 - macro name for error messages (e.g., \protect\gresetlyrics)
+\def\gre@processvisibility#1#2#3#4#5{%
+  \IfStrEqCase{#1}{%
+    {visible}{%
+      \gre@warning{Option 'visible' for #5 is deprecated.\MessageBreak Use 'enabled' instead.\MessageBreak This option is maintained for backward compatibility\MessageBreak and may be removed in a future version}%
+      #2#4=0\relax%
+    }%
+    {invisible}{%
+      \gre@warning{Option 'invisible' for #5 is deprecated.\MessageBreak Use 'disabled' instead.\MessageBreak This option is maintained for backward compatibility\MessageBreak and may be removed in a future version}%
+      #3#4=0\relax%
+    }%
+    {enabled}{#2#4=0\relax}%
+    {disabled}{#3#4=0\relax}%
+    {phantom}{#3#4=1\relax}%
+    {hphantom}{#3#4=2\relax}%
+    {vphantom}{#3#4=3\relax}%
+  }[% all other cases
+    \gre@error{Unrecognized option "#1" for #5\MessageBreak Possible options are: 'enabled', 'disabled', 'visible' (deprecated),\MessageBreak 'invisible' (deprecated), 'phantom', 'hphantom', and 'vphantom'}%
+  ]%
+}%
+
+% Helper macro to apply phantom wrapper based on counter value
+% #1 - phantom wrapper counter (0=no wrapper, 1=\phantom, 2=\hphantom, 3=\vphantom)
+% #2 - content to wrap
+\def\gre@applyphantomwrapper#1#2{%
+  \ifcase#1\relax
+    % 0: no wrapper
+    #2%
+  \or
+    % 1: \phantom
+    \phantom{#2}%
+  \or
+    % 2: \hphantom
+    \hphantom{#2}%
+  \or
+    % 3: \vphantom
+    \vphantom{#2}%
+  \fi
+}%
+
+% Helpers to control text rendering mode (LuaTeX)
+% 3 Tr = invisible text, 0 Tr = normal
+\ifx\pdfextension\undefined
+  \def\gre@textrender@invisible{}%
+  \def\gre@textrender@normal{}%
+  \def\gre@textrender@pushinvis{}%
+  \def\gre@textrender@pop{}%
+\else
+  \def\gre@textrender@invisible{\pdfextension literal direct {3 Tr}}%
+  \def\gre@textrender@normal{\pdfextension literal direct {0 Tr}}%
+  \def\gre@textrender@pushinvis{\pdfextension literal direct {q 3 Tr}}%
+  \def\gre@textrender@pushnormal{\pdfextension literal direct {q 0 Tr}}%
+  \def\gre@textrender@pop{\pdfextension literal direct {Q}}%
+\fi
+
+%%%%%%%%%%%%%
 % Internal function tracing
 %%%%%%%%%%%%%
 
