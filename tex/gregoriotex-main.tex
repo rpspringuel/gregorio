@@ -1656,6 +1656,20 @@
   \relax %
 }%
 
+% Command to set the lyric tie character (~) to one of the tie macros
+% Default: \greundertie
+\let\gre@lyrictie\greundertie%
+
+\def\gresetlyrictie#1{%
+  \IfStrEqCase{#1}{%
+    {undertie}{\let\gre@lyrictie\greundertie}%
+    {overtie}{\let\gre@lyrictie\greovertie}%
+    {doubletie}{\let\gre@lyrictie\gredoubletie}%
+  }[% all other cases
+    \gre@error{Unrecognized option "#1" for \protect\gresetlyrictie\MessageBreak Possible options are: 'undertie', 'overtie', 'doubletie'}%
+  ]%
+}%
+
 
 \def\gresetgregoriofont{\@ifnextchar[{\gre@setgregoriofont}{\gre@setgregoriofont[]}}%
 \def\gresetgregoriofontscaled{\@ifnextchar[{\gre@setgregoriofontscaled}{\gre@setgregoriofontscaled[]}}%

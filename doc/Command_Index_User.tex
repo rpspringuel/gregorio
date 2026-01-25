@@ -998,6 +998,29 @@ Macro to determine whether a forced center (\ie, one specified by curly braces (
   & \texttt{prohibit} & Forced centers in gabc do not influence the syllable alignment.\\
 \end{argtable}
 
+\subsubsection{Lyric tying (for vernacular texts)}
+
+\macroname{\textbackslash gresetlyrictie}{\{\#1\}}{gregoriotex-main.tex}
+Macro to configure which tie symbol is used for the tilde character (\texttt{\textasciitilde}) in syllable text.
+This allows using a single short character in gabc files for lyric ties, which is especially useful to represent elisions in vernacular texts.
+
+\begin{argtable}
+  \#1 & \texttt{undertie} & Use \textbackslash greundertie (default)\\
+  & \texttt{overtie} & Use \textbackslash greovertie\\
+  & \texttt{doubletie} & Use \textbackslash gredoubletie\\
+\end{argtable}
+
+Example usage in \TeX\@:
+\begin{latexcode}
+  \gresetlyrictie{overtie}
+  \gregorioscore{myscore}
+\end{latexcode}
+
+Example usage in Portuguese text:
+\begin{latexcode}
+  (c4) On(f)de~o~a(f)mor(gh) e(h) a(g) ca(h)ri(ixi)da(hg)de(hg) (,)
+\end{latexcode}
+
 \macroname{\textbackslash gresettranslationcentering}{\{\#1\}}{gregoriotex-main.tex}
 Macro to specify how the translation text should be aligned with it respective syllable text.
 
