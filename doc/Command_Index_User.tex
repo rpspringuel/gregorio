@@ -403,61 +403,38 @@ Macro for changing the color of the staff lines.   The two most common colors yo
 Macro for setting whether the staff lines should be rendered or not.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & The staff lines should be printed (default)\\  
-  & \texttt{disabled} & The staff lines should not be printed\\  
-  & \texttt{visible} & same as \texttt{enabled} (see note below).\\  
-  & \texttt{invisible} & same as \texttt{disabled} (see note below).\\  
-  & \texttt{phantom} & The staff lines are invisible but space is preserved (uses \textbackslash phantom)\\  
-  & \texttt{hphantom} & The staff lines are invisible with zero height (uses \textbackslash hphantom)\\  
-  & \texttt{vphantom} & The staff lines are invisible with zero width (uses \textbackslash vphantom)
+  \#1 & \texttt{visible} & The staff lines should be printed (default)\\  
+  & \texttt{invisible} & The staff lines should not be printed\\  
+  & \texttt{phantom} & The staff lines are invisible but space is preserved\\
+  & \texttt{hphantom} & The staff lines are invisible with zero height\\
+  & \texttt{vphantom} & The staff lines are invisible with zero width but height is preserved
 \end{argtable}
 
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated, kept for backward compatibility, and may be removed in the future. Use \texttt{enabled} and \texttt{disabled} instead.
+\textbf{Note:} With \texttt{invisible}, NABC voice 1 (above staff) and above-lines text are moved down closer to the lyrics line. With \texttt{phantom}, the staff lines are not rendered but NABC voice 1 and above-lines text maintain their original vertical positions as if the staff lines were present. This is useful for producing output with NABC neumes or above-lines text at the correct height without visible staff lines.
 
 \macroname{\textbackslash gresetlinesbehindpunctumcavum}{\{\#1\}}{gregoriotex-signs.tex}
 Macro for setting whether the staff lines behind a punctum cavum should be shown or not.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & The staff lines behind a punctum cavum should be printed (Plain \TeX\ default)\\
-  & \texttt{disabled} & The staff lines behind a punctum cavum should not be printed (\LaTeX\ default)\\
-  & \texttt{visible} & same as \texttt{enabled} (see note below).\\
-  & \texttt{invisible} & same as \texttt{disabled} (see note below).\\
-  & \texttt{phantom} & The lines are invisible but space is preserved\\
-  & \texttt{hphantom} & The lines are invisible with zero height\\
-  & \texttt{vphantom} & The lines are invisible with zero width\\
+  \#1 & \texttt{visible} & The staff lines behind a punctum cavum should be printed (Plain \TeX\ default)\\
+  & \texttt{invisible} & The staff lines behind a punctum cavum should not be printed (\LaTeX\ default)
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated, kept for backward compatibility, and may be removed in the future. Use \texttt{enabled} and \texttt{disabled} instead.
 
 \macroname{\textbackslash gresetlinesbehindalteration}{\{\#1\}}{gregoriotex-signs.tex}
 Macro for setting whether the staff lines behind an alternation (\ie, an accidental) should be shown or not.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & The staff lines behind an alteration should be printed (Plain \TeX\ default)\\
-  & \texttt{disabled} & The staff lines behind an alteration should not be printed (\LaTeX\ default)\\
-  & \texttt{visible} & same as \texttt{enabled} (see note below).\\
-  & \texttt{invisible} & same as \texttt{disabled} (see note below).\\
-  & \texttt{phantom} & The lines are invisible but space is preserved\\
-  & \texttt{hphantom} & The lines are invisible with zero height\\
-  & \texttt{vphantom} & The lines are invisible with zero width\\
+  \#1 & \texttt{visible} & The staff lines behind an alteration should be printed (Plain \TeX\ default)\\
+  & \texttt{invisible} & The staff lines behind an alteration should not be printed (\LaTeX\ default)
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated, kept for backward compatibility, and may be removed in the future. Use \texttt{enabled} and \texttt{disabled} instead.
 
 \macroname{\textbackslash gresetlinesbehinddottedbar}{\{\#1\}}{gregoriotex-signs.tex}
 Macro for setting whether the staff lines behind a dotted bar should be shown or not.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & The staff lines behind a dotted bar should be printed\\
-  & \texttt{disabled} & The staff lines behind a dotted bar should not be printed (default)\\
-  & \texttt{visible} & same as \texttt{enabled} (see note below).\\
-  & \texttt{invisible} & same as \texttt{disabled} (see note below).\\
-  & \texttt{phantom} & The lines are invisible but space is preserved\\
-  & \texttt{hphantom} & The lines are invisible with zero height\\
-  & \texttt{vphantom} & The lines are invisible with zero width\\
+  \#1 & \texttt{visible} & The staff lines behind a dotted bar should be printed\\
+  & \texttt{invisible} & The staff lines behind a dotted bar should not be printed (default)
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated, kept for backward compatibility, and may be removed in the future. Use \texttt{enabled} and \texttt{disabled} instead.
 
 
 \subsubsection{Score Font}
@@ -963,46 +940,30 @@ Sets the number system used for the mode number.
 Sets the visibility of the lyrics.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & Lyrics are visible (default).\\
-  & \texttt{disabled} & Lyrics are not visible (no space occupied).\\
-  & \texttt{visible} & same as \texttt{enabled} (see note below).\\
-  & \texttt{invisible} & same as \texttt{disabled} (see note below).\\
+  \#1 & \texttt{visible} & Lyrics are visible (default).\\
+  & \texttt{invisible} & Lyrics are not visible (no space occupied).\\
   & \texttt{phantom} & Lyrics are invisible but space is preserved.\\
   & \texttt{hphantom} & Lyrics are invisible with zero height.\\
   & \texttt{vphantom} & Lyrics are invisible with zero width.\\
 \end{argtable}
 
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated, kept for backward compatibility, and may be removed in the future. Use \texttt{enabled} and \texttt{disabled} instead.
-
 \macroname{\textbackslash gresettranslation}{\{\#1\}}{gregoriotex-main.tex}
 Sets the visibility of the translations.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & Translations are visible (default).\\
-  & \texttt{disabled} & Translations are not visible (no space occupied).\\
-  & \texttt{visible} & same as \texttt{enabled} (see note below).\\
-  & \texttt{invisible} & same as \texttt{disabled} (see note below).\\
-  & \texttt{phantom} & Translations are invisible but space is preserved.\\
-  & \texttt{hphantom} & Translations are invisible with zero height.\\
-  & \texttt{vphantom} & Translations are invisible with zero width.\\
+  \#1 & \texttt{visible} & Translations are visible (default).\\
+  & \texttt{invisible} & Translations are not visible (no space occupied).\\
+  & \texttt{phantom} & Translations are invisible but space is preserved.
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated, kept for backward compatibility, and may be removed in the future. Use \texttt{enabled} and \texttt{disabled} instead.
 
 \macroname{\textbackslash gresetabovelinestext}{\{\#1\}}{gregoriotex-main.tex}
 Sets the visibility of the above lines text.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & Above lines text are visible (default).\\
-  & \texttt{disabled} & Above lines text are not visible (no space occupied).\\
-  & \texttt{visible} & same as \texttt{enabled} (see note below).\\
-  & \texttt{invisible} & same as \texttt{disabled} (see note below).\\
-  & \texttt{phantom} & Above lines text are invisible but space is preserved.\\
-  & \texttt{hphantom} & Above lines text are invisible with zero height.\\
-  & \texttt{vphantom} & Above lines text are invisible with zero width.\\
+  \#1 & \texttt{visible} & Above lines text are visible (default).\\
+  & \texttt{invisible} & Above lines text are not visible (no space occupied).\\
+  & \texttt{phantom} & Above lines text are invisible but space is preserved.
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated, kept for backward compatibility, and may be removed in the future. Use \texttt{enabled} and \texttt{disabled} instead.
 
 
 \subsubsection{Text Alignment}
@@ -1156,16 +1117,9 @@ Macro for setting whether an alteration (flat, sharp, or natural) should be
 rendered before a custos or not.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & The custos alteration should be printed (default)\\
-      & \texttt{disabled} & The custos alteration should not be printed\\
-      & \texttt{visible} & The custos alteration should be printed (deprecated, use \texttt{enabled})\\
-      & \texttt{invisible} & The custos alteration should not be printed (deprecated, use \texttt{disabled})\\
-      & \texttt{phantom} & The custos alteration is invisible but space is preserved\\
-      & \texttt{hphantom} & The custos alteration is invisible with zero height\\
-      & \texttt{vphantom} & The custos alteration is invisible with zero width\\
+  \#1 & \texttt{visible} & The custos alteration should be printed (default)\\
+      & \texttt{invisible} & The custos alteration should not be printed
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated and will be removed in version 7.0.0. Use \texttt{enabled} and \texttt{disabled} instead.
 
 \macroname{\textbackslash greseteolcustos}{\{\#1\}}{gregoriotex-main.tex}
 Macro to determine whether Gregorio\TeX\ should automatically place the custos at a line break.
@@ -1291,16 +1245,12 @@ Macro to activate the new bar spacing algorithm.  The new algorithm attempts to 
 Sets the visibility of the notes.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & Notes are visible (default).\\
-  & \texttt{disabled} & Notes are not visible (no space occupied).\\
-  & \texttt{visible} & Notes are visible (deprecated, use \texttt{enabled}).\\
-  & \texttt{invisible} & Notes are not visible (deprecated, use \texttt{disabled}).\\
+  \#1 & \texttt{visible} & Notes are visible (default).\\
+  & \texttt{invisible} & Notes are not visible (no space occupied).\\
   & \texttt{phantom} & Notes are invisible but space is preserved.\\
   & \texttt{hphantom} & Notes are invisible with zero height. Useful for NABC with lyrics only.\\
   & \texttt{vphantom} & Notes are invisible with zero width.\\
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated and will be removed in version 7.0.0. Use \texttt{enabled} and \texttt{disabled} instead.
 
 \textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible. However, the staff lines and clefs will still show up (since their visibility is controlled by other settings). NABC neumes are also unaffected and remain controlled independently by \verb=\gresetnabc=.
 
@@ -1309,16 +1259,10 @@ Sets the visibility of an nabc voice.
 
 \begin{argtable}
   \#1 & integer & The nabc voice number: 1 = above staff, 2 = below staff.\\
-  \#2 & \texttt{enabled} & Notes are visible (default).\\
-  & \texttt{disabled} & Notes are not visible (no space occupied).\\
-  & \texttt{visible} & Notes are visible (deprecated, use \texttt{enabled}).\\
-  & \texttt{invisible} & Notes are not visible (deprecated, use \texttt{disabled}).\\
-  & \texttt{phantom} & Notes are invisible but space is preserved.\\
-  & \texttt{hphantom} & Notes are invisible with zero height.\\
-  & \texttt{vphantom} & Notes are invisible with zero width.\\
+  \#2 & \texttt{visible} & Notes are visible (default).\\
+  & \texttt{invisible} & Notes are not visible (no space occupied).\\
+  & \texttt{phantom} & Notes are invisible but space is preserved.
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated and will be removed in version 7.0.0. Use \texttt{enabled} and \texttt{disabled} instead.
 
 \textbf{Important:} NABC visibility is controlled independently from notes visibility (\verb=\gresetnotes=). This allows you to hide the main notes (e.g., using \verb=\gresetnotes{hphantom}=) while keeping NABC neumes visible, which is useful for producing NABC-only output with lyrics.
 
@@ -1368,16 +1312,12 @@ Marco to determine how much space the hyphen at the end of a line occupies for t
 Macro to tell Gregorio\TeX\ whether the clefs should be printed or not.
 
 \begin{argtable}
-  \#1 & \texttt{enabled} & Clefs will be printed (default)\\
-  & \texttt{disabled} & Clefs will not be printed\\
-  & \texttt{visible} & Clefs will be printed (deprecated, use \texttt{enabled})\\
-  & \texttt{invisible} & Clefs will not be printed (deprecated, use \texttt{disabled})\\
-  & \texttt{phantom} & Clefs are invisible but space is preserved\\
-  & \texttt{hphantom} & Clefs are invisible with zero height\\
-  & \texttt{vphantom} & Clefs are invisible with zero width\\
+  \#1 & \texttt{visible} & Clefs will be printed (default).\\
+  & \texttt{invisible} & Clefs will not be printed.\\
+  & \texttt{phantom} & Clefs are invisible but space is preserved.\\
+  & \texttt{hphantom} & Clefs are invisible with zero height.\\
+  & \texttt{vphantom} & Clefs are invisible with zero width.\\
 \end{argtable}
-
-\textbf{Note:} The \texttt{visible} and \texttt{invisible} options are deprecated and will be removed in version 7.0.0. Use \texttt{enabled} and \texttt{disabled} instead.
 
 
 \subsubsection{Clivis Alignment}

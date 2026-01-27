@@ -659,7 +659,7 @@
 \gre@abovelinestext@phantomwrapper=0\relax%
 
 \def\gresetabovelinestext#1{%
-  \gre@processvisibility{#1}%
+  \gre@processvisibilitywithphantom{#1}%
     {\gre@showabovelinestexttrue}%
     {\gre@showabovelinestextfalse}%
     {\gre@abovelinestext@phantomwrapper}%
@@ -690,7 +690,8 @@
   \gre@dimen@temp@five=\dimexpr(\gre@dimen@staffheight %
     + \gre@space@dimen@spacebeneathtext %
     + \gre@space@dimen@spacelinestext)\relax%
-  % If notes/lines are hidden with hphantom or disabled, bring NABC/ALT closer to the lyrics line
+  % If notes/lines are hidden with invisible, bring NABC/ALT closer to the lyrics line
+  % phantom and vphantom preserve the height, so we don't adjust in that case
   \ifgre@shownotes\else
     \ifgre@showlines\else
       \ifnum\gre@notes@phantomwrapper=2\relax
@@ -711,7 +712,9 @@
   \gre@debugmsg{spacing}{Raise alt text: \the\gre@dimen@temp@five}%
   \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{%
     \ifnum#2=0\relax
-      \gre@style@abovelinestext#1\endgre@style@abovelinestext
+      \gre@style@abovelinestext
+        \gre@applyphantomwrapper{\gre@abovelinestext@phantomwrapper}{#1}%
+      \endgre@style@abovelinestext
     \else
       #1%
     \fi
@@ -902,7 +905,7 @@
 \gre@translation@phantomwrapper=0\relax%
 
 \def\gresettranslation#1{%
-  \gre@processvisibility{#1}%
+  \gre@processvisibilitywithphantom{#1}%
     {\gre@showtranslationtrue}%
     {\gre@showtranslationfalse}%
     {\gre@translation@phantomwrapper}%
@@ -915,10 +918,10 @@
       \setbox\gre@box@temp@width=\hbox{#1}%
       \gre@dimen@temp@five=\dimexpr((\wd\gre@box@syllabletext - \wd\gre@box@temp@width) / 2)\relax%
       \kern\gre@dimen@temp@five %
-      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@style@translation#1\endgre@style@translation\hss}}}%
+      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@applyphantomwrapper{\gre@translation@phantomwrapper}{\gre@style@translation#1\endgre@style@translation}\hss}}}%
       \kern-\gre@dimen@temp@five %
     \else %
-      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@style@translation#1\endgre@style@translation\hss}}}%
+      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@applyphantomwrapper{\gre@translation@phantomwrapper}{\gre@style@translation#1\endgre@style@translation}\hss}}}%
     \fi %
   \fi%
 }%
@@ -929,7 +932,7 @@
       \GreBeginNLBArea{0}{1}%
     \fi %
     \gre@attr@center=1\relax %
-    \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\kern 0pt\vbox to 0pt{\vss\hbox to 0pt{\gre@style@translation#1\endgre@style@translation\hss}}\kern 0pt}%
+    \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\kern 0pt\vbox to 0pt{\vss\hbox to 0pt{\gre@applyphantomwrapper{\gre@translation@phantomwrapper}{\gre@style@translation#1\endgre@style@translation}\hss}}\kern 0pt}%
     \unsetluatexattribute{\gre@attr@center}%
     \relax %
   \fi%

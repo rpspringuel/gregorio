@@ -62,14 +62,14 @@
 \gre@nabcvoice@i@visibletrue
 \newif\ifgre@nabcvoice@ii@visible
 \gre@nabcvoice@ii@visibletrue
-\newcount\gre@nabcvoice@i@phantomwrapper%
-\gre@nabcvoice@i@phantomwrapper=0\relax%
-\newcount\gre@nabcvoice@ii@phantomwrapper%
-\gre@nabcvoice@ii@phantomwrapper=0\relax%
+\newcount\gre@nabcvoice@i@phantomwrapper
+\gre@nabcvoice@i@phantomwrapper=0\relax
+\newcount\gre@nabcvoice@ii@phantomwrapper
+\gre@nabcvoice@ii@phantomwrapper=0\relax
 % define more of these when more voices are supported
 
 \def\gresetnabc#1#2{%
-  \gre@processvisibility{#2}%
+  \gre@processvisibilitywithphantom{#2}%
     {\csname gre@nabcvoice@\romannumeral#1@visibletrue\endcsname}%
     {\csname gre@nabcvoice@\romannumeral#1@visiblefalse\endcsname}%
     {\csname gre@nabcvoice@\romannumeral#1@phantomwrapper\endcsname}%
@@ -80,9 +80,9 @@
   \csname ifgre@nabcvoice@\romannumeral#1@visible\endcsname %
     \ifcase#1\relax
       \or % 1
-        \GreSetNabcAboveLines{\GreNABCChar[1]{#2}}%
+        \GreSetNabcAboveLines{\gre@applyphantomwrapper{\gre@nabcvoice@i@phantomwrapper}{\GreNABCChar[1]{#2}}}%
       \or % 2
-        \GreSetNabcBelowLines{\GreNABCChar[2]{#2}}%
+        \GreSetNabcBelowLines{\gre@applyphantomwrapper{\gre@nabcvoice@ii@phantomwrapper}{\GreNABCChar[2]{#2}}}%
       \fi
   \fi %
 }

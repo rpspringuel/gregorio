@@ -660,14 +660,11 @@
 
 \newif\ifgre@usecustosalteration%
 \gre@usecustosalterationtrue%
-\newcount\gre@custosalteration@phantomwrapper%
-\gre@custosalteration@phantomwrapper=0\relax%
 \def\gresetcustosalteration#1{%
   \gre@trace{gresetcustosalteration{#1}}%
-  \gre@processvisibility{#1}%
+  \gre@processvisibilitynophantom{#1}%
     {\gre@usecustosalterationtrue}%
     {\gre@usecustosalterationfalse}%
-    {\gre@custosalteration@phantomwrapper}%
     {\protect\gresetcustosalteration}%
   \gre@trace@end%
 }%
@@ -1792,14 +1789,11 @@
 \gre@hidedottedbarlinestrue
 
 % macro for manipulating above flag
-\newcount\gre@dottedbarlines@phantomwrapper%
-\gre@dottedbarlines@phantomwrapper=0\relax%
 \def\gresetlinesbehinddottedbar#1{%
   \gre@trace{gresetlinesbehinddottedbar{#1}}%
-  \gre@processvisibility{#1}%
+  \gre@processvisibilitynophantom{#1}%
     {\gre@hidedottedbarlinesfalse}%
     {\gre@hidedottedbarlinestrue}%
-    {\gre@dottedbarlines@phantomwrapper}%
     {\protect\gresetlinesbehinddottedbar}%
   \gre@trace@end%
 }%
@@ -2620,14 +2614,11 @@
 \gre@hidepclinesfalse
 
 % macro for manipulating above flag
-\newcount\gre@pclines@phantomwrapper%
-\gre@pclines@phantomwrapper=0\relax%
 \def\gresetlinesbehindpunctumcavum#1{%
   \gre@trace{gresetlinesbehindpunctumcavum{#1}}%
-  \gre@processvisibility{#1}%
+  \gre@processvisibilitynophantom{#1}%
     {\gre@hidepclinesfalse}%
     {\gre@hidepclinestrue}%
-    {\gre@pclines@phantomwrapper}%
     {\protect\gresetlinesbehindpunctumcavum}%
   \gre@trace@end%
 }%
@@ -2638,14 +2629,11 @@
 \gre@hidealtlinesfalse
 
 % macro for manipulating above flag
-\newcount\gre@altlines@phantomwrapper%
-\gre@altlines@phantomwrapper=0\relax%
 \def\gresetlinesbehindalteration#1{%
   \gre@trace{gresetlinesbehindalteration{#1}}%
-  \gre@processvisibility{#1}%
+  \gre@processvisibilitynophantom{#1}%
     {\gre@hidealtlinesfalse}%
     {\gre@hidealtlinestrue}%
-    {\gre@altlines@phantomwrapper}%
     {\protect\gresetlinesbehindalteration}%
   \gre@trace@end%
 }%
