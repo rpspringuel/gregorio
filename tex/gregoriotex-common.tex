@@ -192,21 +192,6 @@
   \fi
 }%
 
-% Helpers to control text rendering mode (LuaTeX)
-% 3 Tr = invisible text, 0 Tr = normal
-\ifx\pdfextension\undefined
-  \def\gre@textrender@invisible{}%
-  \def\gre@textrender@normal{}%
-  \def\gre@textrender@pushinvis{}%
-  \def\gre@textrender@pop{}%
-\else
-  \def\gre@textrender@invisible{\pdfextension literal direct {3 Tr}}%
-  \def\gre@textrender@normal{\pdfextension literal direct {0 Tr}}%
-  \def\gre@textrender@pushinvis{\pdfextension literal direct {q 3 Tr}}%
-  \def\gre@textrender@pushnormal{\pdfextension literal direct {q 0 Tr}}%
-  \def\gre@textrender@pop{\pdfextension literal direct {Q}}%
-\fi
-
 %%%%%%%%%%%%%
 % Internal function tracing
 %%%%%%%%%%%%%
