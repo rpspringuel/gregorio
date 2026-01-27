@@ -687,28 +687,22 @@
   \else%
     \gre@attr@part=7\relax
   \fi%
-  \gre@dimen@temp@five=\dimexpr(\gre@dimen@staffheight %
-    + \gre@space@dimen@spacebeneathtext %
+  \gre@dimen@temp@five=\dimexpr(\gre@space@dimen@spacebeneathtext
     + \gre@space@dimen@spacelinestext)\relax%
-  % If notes/lines are hidden with invisible, bring NABC/ALT closer to the lyrics line
-  % phantom and vphantom preserve the height, so we don't adjust in that case
-  \ifgre@shownotes\else
-    \ifgre@showlines\else
-      \ifnum\gre@notes@phantomwrapper=2\relax
-        \ifnum\gre@lines@phantomwrapper=2\relax
-          \advance\gre@dimen@temp@five by -\gre@dimen@staffheight\relax
-        \else\ifnum\gre@lines@phantomwrapper=0\relax
-          \advance\gre@dimen@temp@five by -\gre@dimen@staffheight\relax
-        \fi\fi
-      \else\ifnum\gre@notes@phantomwrapper=0\relax
-        \ifnum\gre@lines@phantomwrapper=2\relax
-          \advance\gre@dimen@temp@five by -\gre@dimen@staffheight\relax
-        \else\ifnum\gre@lines@phantomwrapper=0\relax
-          \advance\gre@dimen@temp@five by -\gre@dimen@staffheight\relax
-        \fi\fi
-      \fi\fi
-    \fi
-  \fi
+  % If notes/lines are visible or preserve height (phantom/vphantom), keep staffheight
+  \ifgre@shownotes
+    \advance\gre@dimen@temp@five by \gre@dimen@staffheight\relax
+  \else\ifgre@showlines
+    \advance\gre@dimen@temp@five by \gre@dimen@staffheight\relax
+  \else\ifnum\gre@notes@phantomwrapper=1\relax
+    \advance\gre@dimen@temp@five by \gre@dimen@staffheight\relax
+  \else\ifnum\gre@notes@phantomwrapper=3\relax
+    \advance\gre@dimen@temp@five by \gre@dimen@staffheight\relax
+  \else\ifnum\gre@lines@phantomwrapper=1\relax
+    \advance\gre@dimen@temp@five by \gre@dimen@staffheight\relax
+  \else\ifnum\gre@lines@phantomwrapper=3\relax
+    \advance\gre@dimen@temp@five by \gre@dimen@staffheight\relax
+  \fi\fi\fi\fi\fi\fi
   \gre@debugmsg{spacing}{Raise alt text: \the\gre@dimen@temp@five}%
   \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{%
     \ifnum#2=0\relax
