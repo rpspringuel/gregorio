@@ -1,6 +1,6 @@
 %GregorioTeX file.
 %
-% Copyright (C) 2007-2025 The Gregorio Project (see CONTRIBUTORS.md)
+% Copyright (C) 2007-2026 The Gregorio Project (see CONTRIBUTORS.md)
 %
 % This file is part of Gregorio.
 %
@@ -116,11 +116,11 @@
 
 \def\gre@endofglyphcommon{%
   \gre@trace{gre@endofglyphcommon}%
-  \global\unsetluatexattribute{\gre@attr@glyph@top}%
-  \global\unsetluatexattribute{\gre@attr@glyph@bottom}%
+  \global\unsetattribute{\gre@attr@glyph@top}%
+  \global\unsetattribute{\gre@attr@glyph@bottom}%
   \ifgre@endofscore %
-    \gre@localleftbox{}%
-    \gre@localrightbox{}%
+    \localleftbox{}%
+    \localrightbox{}%
   \fi %
   \gre@trace@end%
 }
@@ -129,8 +129,8 @@
 % #1: the high height
 % #2: the low height
 \def\GreGlyphHeights#1#2{%
-  \global\setluatexattribute\gre@attr@glyph@top{#1}%
-  \global\setluatexattribute\gre@attr@glyph@bottom{#2}%
+  \global\setattribute\gre@attr@glyph@top{#1}%
+  \global\setattribute\gre@attr@glyph@bottom{#2}%
 }%
 
 % Flag that tells us if the current glyph is the first glyph or not.
@@ -1087,7 +1087,7 @@
   \global\gre@dimen@notesaligncenter=0pt\relax% very important, see flat and natural
   \gre@unsetfixedtextformat %
   \ifgre@blockeolcustos\ifnum\gre@insidediscretionary=0\relax %
-     \gre@localrightbox{}%
+     \localrightbox{}%
   \fi\fi %
   \relax %
   \gre@trace@end%
@@ -1410,7 +1410,7 @@
       \fi%
     \else %
       \ifgre@endofscore %
-        \gre@localleftbox{}%
+        \localleftbox{}%
       \else %
         \ifnum\gre@newlinearg=-1\else %
           \gre@debugmsg{barspacing}{calling new line with argument: \gre@newlinearg}%
@@ -1551,7 +1551,7 @@
   \global\gre@dimen@notesaligncenter= 0 pt\relax % very important, see flat and natural
   \gre@unsetfixedtextformat %
   \ifgre@blockeolcustos\ifnum\gre@insidediscretionary=0\relax %
-     \gre@localrightbox{}%
+     \localrightbox{}%
   \fi\fi %
   \relax%
   \gre@trace@end%

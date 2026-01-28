@@ -1,6 +1,6 @@
 %GregorioTeX file.
 %
-% Copyright (C) 2010-2025 The Gregorio Project (see CONTRIBUTORS.md)
+% Copyright (C) 2010-2026 The Gregorio Project (see CONTRIBUTORS.md)
 %
 % This file is part of Gregorio.
 %
@@ -53,14 +53,7 @@
 %% and emergencystretch
 \grechangecount{looseness}{-1}%
 \grechangecount{tolerance}{9000}%
-% Workaround for bug 842 (http://tracker.luatex.org/view.php?id=842)
-% see http://tug.org/pipermail/luatex/2013-July/004516.html
-% The idea is that we use discretionaries (explicit hyphens, though more than hyphens in our case) for clef changes, and we need to give them a special penalty, which is not taken into account if pretolerance is > -1 on LuaTeX < 0.80. For a more detailed explanation see http://tug.org/pipermail/luatex/2013-July/004516.html.
-\ifnum\the\luatexversion < 78\relax %
-  \grechangecount{pretolerance}{-1}%
-\else %
-  \grechangecount{pretolerance}{\the\pretolerance}%
-\fi %
+\grechangecount{pretolerance}{\the\pretolerance}%
 \gre@createdim{skip}{emergencystretch}{\the\emergencystretch}{scalable}%
 % By default, we don't care if a line of score is alone on the page,
 % if you think it is bad, you can modify the two following values. Assigning

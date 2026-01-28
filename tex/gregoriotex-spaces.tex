@@ -1,6 +1,6 @@
 %GregorioTeX file.
 %
-% Copyright (C) 2007-2025 The Gregorio Project (see CONTRIBUTORS.md)
+% Copyright (C) 2007-2026 The Gregorio Project (see CONTRIBUTORS.md)
 %
 % This file is part of Gregorio.
 %
@@ -890,23 +890,6 @@
 
 \def\gre@calculate@additionalspaces{%
   \gre@trace{gre@calculate@additionalspaces}%
-  % Pass in dimensions and counts that are macros
-  \gre@luasavedim{spaceabovelines}%
-  % \ifgre@noteadditionalspacelinestext is not accessible in Lua, so handle it here
-  \ifgre@noteadditionalspacelinestext
-    \gre@luasavedim{noteadditionalspacelinestext}%
-  \else
-    {\grechangedim{noteadditionalspacelinestext}{\the\dimexpr(\gre@dimen@interstafflinedistancebase+\gre@dimen@stafflinethicknessbase)/2 * \gre@factor\relax}{fixed}%
-     \gre@luasavedim{noteadditionalspacelinestext}}%
-  \fi
-  \gre@luasavedim{abovelinestextheight}%
-  \gre@luasavedim{abovelinestextraise}%
-  \gre@luasavedim{abovelinesnabcheight}%
-  \gre@luasavedim{abovelinesnabcraise}%
-  \gre@luasavedim{belowlinesnabcheight}%
-  \gre@luasavedim{spacelinestext}%
-  \gre@luasavedim{translationheight}%
-  \gre@luasavedim{spacebeneathtext}%
   \gre@generatelines %
   \gre@calculate@constantglyphraise %
   \gre@trace@end%
@@ -1550,20 +1533,6 @@
   \fi%
 }
 
-% Make a dim accessible in Lua code. Any scaling or inheriting is done
-% at the time of the expansion of \gre@luasavedim, not when the dim is
-% used in Lua.
-% #1: name of dim
-\def\gre@luasavedim#1{%
-  \edef\gre@prefix{\gre@getprefix{#1}}%
-  \directlua{%
-    gregoriotex.save_dim(%
-      "\luatexluaescapestring{#1}",%
-      "\luatexluaescapestring{\csname gre@space@\gre@prefix @#1\endcsname}"%
-    )%
-  }%
-}%
-
 % #1 : line number
 % #2-#4 : same as #1-#3 of \grechangedim
 \def\grechangenextscorelinedim#1#2#3#4{%
@@ -1572,12 +1541,12 @@
   ]%
   {\grechangedim{#2}{#3}{#4}%
    \edef\gre@prefix{\gre@getprefix{#2}}%
-   \directlua{%
-     gregoriotex.change_next_score_line_dim(%
-       "\luatexluaescapestring{#1}",%
-       "\luatexluaescapestring{#2}",%
-       "\luatexluaescapestring{\csname gre@space@\gre@prefix @#2\endcsname}"%
-     )%
+   \directlua{
+     gregoriotex.change_next_score_line_dim(
+       "\luaescapestring{#1}",
+       "\luaescapestring{#2}",
+       "\luaescapestring{\csname gre@space@\gre@prefix @#2\endcsname}"
+     )
    }%
   }%
 }%
@@ -1588,12 +1557,12 @@
   \IfStrEqCase{#2}{{additionaltopspacethreshold}{}{additionaltopspacealtthreshold}{}{additionaltopspacenabcthreshold}{}{noteadditionalspacelinestextthreshold}{}}[%
     \gre@error{Unrecognized option "#2" for \protect\grechangenextscorelinecount\MessageBreak Possible options are: 'additionaltopspacethreshold', 'additionaltopspacealtthreshold', 'additionaltopspacenabcthreshold', 'noteadditionalspacelinestextthreshold'}%
   ]%
-  \directlua{%
-    gregoriotex.change_next_score_line_count(%
-      "\luatexluaescapestring{#1}",%
-      "\luatexluaescapestring{#2}",%
-      "\luatexluaescapestring{#3}"%
-    )%
+  \directlua{
+    gregoriotex.change_next_score_line_count(
+      "\luaescapestring{#1}",
+      "\luaescapestring{#2}",
+      "\luaescapestring{#3}"
+    )
   }%
 }%
 

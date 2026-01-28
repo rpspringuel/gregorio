@@ -1,6 +1,6 @@
 %GregorioTeX main file.
 %
-% Copyright (C) 2007-2025 The Gregorio Project (see CONTRIBUTORS.md)
+% Copyright (C) 2007-2026 The Gregorio Project (see CONTRIBUTORS.md)
 %
 % This file is part of Gregorio.
 %
@@ -39,88 +39,50 @@
 
 \def\gre@nothing{}%
 
-%%%%%%%%%%%%%%%
-%% Backwards Compatibility
-%%%%%%%%%%%%%%%
-
-% Depending on version of LuaTeX / LaTeX, some primitives have different names
-% We define local aliases for this eventuality, using \ifdefined to determine which
-% version of the primative is available.  In all cases the 'true' branch should be the
-% more recent version.
-\ifdefined\localleftbox%
-  \let\gre@localleftbox\localleftbox%
-\else%
-  \let\gre@localleftbox\luatexlocalleftbox%
-\fi%
-\ifdefined\localrightbox%
-  \let\gre@localrightbox\localrightbox%
-\else%
-  \let\gre@localrightbox\luatexlocalrightbox%
-\fi%
-\ifdefined\pdfextension%
-  \def\gre@startlink{\pdfextension startlink }%
-  \def\gre@endlink{\pdfextension endlink\relax}%
-\else%
-  \let\gre@startlink\pdfstartlink%
-  \let\gre@endlink\pdfendlink%
-\fi%
-\ifdefined\savepos%
-  \let\gre@savepos\savepos%
-\else%
-  \let\gre@savepos\pdfsavepos%
-\fi%
-\ifdefined\lastxpos%
-  \let\gre@lastxpos\lastxpos%
-\else%
-  \let\gre@lastxpos\pdflastxpos%
-\fi%
-\ifdefined\lastypos%
-  \let\gre@lastypos\lastypos%
-\else%
-  \let\gre@lastypos\pdflastypos%
-\fi%
+\def\gre@startlink{\pdfextension startlink }
+\def\gre@endlink{\pdfextension endlink\relax}
 
 %%%%%%%%%%%%%%%
 
 % an attribute to mark various parts of the score
 % 1 = commentary, 2 = stafflines, 3 = initial
 % 4 = lyrics, 5 = translation, 6 = alt, 7 = nabc, 8 = nabc below
-\newluatexattribute\gre@attr@part%
+\newattribute\gre@attr@part
   \edef\gre@attrid@part{\the\allocationnumber}
 
 % an attribute we put on the text nodes.
 % if it is 1, it means that there may be a dash here if this syllable is at the end of a line
 % if it is 2, it means that it's never useful to typeset a dash
 % if it is 0, it just means that we are in a score...
-\newluatexattribute\gre@attr@dash%
+\newattribute\gre@attr@dash
 
 % an attribute used for translation centering
-\newluatexattribute\gre@attr@center%
+\newattribute\gre@attr@center
 
-\newluatexattribute\GreScoreId %
+\newattribute\GreScoreId
 
 % attributes for tracking glyph heights
-\newluatexattribute\gre@attr@glyph@top %
-\newluatexattribute\gre@attr@glyph@bottom %
+\newattribute\gre@attr@glyph@top
+\newattribute\gre@attr@glyph@bottom
 
 % attribute for syllable tracking
-\newluatexattribute\gre@attr@syllable@id %
+\newattribute\gre@attr@syllable@id
 
 % attributes for soft alterations
 
 % Alterations are numbered consecutively starting from 1. If an
 % alteration is set twice, once for measurement and once for printing,
 % they have the same id.
-\newluatexattribute\gre@attr@alteration@id %
+\newattribute\gre@attr@alteration@id
 
 % The pitch and type of an alteration.
-\newluatexattribute\gre@attr@alteration@pitch
+\newattribute\gre@attr@alteration@pitch
   \edef\gre@attrid@alteration@pitch{\the\allocationnumber}%
-\newluatexattribute\gre@attr@alteration@type % see \gre@alteration for codes
+\newattribute\gre@attr@alteration@type % see \gre@alteration for codes
   \edef\gre@attrid@alteration@type{\the\allocationnumber}%
 
-\newluatexcatcodetable\gre@atletter %
-\setluatexcatcodetable\gre@atletter{%
+\newcatcodetable\gre@atletter
+\setcatcodetable\gre@atletter{%
   \catcode`\@=11 %
 }%
 
@@ -247,7 +209,7 @@
 \def\gre@newlinecommon#1#2{%
   \gre@trace{gre@newlinecommon{#1}{#2}}%
   \ifgre@blockeolcustos\ifnum\gre@insidediscretionary=0\relax %
-     \gre@localrightbox{}%
+     \localrightbox{}%
   \fi\fi %
   \ifgre@boxing\else%
     \global\gre@lastoflinecount=2\relax %
@@ -563,8 +525,8 @@
   \gre@trace{gre@writemode{#1}{#2}{#3}}%
   \greannotation{%
     \gre@style@modeline #1\endgre@style@modeline %
-    \gre@style@modemodifier \directlua{gregoriotex.mode_part("\luatexluaescapestring{#2}")}\endgre@style@modemodifier %
-    \gre@style@modedifferentia \directlua{gregoriotex.mode_part("\luatexluaescapestring{#3}")}\endgre@style@modedifferentia %
+    \gre@style@modemodifier \directlua{gregoriotex.mode_part("\luaescapestring{#2}")}\endgre@style@modemodifier
+    \gre@style@modedifferentia \directlua{gregoriotex.mode_part("\luaescapestring{#3}")}\endgre@style@modedifferentia
     \relax %
   }%
   \relax %
@@ -697,7 +659,7 @@
       #1%
     \fi
     \hss}%
-  \unsetluatexattribute{\gre@attr@part}%
+  \unsetattribute{\gre@attr@part}%
   \gre@trace@end%
 }%
 
@@ -911,7 +873,7 @@
     \fi %
     \gre@attr@center=1\relax %
     \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\kern 0pt\vbox to 0pt{\vss\hbox to 0pt{\gre@style@translation#1\endgre@style@translation\hss}}\kern 0pt}%
-    \unsetluatexattribute{\gre@attr@center}%
+    \unsetattribute{\gre@attr@center}%
     \relax %
   \fi%
 }%
@@ -933,7 +895,7 @@
   \fi %
   \gre@attr@center=2\relax %
   \raise\gre@space@dimen@spacebeneathtext\hbox to 0pt{}%
-  \unsetluatexattribute{\gre@attr@center}%
+  \unsetattribute{\gre@attr@center}%
   \relax %
   \gre@trace@end%
 }%
@@ -1097,8 +1059,8 @@
   \global\gre@dimen@morawidth=0pt\relax %
   \GreResetEolCustos%
   \gre@resetledgerlineheuristics%
-  \global\setluatexattribute\gre@attr@syllable@id{0}%
-  \global\setluatexattribute\gre@attr@alteration@id{0}%
+  \global\setattribute\gre@attr@syllable@id{0}%
+  \global\setattribute\gre@attr@alteration@id{0}%
   \xdef\gre@gabcname{#6}%
   \gre@setstafflines{#7}%
   \ifnum\gre@count@lastline=0\relax
@@ -1133,17 +1095,17 @@
   \ifnum\gre@nlbstate=0\else %
     \GreEndNLBArea{2}{0}%
   \fi %
-  \gre@localleftbox{}%
+  \localleftbox{}%
   \ifgre@keeprightbox\else %
-    \gre@localrightbox{}%
+    \localrightbox{}%
   \fi %
   \par %
   \ifgre@keeprightbox%
     \global\gre@keeprightboxfalse%
   \fi%
   % with some versions of LuaTeX, the \localrightbox and \localleftbox must be set empty in an environment with the good attributes set
-  \gre@localleftbox{}%
-  \gre@localrightbox{}%
+  \localleftbox{}%
+  \localrightbox{}%
   \gre@restorepenalties %
   \gre@dimen@temp@one=0pt\relax%
   \gre@dimen@temp@two=0pt\relax%
@@ -1157,9 +1119,9 @@
   \setbox\gre@box@annotation=\box\voidb@x%
   \setbox\gre@box@commentary=\box\voidb@x%
   \directlua{gregoriotex.at_score_end()}%
-  \unsetluatexattribute{\gre@attr@glyph@top}%
-  \unsetluatexattribute{\gre@attr@glyph@bottom}%
-  \unsetluatexattribute{\gre@attr@dash}%
+  \unsetattribute{\gre@attr@glyph@top}%
+  \unsetattribute{\gre@attr@glyph@bottom}%
+  \unsetattribute{\gre@attr@dash}%
   \xdef\gre@bolshiftcleftypelocal{\gre@bolshiftcleftypeglobal}%
   \ifnum\gre@count@lastline=0\relax
     \parfillskip=\gre@saved@parfillskip\relax%
@@ -1261,7 +1223,7 @@
 \newif\ifgre@blockeolcustos%
 \def\GreSuppressEolCustos{%
   \gre@blockeolcustostrue%
-  \gre@localrightbox{}%
+  \localrightbox{}%
 }%
 \def\gre@useautoeolcustos{%
   \gre@trace{gre@useautoeolcustos}%
@@ -1874,7 +1836,7 @@
 % Macros for compiling short snippets of GABC directly expressed in TeX
 
 \long\def\gabcsnippet#1{%
-  \directlua{gregoriotex.direct_gabc("\luatexluaescapestring{\unexpanded\expandafter{#1}}", nil, \gre@allowdeprecated@asboolean)}%
+  \directlua{gregoriotex.direct_gabc("\luaescapestring{\unexpanded\expandafter{#1}}", nil, \gre@allowdeprecated@asboolean)}%
 }%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%

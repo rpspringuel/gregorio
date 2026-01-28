@@ -1,6 +1,6 @@
 %GregorioTeX file.
 %
-% Copyright (C) 2007-2025 The Gregorio Project (see CONTRIBUTORS.md)
+% Copyright (C) 2007-2026 The Gregorio Project (see CONTRIBUTORS.md)
 %
 % This file is part of Gregorio.
 %
@@ -158,7 +158,7 @@
 \def\GreSetLinesClef#1#2#3#4#5#6#7{%
   \gre@trace{GreSetLinesClef{#1}{#2}{#3}{#4}{#5}{#6}{#7}}%
   \gre@save@clef{#1}{#2}{#4}{#5}{#6}{#7}%
-  \gre@localleftbox{%
+  \localleftbox{%
     \copy\gre@box@lines% draws the lines
     \unkern %
     \ifgre@showclef%
@@ -539,7 +539,7 @@
         \GreNoBreak%
         \gre@pickcustos{#1}{0}\relax %
       }%
-      \gre@localrightbox{%
+      \localrightbox{%
         \ifgre@showlines %
           \ifnum#1<\gre@pitch@belowstaff\relax %
             \gre@additionalbottomcustoslineend %
@@ -1117,18 +1117,18 @@
   \ifgre@boxing\else %
     \ifcase#2 % 0
       \gre@debugmsg{general}{save case 0}%
-      \gre@savepos %
+      \savepos
     \or % 1
       \setbox\gre@box@temp@sign=\hbox{\gre@fontchar@punctum}%
       \kern-\wd\gre@box@temp@sign %
-      \gre@savepos %
+      \savepos
       \kern\wd\gre@box@temp@sign %
     \or % 2
       \gre@debugmsg{general}{save case 2}%
       \setbox\gre@box@temp@sign=\hbox{\gre@fontchar@punctum}%
       \gre@dimen@temp@five=\wd\gre@box@temp@sign %
       \kern-.5\wd\gre@box@temp@sign %
-      \gre@savepos %
+      \savepos
       \kern.5\wd\gre@box@temp@sign %
     \fi %
     \directlua{gregoriotex.save_length(#1, #3)}%
