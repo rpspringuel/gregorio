@@ -4,7 +4,7 @@
  * This file implements the score parser.
  *
  * Gregorio score determination from gabc.
- * Copyright (C) 2006-2025 The Gregorio Project (see CONTRIBUTORS.md)
+ * Copyright (C) 2006-2026 The Gregorio Project (see CONTRIBUTORS.md)
  *
  * This file is part of Gregorio.
  *
