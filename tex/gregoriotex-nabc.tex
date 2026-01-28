@@ -33,13 +33,13 @@
   \global\font\gre@font@nabc={name:#2} at #3 pt\relax %
   {%
     \csname gre@font@nabcvoice@\romannumeral#1\endcsname
-    \directlua{gregoriotex.init_nabc_font("\luatexluaescapestring{#2}")}%
+    \directlua{gregoriotex.init_nabc_font("\luaescapestring{#2}")}%
   }%
 }
 
 \def\gre@nabccharno#1#2#3{%
   \gre@trace{gre@nabccharno{#1}{#2}{#3}}%
-  {\directlua{gregoriotex.print_nabc(gregoriotex.parse_nabc("#1", "\luatexluaescapestring{#2}", #3))}}%
+  {\directlua{gregoriotex.print_nabc(gregoriotex.parse_nabc("#1", "\luaescapestring{#2}", #3))}}%
   \gre@trace@end%
 }
 

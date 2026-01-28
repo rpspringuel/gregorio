@@ -1230,9 +1230,6 @@ Alias for \verb=\resizebox=.
 \macroname{\textbackslash gre@dimension}{}{gregoriotex-spaces.tex}
 Workhorse function for setting distances in \verb=\grecreatedim= and \verb=\grechangedim=.
 
-\macroname{\textbackslash gre@luasavedim}{}{gregoriotex-spaces.tex}
-Makes a distance, which is a macro and therefore only visible in TeX code, also visible in Lua code.
-
 \macroname{\textbackslash gre@setstafflines}{\#1}{gregoriotex-main.tex}
 Sets the number of staff lines.
 
@@ -2235,14 +2232,6 @@ Macro called at the end of the score to restore the text penalties.
 Depending on version of Lua\TeX / \LaTeX, some primitives have different names
 We define the following local aliases to account for this eventuality.
 
-\macroname{\textbackslash gre@localleftbox}{}{gregoriotex-main.tex}
-Current primitive: \verb=\localleftbox=
-Legacy primitive: \verb=\luatexlocalleftbox=
-
-\macroname{\textbackslash gre@localrightbox}{}{gregoriotex-main.tex}
-Current primitive: \verb=\localrightbox=
-Legacy primitive: \verb=\luatexlocalrightbox=
-
 \macroname{\textbackslash gre@startlink}{}{gregoriotex-main.tex}
 Current primitive: \verb=\pdfextension startlink=
 Legacy primitive: \verb=\pdfstartlink=
@@ -2250,18 +2239,6 @@ Legacy primitive: \verb=\pdfstartlink=
 \macroname{\textbackslash gre@endlink}{}{gregoriotex-main.tex}
 Current primitive: \verb=\pdfextension endlink=
 Legacy primitive: \verb=\pdfendlink=
-
-\macroname{\textbackslash gre@savepos}{}{gregoriotex-main.tex}
-Current primitive: \verb=\savepos=
-Legacy primitive: \verb=\pdfsavepos=
-
-\macroname{\textbackslash gre@lastxpos}{}{gregoriotex-main.tex}
-Current primitive: \verb=\lastxpos=
-Legacy primitive: \verb=\pdflastxpos=
-
-\macroname{\textbackslash gre@lastypos}{}{gregoriotex-main.tex}
-Current primitive: \verb=\lastypos=
-Legacy primitive: \verb=\pdflastypos=
 
 
 \subsection{\LaTeX/Plain \TeX\ compatibility}
