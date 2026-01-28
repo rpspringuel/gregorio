@@ -6,7 +6,7 @@
 """
     Python fontforge script to build a square notation font.
 
-    Copyright (C) 2013-2025 The Gregorio Project (see CONTRIBUTORS.md)
+    Copyright (C) 2013-2026 The Gregorio Project (see CONTRIBUTORS.md)
 
     This file is part of Gregorio.
 

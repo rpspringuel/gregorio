@@ -4,7 +4,7 @@
  *
  * Gregorio configuration headers.
  *
- * Copyright (C) 2015-2025 The Gregorio Project (see CONTRIBUTORS.md)
+ * Copyright (C) 2015-2026 The Gregorio Project (see CONTRIBUTORS.md)
  *
  * This file is part of Gregorio.
  * 

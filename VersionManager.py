@@ -5,7 +5,7 @@
 
     See VersionUpdate.py -h for help
 
-    Copyright (C) 2015-2025 The Gregorio Project (see CONTRIBUTORS.md)
+    Copyright (C) 2015-2026 The Gregorio Project (see CONTRIBUTORS.md)
 
     This file is part of Gregorio.
 
@@ -66,7 +66,6 @@ GREGORIO_FILES = ["configure.ac",
                   "fonts/squarize.py",
                  ]
 COPYRIGHT_FILES = ["install-gtex.sh",
-                   "build-ctan.sh",
                    "ctan_upload.sh",
                    "tex/gregoriotex-signs.tex",
                    "tex/gregorio-vowels.dat",
