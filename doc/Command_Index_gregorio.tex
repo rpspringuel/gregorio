@@ -762,6 +762,14 @@ Macro for typesetting low choral signs.
   & \texttt{1} & Choral sign occurs before last note of podatus, porrectus, or torculus resupinus.\\
 \end{argtable}
 
+\macroname{\textbackslash GreLyricTie}{}{gregoriotex-main.tex}
+Macro that holds the current lyric tie style. This is an alias to the currently
+selected tie macro (\textbackslash greundertie, \textbackslash greovertie,
+or \textbackslash gredoubletie) as set by \textbackslash gresetlyrictie.
+This macro is used internally when rendering the tilde character (\textasciitilde) in lyrics.
+Users should typically use \textbackslash gresetlyrictie to change the tie style
+rather than redefining this macro directly.
+
 \macroname{\textbackslash GreMode}{\#1\#2\#3}{gregoriotex-main.tex}
 If the gabc file contains a mode in the header, then this function
 places said mode as the first (top) annotation.  If the user has

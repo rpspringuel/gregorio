@@ -1633,21 +1633,21 @@
   \relax %
 }%
 
-\def\GreUnderTie{%
+\def\greundertie{%
   \kern-0.25em%
   \raisebox{-1ex}{\resizebox{0.7em}{!}{$\smile$}}%
   \kern-0.25em%
   \relax %
 }%
 
-\def\GreOverTie{%
+\def\greovertie{%
   \kern-0.25em%
   \raisebox{1ex}{\resizebox{0.7em}{!}{$\frown$}}%
   \kern-0.25em%
   \relax %
 }%
 
-\def\GreDoubleTie{%
+\def\gredoubletie{%
   \kern-0.25em%
   \raisebox{-1ex}{\resizebox{0.7em}{!}{$\smile$}}%
   \kern-0.7em%
@@ -1657,15 +1657,15 @@
 }%
 
 % Command to set the lyric tie character (~) to one of the tie macros
-% Default: \GreUnderTie
-\let\gre@lyrictie\GreUnderTie%
+% Default: \greundertie
+\let\gre@lyrictie\greundertie%
 \let\GreLyricTie\gre@lyrictie%
 
 \def\gresetlyrictie#1{%
   \IfStrEqCase{#1}{%
-    {undertie}{\let\gre@lyrictie\GreUnderTie\let\GreLyricTie\gre@lyrictie}%
-    {overtie}{\let\gre@lyrictie\GreOverTie\let\GreLyricTie\gre@lyrictie}%
-    {doubletie}{\let\gre@lyrictie\GreDoubleTie\let\GreLyricTie\gre@lyrictie}%
+    {undertie}{\let\gre@lyrictie\greundertie\let\GreLyricTie\gre@lyrictie}%
+    {overtie}{\let\gre@lyrictie\greovertie\let\GreLyricTie\gre@lyrictie}%
+    {doubletie}{\let\gre@lyrictie\gredoubletie\let\GreLyricTie\gre@lyrictie}%
   }[% all other cases
     \gre@error{Unrecognized option "#1" for \protect\gresetlyrictie\MessageBreak Possible options are: 'undertie', 'overtie', 'doubletie'}%
   ]%
