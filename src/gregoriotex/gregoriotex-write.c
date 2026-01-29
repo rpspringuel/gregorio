@@ -1470,6 +1470,9 @@ static void gtex_print_char(FILE *f, const grewchar to_print)
     case L'-':
         fprintf(f, "\\GreHyph{}");
         break;
+    case L'~':
+        fprintf(f, "\\GreLyricTie{}");
+        break;
     default:
         gregorio_print_unichar(f, to_print);
         break;

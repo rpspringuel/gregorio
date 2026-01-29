@@ -1018,9 +1018,7 @@ character:
         add_text($1.text);
     }
     | LYRIC_TIE {
-        gregorio_begin_style(&current_character, ST_SPECIAL_CHAR);
         add_text(gregorio_strdup("~"));
-        gregorio_end_style(&current_character, ST_SPECIAL_CHAR);
     }
     | style_beginning
     | style_end
