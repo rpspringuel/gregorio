@@ -1658,14 +1658,13 @@
 
 % Command to set the lyric tie character (~) to one of the tie macros
 % Default: \greundertie
-\let\gre@lyrictie\greundertie%
-\let\GreLyricTie\gre@lyrictie%
+\let\GreLyricTie\greundertie%
 
 \def\gresetlyrictie#1{%
   \IfStrEqCase{#1}{%
-    {undertie}{\let\gre@lyrictie\greundertie\let\GreLyricTie\gre@lyrictie}%
-    {overtie}{\let\gre@lyrictie\greovertie\let\GreLyricTie\gre@lyrictie}%
-    {doubletie}{\let\gre@lyrictie\gredoubletie\let\GreLyricTie\gre@lyrictie}%
+    {undertie}{\let\GreLyricTie\greundertie}%
+    {overtie}{\let\GreLyricTie\greovertie}%
+    {doubletie}{\let\GreLyricTie\gredoubletie}%
   }[% all other cases
     \gre@error{Unrecognized option "#1" for \protect\gresetlyrictie\MessageBreak Possible options are: 'undertie', 'overtie', 'doubletie'}%
   ]%
