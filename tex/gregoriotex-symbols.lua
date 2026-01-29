@@ -1,6 +1,6 @@
 --GregorioTeX Symbols Lua support file.
 --
---Copyright (C) 2016-2025 The Gregorio Project (see CONTRIBUTORS.md)
+--Copyright (C) 2016-2026 The Gregorio Project (see CONTRIBUTORS.md)
 --
 --This file is part of Gregorio.
 --
