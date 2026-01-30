@@ -1288,16 +1288,16 @@ Sets the visibility of the notes.
 \textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible. However, the staff lines and clefs will still show up (since their visibility is controlled by other settings). NABC neumes are also unaffected and remain controlled independently by \verb=\gresetnabc=.
 
 \macroname{\textbackslash gresetnabc}{\{\#1\}\{\#2\}}{gregoriotex-nabc.tex}
-Sets the visibility of an nabc voice.
+Sets the visibility of an NABC voice.
 
 \begin{argtable}
-  \#1 & integer & The nabc voice number: 1 = above staff, 2 = below staff.\\
-  \#2 & \texttt{visible} & Notes are visible (default).\\
-  & \texttt{invisible} & Notes are not visible (no space occupied).\\
-  & \texttt{phantom} & Notes are invisible but space is preserved.
+  \#1 & integer & The NABC voice number: 1 = above staff, 2 = below staff.\\
+  \#2 & \texttt{visible} & NABC glyphs are visible (default).\\
+  & \texttt{invisible} & NABC glyphs are not visible (no space occupied).\\
+  & \texttt{phantom} & NABC glyphs are invisible but space is preserved.
 \end{argtable}
 
-\textbf{Important:} NABC visibility is controlled independently from notes visibility (\verb=\gresetnotes=). This allows you to hide the main notes (e.g., using \verb=\gresetnotes{hphantom}=) while keeping NABC neumes visible, which is useful for producing NABC-only output with lyrics.
+\textbf{Important:} NABC glyphs visibility is controlled independently from notes visibility (\verb=\gresetnotes=). This allows you to hide the main notes (i.e. using \verb=\gresetnotes{invisible}= or some \verb=\gresetnotes{?phantom}= variant) while keeping NABC glyphs visible, which is useful for producing NABC-only output with lyrics.
 
 \macroname{\textbackslash greprintsigns}{\{\#1\}\{\#2\}}{gregoriotex-signs.tex}
 Macro to prevent rythmic signs from printing (all signs are printed by default):
