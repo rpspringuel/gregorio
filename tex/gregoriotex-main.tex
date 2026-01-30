@@ -1595,6 +1595,43 @@
   \relax %
 }%
 
+\def\greundertie{%
+  \kern-0.25em%
+  \raisebox{-1ex}{\resizebox{0.7em}{!}{$\smile$}}%
+  \kern-0.25em%
+  \relax %
+}%
+
+\def\greovertie{%
+  \kern-0.25em%
+  \raisebox{1ex}{\resizebox{0.7em}{!}{$\frown$}}%
+  \kern-0.25em%
+  \relax %
+}%
+
+\def\gredoubletie{%
+  \kern-0.25em%
+  \raisebox{-1ex}{\resizebox{0.7em}{!}{$\smile$}}%
+  \kern-0.7em%
+  \raisebox{1ex}{\resizebox{0.7em}{!}{$\frown$}}%
+  \kern-0.25em%
+  \relax %
+}%
+
+% Command to set the lyric tie character (~) to one of the tie macros
+% Default: \greundertie
+\let\GreLyricTie\greundertie%
+
+\def\gresetlyrictie#1{%
+  \IfStrEqCase{#1}{%
+    {undertie}{\let\GreLyricTie\greundertie}%
+    {overtie}{\let\GreLyricTie\greovertie}%
+    {doubletie}{\let\GreLyricTie\gredoubletie}%
+  }[% all other cases
+    \gre@error{Unrecognized option "#1" for \protect\gresetlyrictie\MessageBreak Possible options are: 'undertie', 'overtie', 'doubletie'}%
+  ]%
+}%
+
 
 \def\gresetgregoriofont{\@ifnextchar[{\gre@setgregoriofont}{\gre@setgregoriofont[]}}%
 \def\gresetgregoriofontscaled{\@ifnextchar[{\gre@setgregoriofontscaled}{\gre@setgregoriofontscaled[]}}%

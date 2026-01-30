@@ -234,7 +234,10 @@ semicolon. */
 <score>[\n\r][\n\r \t]* {
         RETURN_SPACE;
     }
-<score>(\$.|[^-,;:.\{\}\(\[\]<%\n\r])+ {
+<score>~ {
+        return LYRIC_TIE;
+    }
+<score>(\$.|[^-,;:.\{\}\(\[\]<%~\n\r])+ {
         RETURN_CHARACTERS;
     }
 <score>- {
