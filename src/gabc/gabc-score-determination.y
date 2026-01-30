@@ -718,6 +718,7 @@ static char *concatenate(char *first, char *const second) {
 %token VERB_BEGIN VERB_END
 %token CENTER_BEGIN CENTER_END
 %token ELISION_BEGIN ELISION_END
+%token LYRIC_TIE
 %token TRANSLATION_BEGIN TRANSLATION_END TRANSLATION_CENTER_END
 %token ALT_BEGIN ALT_END
 %token NLBA_B NLBA_E
@@ -1015,6 +1016,9 @@ character:
     above_line_text
     | CHARACTERS {
         add_text($1.text);
+    }
+    | LYRIC_TIE {
+        add_text(gregorio_strdup("~"));
     }
     | style_beginning
     | style_end

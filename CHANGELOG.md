@@ -5,6 +5,7 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 ## [Unreleased][develop]
 ### Added
 - Added unified visibility controls (`visible`, `invisible`, `phantom`, `hphantom`, and `vphantom`), and decouple visibility control for NABC and above-lines text from notes.
+- Added overtie/undertie special symbols (`<sp>ut</sp>` for `\greundertie`, `<sp>ot</sp>` for `\greovertie`, and `<sp>dt</sp>` for `\gredoubletie`), and a configurable lyric tying shorthand (`~` for `\GreLyricTie`).
 
 ### Fixed
 - Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.
