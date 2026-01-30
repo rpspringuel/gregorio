@@ -3,14 +3,22 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][CTAN]
+### Fixed
+- Commentary will now print even if the first syllable of the score has no lyric text.  See [#1678](https://github.com/gregorio-project/gregorio/issues/1678).
+- You can now have both nabc neumes and above line text.  See [#1559](https://github.com/gregorio-project/gregorio/pull/1559).
+- Error raised by double blank lines has been fixed.  See [#1652](https://github.com/gregorio-project/gregorio/issues/1652).
+
 ### Added
 - Added new option `\gresetlastline{trimmed}`, which sets the last line ragged and also trims the staff lines. See [#1418](https://github.com/gregorio-project/gregorio/issues/1418).
+- Nabc can now appear below the staff in addition (or instead of) above.  See [#1645](https://github.com/gregorio-project/gregorio/issues/1645).
 
 ### Changed
 - Variable line heights are now computed in one pass instead of two. Per-line adjustments using `\grechangenextscorelinedim` and `\grechangenextscorelinecount` are also done in one pass, but only work on dimensions/counts related to line heights.
 - Previously, if a score ended with `Z` (ragged line break) or `z` (justified line break), the appearance of the last line would sometimes depend on `Z` versus `z` and sometimes depend on `\gresetlastline{ragged}` versus `\gresetlastline{justified}`. Now, the appearance of the last line always depends on `\gresetlastline`.
 - The meanings of the distances `spaceabovelines` and `abovelinestextheight` were changed to be (hopefully) easier to use and closer to their descriptions in the documentation.
 - All lengths related to vertical spacing are documented in greater detail in a dedicated section in GregorioRef.pdf.
+- We now require LuaTeX version 1.0 (2016) or greater.  This enabled some streamlining of the internal code, but user interface is unaffected.
+- `\gre@createdim` now takes an additional argument which specifies whether the dim allows a glue (i.e., whether it would be a skip or a dimen).  This eliminates the previous strategy of looking up the known glues, speeding up the process of creating all the dims.
 
 ### Deprecated
 - The count `grefinalpenalty` no longer has any effect and will be removed in a future release.
