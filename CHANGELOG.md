@@ -4,7 +4,7 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 
 ## [Unreleased][develop]
 ### Fixed
-- Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.
+- Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.  See [#1642](https://github.com/gregorio-project/gregorio/issues/1642).
 - Error messages from executable have been cleaned up to be more uniform.  See [#1644](https://github.com/gregorio-project/gregorio/issues/1644).
 
 ## [Unreleased][CTAN]
