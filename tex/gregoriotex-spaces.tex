@@ -1499,6 +1499,11 @@
     \IfSubStr{#3}{plus}{\gre@checklengthtrue}{\relax}%
     \IfSubStr{#3}{minus}{\gre@checklengthtrue}{\relax}%
     %if #2 is one of the distances which cannot be rubber.
+    \ifgre@checklength
+      \IfStrEq{\gre@prefix}{dimen}%
+        {\gre@error{'#2' is a dimen and cannot have stretch (plus) or shrink (minus)}}%
+        {}%
+    \fi
     % special check for bar@rubber
     \IfStrEq*{#2}{bar@rubber}%
       {%

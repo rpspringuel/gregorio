@@ -12,6 +12,7 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - The meanings of the distances `spaceabovelines` and `abovelinestextheight` were changed to be (hopefully) easier to use and closer to their descriptions in the documentation.
 - All lengths related to vertical spacing are documented in greater detail in a dedicated section in GregorioRef.pdf.
 - Fixed a bug introduced in 6.1.0 that caused latexmk not to recognize when a GABC file has changed and needs to be recompiled (issue #1685).
+- `spacebeforesigns` was changed from a skip to a dimen; that is, it can no longer have a stretch or shrink (`plus` or `minus`).
 
 ### Deprecated
 - The count `grefinalpenalty` no longer has any effect and will be removed in a future release.
