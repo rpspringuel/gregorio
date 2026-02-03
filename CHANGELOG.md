@@ -10,6 +10,10 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 ### Fixed
 - Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.
 
+## Known Bugs
+- `\gresetclef{vphantom}` results in an unexpected slightly larger left indent of score than `\gresetclef{invisible}`. See [#1693](https://github.com/gregorio-project/gregorio/issues/1693).
+- There are still some inconsistencies in vertical alignment of NABC/above-lines-text lines when notes and staff lines are hidden as `invisible` or `hphantom`. See [#1694](https://github.com/gregorio-project/gregorio/issues/1694).
+
 ## [Unreleased][CTAN]
 ### Added
 - Added new option `\gresetlastline{trimmed}`, which sets the last line ragged and also trims the staff lines. See [#1418](https://github.com/gregorio-project/gregorio/issues/1418).
@@ -432,8 +436,6 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - When there is no manual break, the spacing around bars at the end of a line in the new spacing algorithm is not perfect, this should be visible only in edge cases. If you encounter such a bad spacing, you are advised to force a line break manually. See [#959](https://github.com/gregorio-project/gregorio/issues/959).
 - Above lines text does not move to account for high notes which occur in the same place.  As a result the two may overlap.  You can work around this by changing `abovelinestextraise` but this is a global setting, affecting the entire score.  See [#960](https://github.com/gregorio-project/gregorio/issues/960).
 - A manual custos in a low note position will not push down the text associated with it, resulting in the two overlapping.  See [#961](https://github.com/gregorio-project/gregorio/issues/961).
-- `\gresetclef{vphantom}` results in an unexpected slightly larger left indent of score than `\gresetclef{invisible}`.
-- There are still some inconsistencies in vertical alignment of NABC/above-lines-text lines when notes and staff lines are hidden as `invisible` or `hphantom`.
 
 
 ## [4.0.1] - 2015-12-28
