@@ -11,6 +11,7 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - Previously, if a score ended with `Z` (ragged line break) or `z` (justified line break), the appearance of the last line would sometimes depend on `Z` versus `z` and sometimes depend on `\gresetlastline{ragged}` versus `\gresetlastline{justified}`. Now, the appearance of the last line always depends on `\gresetlastline`.
 - The meanings of the distances `spaceabovelines` and `abovelinestextheight` were changed to be (hopefully) easier to use and closer to their descriptions in the documentation.
 - All lengths related to vertical spacing are documented in greater detail in a dedicated section in GregorioRef.pdf.
+- `spacebeforesigns` was changed from a skip to a dimen; that is, it can no longer have a stretch or shrink (`plus` or `minus`).
 
 ### Deprecated
 - The count `grefinalpenalty` no longer has any effect and will be removed in a future release.

@@ -18,6 +18,10 @@ Forced line breaks (`Z` or `z`) at the very end of a score are discouraged. Plea
 
 The meanings of these distances were changed to be (hopefully) easier to use and closer to their descriptions in the documentation. Please see the section "Vertical spacing" in GregorioRef.pdf for more information. Scores that use the default settings and have above-lines text (`<alt>`) will now have slightly more whitespace above the above-lines text. Scores that set either of these two distances explicitly may experience larger changes in whitespace between staves, and should be checked.
 
+### `spacebeforesigns`
+
+This space (the space before a punctum mora) was changed from a skip to a dimen; that is, it can no longer have stretch or shrink (`plus` or `minus`). For example, a command `\grechangedim{spacebeforesigns}{0.050 cm plus 0.004 cm minus 0.004 cm}{scalable}` should be changed to `\grechangedim{spacebeforesigns}{0.050 cm}{scalable}`.
+
 ## 6.1
 
 ### Multiline initials
