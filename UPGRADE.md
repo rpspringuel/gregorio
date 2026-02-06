@@ -18,13 +18,16 @@ The count `grefinalpenalty` no longer has any effect and will be removed in a fu
 
 Forced line breaks (`Z` or `z`) at the very end of a score are discouraged. Please use `\gresetlastline{ragged}` or `\gresetlastline{justified}` instead to set the appearance of the last line.
 
-### `spaceabovelines` and `abovelinestextheight`
+### `spaceabovelines` and `abovelinestextheight` changed meaning
 
 The meanings of these distances were changed to be (hopefully) easier to use and closer to their descriptions in the documentation. Please see the section "Vertical spacing" in GregorioRef.pdf for more information. Scores that use the default settings and have above-lines text (`<alt>`) will now have slightly more whitespace above the above-lines text. Scores that set either of these two distances explicitly may experience larger changes in whitespace between staves, and should be checked.
 
-### `spacebeforesigns`
+### `spaceabovelines` and `spacebeforesigns` changed from skips to dimens
 
-This space (the space before a punctum mora) was changed from a skip to a dimen; that is, it can no longer have stretch or shrink (`plus` or `minus`). For example, a command `\grechangedim{spacebeforesigns}{0.050 cm plus 0.004 cm minus 0.004 cm}{scalable}` should be changed to `\grechangedim{spacebeforesigns}{0.050 cm}{scalable}`.
+These spaces were changed from skips to dimens; that is, they can no longer have stretch or shrink (`plus` or `minus`). For example, a command `\grechangedim{spacebeforesigns}{0.050 cm plus 0.004 cm minus 0.004 cm}{scalable}` should be changed to `\grechangedim{spacebeforesigns}{0.050 cm}{scalable}`.
+
+- In previous versions, stretch/shrink on `spaceabovelines` was ignored, so removing stretch/shrink will not change the output.
+- In previous versions, stretch/shrink on `spacebeforesigns` was causing a double punctum mora to be misaligned, so removing stretch/shrink should improve the output.
 
 ## 6.1
 
