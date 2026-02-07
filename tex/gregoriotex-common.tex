@@ -126,7 +126,7 @@
 %%%%%%%%%%%%%
 
 % Helper macro to process visibility values with phantom support and deprecation warnings
-% #1 - the value to process (visible/invisible/phantom/hphantom/vphantom)
+% #1 - the value to process (visible/invisible/phantom/hphantom)
 % #2 - command to execute for visible (e.g., \gre@showlyricstrue)
 % #3 - command to execute for invisible (e.g., \gre@showlyricsfalse)
 % #4 - phantom wrapper count variable name (e.g., \gre@lyrics@phantomwrapper)
@@ -137,9 +137,8 @@
     {invisible}{#3#4=0\relax}%
     {phantom}{#3#4=1\relax}%
     {hphantom}{#3#4=2\relax}%
-    {vphantom}{#3#4=3\relax}%
   }[% all other cases
-    \gre@error{Unrecognized option "#1" for #5\MessageBreak Possible options are: 'visible', 'invisible', 'phantom', 'hphantom', and 'vphantom'}%
+    \gre@error{Unrecognized option "#1" for #5\MessageBreak Possible options are: 'visible', 'invisible', 'phantom', and 'hphantom'}%
   ]%
 }%
 
@@ -174,7 +173,7 @@
 }%
 
 % Helper macro to apply phantom wrapper based on counter value
-% #1 - phantom wrapper counter (0=no wrapper, 1=\phantom, 2=\hphantom, 3=\vphantom)
+% #1 - phantom wrapper counter (0=no wrapper, 1=\phantom, 2=\hphantom)
 % #2 - content to wrap
 \def\gre@applyphantomwrapper#1#2{%
   \ifcase#1\relax
@@ -186,9 +185,6 @@
   \or
     % 2: \hphantom
     \hphantom{#2}%
-  \or
-    % 3: \vphantom
-    \vphantom{#2}%
   \fi
 }%
 

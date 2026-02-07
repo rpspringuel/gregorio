@@ -11,7 +11,6 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.
 
 ## Known Bugs
-- `\gresetclef{vphantom}` results in an unexpected slightly larger left indent of score than `\gresetclef{invisible}`. See [#1693](https://github.com/gregorio-project/gregorio/issues/1693).
 - There are still some inconsistencies in vertical alignment of NABC/above-lines-text lines when notes and staff lines are hidden as `invisible` or `hphantom`. See [#1694](https://github.com/gregorio-project/gregorio/issues/1694).
 
 ## [Unreleased][CTAN]

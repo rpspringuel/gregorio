@@ -406,8 +406,7 @@ Macro for setting whether the staff lines should be rendered or not.
   \#1 & \texttt{visible} & The staff lines should be printed (default)\\  
   & \texttt{invisible} & The staff lines should not be printed\\  
   & \texttt{phantom} & The staff lines are invisible but space is preserved\\
-  & \texttt{hphantom} & The staff lines are invisible with zero height\\
-  & \texttt{vphantom} & The staff lines are invisible with zero width but height is preserved
+  & \texttt{hphantom} & The staff lines are invisible with zero height, but horizontal spacing is preserved\\
 \end{argtable}
 
 \textbf{Note:} With \texttt{invisible}, NABC voice 1 (above staff) and above-lines text are moved down closer to the lyrics line. With \texttt{phantom}, the staff lines are not rendered but NABC voice 1 and above-lines text maintain their original vertical positions as if the staff lines were present. This is useful for producing output with NABC neumes or above-lines text at the correct height without visible staff lines.
@@ -953,8 +952,7 @@ Sets the visibility of the lyrics.
   \#1 & \texttt{visible} & Lyrics are visible (default).\\
   & \texttt{invisible} & Lyrics are not visible (no space occupied).\\
   & \texttt{phantom} & Lyrics are invisible but space is preserved.\\
-  & \texttt{hphantom} & Lyrics are invisible with zero height.\\
-  & \texttt{vphantom} & Lyrics are invisible with zero width.\\
+  & \texttt{hphantom} & Lyrics are invisible with zero height, but horizontal spacing is preserved.\\
 \end{argtable}
 
 \macroname{\textbackslash gresettranslation}{\{\#1\}}{gregoriotex-main.tex}
@@ -1284,8 +1282,7 @@ Sets the visibility of the notes.
   \#1 & \texttt{visible} & Notes are visible (default).\\
   & \texttt{invisible} & Notes are not visible (no space occupied).\\
   & \texttt{phantom} & Notes are invisible but space is preserved.\\
-  & \texttt{hphantom} & Notes are invisible with zero height. Useful for NABC with lyrics only.\\
-  & \texttt{vphantom} & Notes are invisible with zero width.\\
+  & \texttt{hphantom} & Notes are invisible with zero height, but horizontal spacing is preserved. Useful for NABC with lyrics only.\\
 \end{argtable}
 
 \textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible. However, the staff lines and clefs will still show up (since their visibility is controlled by other settings). NABC neumes are also unaffected and remain controlled independently by \verb=\gresetnabc=.
@@ -1351,8 +1348,7 @@ Macro to tell Gregorio\TeX\ whether the clefs should be printed or not.
   \#1 & \texttt{visible} & Clefs will be printed (default).\\
   & \texttt{invisible} & Clefs will not be printed.\\
   & \texttt{phantom} & Clefs are invisible but space is preserved.\\
-  & \texttt{hphantom} & Clefs are invisible with zero height.\\
-  & \texttt{vphantom} & Clefs are invisible with zero width.\\
+  & \texttt{hphantom} & Clefs are invisible with zero height, but horizontal spacing is preserved.\\
 \end{argtable}
 
 \textbf{Nota Bene:} For "NABC + lyrics only" layouts, you can hide the clef while keeping line alignment by combining \verb=\gresetclef{invisible}= with \verb=\grechangedim{noclefspace}{-\grebolshift}{scalable}=.

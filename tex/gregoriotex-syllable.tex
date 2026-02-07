@@ -415,7 +415,7 @@
 
 % Notes-specific phantom wrapper that keeps NABC visible by using
 % invisible text rendering for notes and restoring normal rendering inside NABC.
-% #1 - phantom wrapper counter (1=phantom, 2=hphantom, 3=vphantom)
+% #1 - phantom wrapper counter (1=phantom, 2=hphantom)
 % #2 - content to wrap
 \def\gre@applynotesphantom#1#2{%
   \begingroup
@@ -427,8 +427,8 @@
       \box0%
     \or
       \ht0=0pt\relax \dp0=0pt\relax \box0%
-    \or
-      \wd0=0pt\relax \box0%
+    \else
+      \box0%
     \fi
   \endgroup
 }%
