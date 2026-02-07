@@ -1190,6 +1190,9 @@ Macro to determine whether Gregorio\TeX\ should apply a small shift at the begin
   & \texttt{disable} & The shifts are not applied.
 \end{argtable}
 
+\macroname{\textbackslash grebolshift}{}{gregoriotex-spaces.tex}
+Macro to return the current beginning-of-line shift (bolshift) as a dimension value. This can be reused when setting distances, for example with \verb=\grechangedim=.
+
 \macroname{\textbackslash grebolshiftcleftype}{\{\#1\}}{gregoriotex-spaces.tex}
 Macro to determine how notes should be left aligned in the case where clefs of different widths appear in the same score.
 
@@ -1351,6 +1354,8 @@ Macro to tell Gregorio\TeX\ whether the clefs should be printed or not.
   & \texttt{hphantom} & Clefs are invisible with zero height.\\
   & \texttt{vphantom} & Clefs are invisible with zero width.\\
 \end{argtable}
+
+\textbf{Nota Bene:} For "NABC + lyrics only" layouts, you can hide the clef while keeping line alignment by combining \verb=\gresetclef{invisible}= with \verb=\grechangedim{noclefspace}{-\grebolshift}{scalable}=.
 
 
 \subsubsection{Clivis Alignment}
