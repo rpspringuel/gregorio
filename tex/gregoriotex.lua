@@ -713,16 +713,6 @@ local function compute_line_statistics(line, info)
   return info
 end
 
-local function get_space(name)
-  -- Get the value of a dim, measured in sp.
-  local value
-  value = token.get_macro('gre@space@dimen@'..name)
-  if value ~= nil then return tex.sp(value) end
-  value = token.get_macro('gre@space@skip@'..name)
-  if value ~= nil then return tex.sp(value) end
-  err("couldn't get value of space %s", name)
-end
-
 local iftrue_token = token.create('iftrue')
 local function get_if(name)
   -- Get the value of a TeX conditional, as a boolean.
@@ -739,7 +729,7 @@ local function adjust_additional_spaces(line, info, linenum)
     if per_line_dims[linenum] ~= nil and per_line_dims[linenum][name] ~= nil then
       return per_line_dims[linenum][name]
     else
-      return get_space(name)
+      return tex.sp(token.get_macro('gre@space@dimen@'..name))
     end
   end
   
@@ -783,8 +773,8 @@ local function adjust_additional_spaces(line, info, linenum)
   end
 
   -- per-line changes to other spaces
-  local extra_space_lines_text = get_per_line_space('spacelinestext') - get_space('spacelinestext')
-  local extra_space_beneath_text = get_per_line_space('spacebeneathtext') - get_space('spacebeneathtext')
+  local extra_space_lines_text = get_per_line_space('spacelinestext') - tex.sp(token.get_macro('gre@space@dimen@spacelinestext'))
+  local extra_space_beneath_text = get_per_line_space('spacebeneathtext') - tex.sp(token.get_macro('gre@space@dimen@spacebeneathtext'))
 
   -- how much to raise/lower each part
   local commentary_raise = additional_top_space_alt
