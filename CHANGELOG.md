@@ -4,7 +4,8 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 
 ## [Unreleased][develop]
 ### Added
-- Added unified visibility controls (`visible`, `invisible`, `phantom`, `hphantom`, and `vphantom`), and decouple visibility control for NABC and above-lines text from notes.
+- Added unified visibility controls (`visible`, `invisible`, `phantom`, and `hphantom`). Solves [#1626](https://github.com/gregorio-project/gregorio/issues/1626).
+- Decouple visibility control for NABC and above-lines text from notes. Solves [#1547](https://github.com/gregorio-project/gregorio/issues/1547).
 - Added overtie/undertie special symbols (`<sp>ut</sp>` for `\greundertie`, `<sp>ot</sp>` for `\greovertie`, and `<sp>dt</sp>` for `\gredoubletie`), and a configurable lyric tying shorthand (`~` for `\GreLyricTie`).
 - Added support for the C23 standard (the default in GCC 15). The included build scripts continue to default to GNU89 C.
 
