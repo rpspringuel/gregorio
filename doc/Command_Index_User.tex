@@ -409,8 +409,6 @@ Macro for setting whether the staff lines should be rendered or not.
   & \texttt{hphantom} & The staff lines are invisible with zero height, but horizontal spacing is preserved\\
 \end{argtable}
 
-\textbf{Note:} With \texttt{invisible}, NABC voice 1 (above staff) and above-lines text are moved down closer to the lyrics line. With \texttt{phantom}, the staff lines are not rendered but NABC voice 1 and above-lines text maintain their original vertical positions as if the staff lines were present. This is useful for producing output with NABC neumes or above-lines text at the correct height without visible staff lines.
-
 \macroname{\textbackslash gresetlinesbehindpunctumcavum}{\{\#1\}}{gregoriotex-signs.tex}
 Macro for setting whether the staff lines behind a punctum cavum should be shown or not.
 
@@ -1279,7 +1277,7 @@ Sets the visibility of the notes.
   \#1 & \texttt{visible} & Notes are visible (default).\\
   & \texttt{invisible} & Notes are not visible (no space occupied).\\
   & \texttt{phantom} & Notes are invisible but space is preserved.\\
-  & \texttt{hphantom} & Notes are invisible with zero height, but horizontal spacing is preserved. Useful for NABC with lyrics only.\\
+  & \texttt{hphantom} & Notes are invisible with zero height, but horizontal spacing is preserved.\\
 \end{argtable}
 
 \textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible. However, the staff lines and clefs will still show up (since their visibility is controlled by other settings). NABC neumes are also unaffected and remain controlled independently by \verb=\gresetnabc=.
