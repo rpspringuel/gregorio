@@ -1166,27 +1166,20 @@
   \gre@trace{gre@punctum@mora{#1}{#2}{#3}{#4}}%
   \GreNoBreak %
   \ifcase#2\relax %
-    \gre@skip@temp@four = \gre@space@skip@spacebeforesigns\relax%
-    \gre@hskip\gre@skip@temp@four%
   \or %
-    \gre@skip@temp@four = \gre@space@skip@spacebeforesigns\relax%
-    \kern\gre@skip@temp@four %
   \or %
-    % to get the widht of a punctum minus a line, we calculate the width of a flexus (with ambitus of two) minus the width of a punctum
+    % to get the width of a punctum minus a line, we calculate the width of a flexus (with ambitus of two) minus the width of a punctum
     \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPPesQuadratumLongqueueThreeNothing}%
     \gre@dimen@temp@five=\wd\gre@box@temp@width %
     \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPPunctum}%
     \advance\gre@dimen@temp@five by -\wd\gre@box@temp@width %
     \kern-\gre@dimen@temp@five %
-    \gre@skip@temp@four = \gre@space@skip@spacebeforesigns\relax%
-    \kern\gre@skip@temp@four %
   \or %
     \setbox\gre@box@temp@width=\hbox{\gre@font@music\GreCPPunctum}%
     \gre@dimen@temp@five=\wd\gre@box@temp@width %
     \kern-\gre@dimen@temp@five %
-    \gre@skip@temp@four = \gre@space@skip@spacebeforesigns\relax%
-    \kern\gre@skip@temp@four %
   \fi %
+  \kern\gre@space@dimen@spacebeforesigns
   \ifnum#2=0\relax %
     \global\gre@lastendswithmoratrue%
   \fi %
@@ -1216,21 +1209,18 @@
     \setbox\gre@box@temp@width=\hbox{\gre@fontchar@punctummora}%
     \gre@skip@temp@four = -\wd\gre@box@temp@width %
     \kern\gre@skip@temp@four%
-    \gre@skip@temp@four = -\gre@space@skip@spacebeforesigns\relax%
-    \kern\gre@skip@temp@four %
+    \kern-\gre@space@dimen@spacebeforesigns
   \or %
     \setbox\gre@box@temp@width=\hbox{\gre@fontchar@punctummora}%
     \gre@skip@temp@four = -\wd\gre@box@temp@width %
     \kern\gre@skip@temp@four%
-    \gre@skip@temp@four = -\gre@space@skip@spacebeforesigns\relax%
-    \kern\gre@skip@temp@four %
+    \kern-\gre@space@dimen@spacebeforesigns
     \kern\gre@dimen@temp@five %
   \or %
     \setbox\gre@box@temp@width=\hbox{\gre@fontchar@punctummora}%
     \gre@skip@temp@four = -\wd\gre@box@temp@width %
     \kern\gre@skip@temp@four%
-    \gre@skip@temp@four = -\gre@space@skip@spacebeforesigns\relax%
-    \kern\gre@skip@temp@four %
+    \kern-\gre@space@dimen@spacebeforesigns
     \kern\gre@dimen@temp@five %
   \fi %
   \GreNoBreak %
@@ -2107,9 +2097,9 @@
     \global\gre@dimen@morawidth=\wd\gre@box@temp@width %
   \fi %
   \ifnum #1=1%
-    \global\gre@skip@punctummorashift=\glueexpr - \gre@dimen@morawidth - \gre@space@skip@spacebeforesigns + \gre@space@skip@moraadjustment\relax %
+    \global\gre@skip@punctummorashift=\glueexpr - \gre@dimen@morawidth - \gre@space@dimen@spacebeforesigns + \gre@space@skip@moraadjustment\relax
   \else %
-    \global\gre@skip@punctummorashift=\glueexpr - \gre@dimen@morawidth - \gre@space@skip@spacebeforesigns + \gre@space@skip@moraadjustmentbar\relax %
+    \global\gre@skip@punctummorashift=\glueexpr - \gre@dimen@morawidth - \gre@space@dimen@spacebeforesigns + \gre@space@skip@moraadjustmentbar\relax
   \fi %
   \relax %
   \gre@trace@end%

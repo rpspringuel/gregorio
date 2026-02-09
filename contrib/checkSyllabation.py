@@ -74,6 +74,8 @@ def checkwords(words_list, hyphenator):
         if initialword.find('-') == -1:
             # no need for noise
             continue
+        if initialword.endswith('-'):
+            initialword = initialword[:-1]
         correctword = hyphenator.inserted(initialword.replace('-',''))
         if correctword != initialword:
             errors.append( (initialword,correctword) )
@@ -87,6 +89,7 @@ def get_words_list(gabc_content):
     gabc_content = gabc_content.replace('<sp>oe</sp>', 'œ').replace('<sp>\'oe</sp>', 'œ')
     gabc_content = gabc_content.replace('<sp>ae</sp>', 'æ').replace('<sp>\'æ</sp>', 'ǽ')
     gabc_content = gabc_content.replace('<sp>\'œ</sp>', 'œ')
+    gabc_content = gabc_content.replace('<nlba>', '').replace('</nlba>', '').replace('<clear>', '')
     gabc_content = re.sub(r'\([^\)]*\)', '-', gabc_content)
     gabc_content = re.sub(r'<\/?[ibuec]>', '', gabc_content)
     gabc_content = re.sub(r'<\/?sc>', '', gabc_content)
@@ -97,7 +100,8 @@ def get_words_list(gabc_content):
     gabc_content = re.sub(r'<alt>[^>]*<\/alt>', '', gabc_content)
     gabc_content = re.sub(r'\[[^\]]*\]', '', gabc_content)
     gabc_content = re.sub(r'-+', '-', gabc_content)
-    gabc_content = re.sub(r'-?(\s+|$)', ' ', gabc_content)
+    # Removing trailing hyphens caused checkwords to exclude words with all the notes at the end
+    # gabc_content = re.sub(r'-?(\s+|$)', ' ', gabc_content)
     gabc_content = re.sub(r'[^a-záéíóæúýœǽ\u0301 -]', '', gabc_content, flags=re.IGNORECASE)
     gabc_content = re.sub(r'(^|\s+)-', ' ', gabc_content)
     return gabc_content.split()

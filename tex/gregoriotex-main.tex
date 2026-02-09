@@ -611,7 +611,7 @@
 %% macro for putting text above lines for annotations and the like
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% the code is a bit strange here: we always execute \gre@space@skip@spaceabovelines at the beginning of a glyph. This will:
+% the code is a bit strange here: we always execute \gre@space@dimen@spaceabovelines at the beginning of a glyph. This will:
 % - typeset the text above the lines if relevant, and making sure we execute it only once
 % - not do anything else
 
@@ -720,7 +720,7 @@
   \setbox\gre@box@lines=\hbox to 0pt{%
     \vbox attr \gre@attrid@part=2 {% width will be adjusted in Lua
       \gre@style@normalstafflines%
-      \vskip\gre@space@skip@spaceabovelines\relax%
+      \vskip\gre@space@dimen@spaceabovelines\relax%
       \gre@count@temp@one=0\relax
       \loop
         \ifgre@showlines %

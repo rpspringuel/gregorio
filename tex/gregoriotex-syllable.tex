@@ -1704,7 +1704,6 @@
 %% #5 - Three syllable parts where there is no separated initial
 %% #6 - Extra macros to run if there is an initial
 \def\GreSetFirstSyllableText#1#2#3#4#5#6{%
-  \gre@printcommentary%
   \ifcase\gre@count@initiallines\relax % no initial
     \gre@noinitial %
     \gre@setfirstsyllabletext#5{#1}{#2#3}{}%
@@ -1737,6 +1736,7 @@
 %%      populate \gre@opening@syllabletext (even if that should be empty)
 \def\GreScoreOpening#1#2#3#4#5{%
   #3\relax % fixed styles, etc.
+  \gre@printcommentary
   #5\relax % should emit the initial
   #1\relax % score reference, voice info, etc.
   #2\relax % initial clef, etc.
