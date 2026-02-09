@@ -791,37 +791,13 @@ local function adjust_additional_spaces(line, info, linenum)
   local cur = 0 -- vertical position without any additional space
   local add = 0 -- with additional space
 
-  local function is_invisible_or_hphantom(show_flag, phantom_count)
-    return (not show_flag) and (phantom_count == 0 or phantom_count == 2)
-  end
-
-  local notes_invisible_or_hphantom = is_invisible_or_hphantom(
-    get_if('gre@shownotes'),
-    tex.count['gre@notes@phantomwrapper']
-  )
-  local lines_invisible_or_hphantom = is_invisible_or_hphantom(
-    get_if('gre@showlines'),
-    tex.count['gre@lines@phantomwrapper']
-  )
-  local nabc_lyrics_only_mode = notes_invisible_or_hphantom and lines_invisible_or_hphantom
-
   local nabc_raise = 0
   if info.has_nabc then
-    local abovelinesnabcraise = get_per_line_space('abovelinesnabcraise')
-    local abovelinesnabcheight = get_per_line_space('abovelinesnabcheight')
-    if nabc_lyrics_only_mode then
-      if get_if('gre@nabcvoice@ii@visible') then
-        abovelinesnabcraise = get_per_line_space('belowlinesnabcheight')
-      else
-        abovelinesnabcraise = 0
-      end
-      abovelinesnabcheight = 0
-    end
-    cur = cur + abovelinesnabcraise
+    cur = cur + get_per_line_space('abovelinesnabcraise')
     add = math.max(add, cur + additional_top_space_nabc)
     nabc_raise = add
-    cur = cur + abovelinesnabcheight
-    add = add + abovelinesnabcheight
+    cur = cur + get_per_line_space('abovelinesnabcheight')
+    add = add + get_per_line_space('abovelinesnabcheight')
   end
 
   local alt_raise
@@ -839,11 +815,7 @@ local function adjust_additional_spaces(line, info, linenum)
 
   local blnabc_lower = 0
   if info.has_blnabc then
-    if nabc_lyrics_only_mode then
-      blnabc_lower = 0
-    else
-      blnabc_lower = get_per_line_space('belowlinesnabcheight')
-    end
+    blnabc_lower = get_per_line_space('belowlinesnabcheight')
   end
   local lyrics_lower = blnabc_lower + extra_space_lines_text + additional_bottom_space
   local translation_lower = lyrics_lower + translation_height
