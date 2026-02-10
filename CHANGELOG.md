@@ -15,6 +15,7 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 
 ## Known Bugs
 - There are still some inconsistencies in vertical alignment of NABC/above-lines-text lines when notes and staff lines are hidden as `invisible` or `hphantom`. See [#1694](https://github.com/gregorio-project/gregorio/issues/1694).
+- NABC glyphs may overlap when notes are hidden as `invisible`. See [#1699](https://github.com/gregorio-project/gregorio/issues/1699)
 
 ## [Unreleased][CTAN]
 ### Fixed
