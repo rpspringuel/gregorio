@@ -152,7 +152,14 @@
 \newdimen\gre@dimen@stafflineheight\relax%
 \def\gre@calculate@stafflineheight{%
   \gre@trace{gre@calculate@stafflineheight}%
-  \global\gre@dimen@stafflineheight=\dimexpr(\gre@dimen@stafflinethicknessbase * \gre@stafflinefactor)\relax %
+  \ifgre@staffdimensions@zeroed
+    % dimensions intentionally zeroed by \gresetlines, save the new
+    % computed value but keep the effective value at 0pt
+    \global\gre@dimen@stafflineheight@saved=\dimexpr(\gre@dimen@stafflinethicknessbase * \gre@stafflinefactor)\relax %
+    \global\gre@dimen@stafflineheight=0pt\relax %
+  \else
+    \global\gre@dimen@stafflineheight=\dimexpr(\gre@dimen@stafflinethicknessbase * \gre@stafflinefactor)\relax %
+  \fi
   \gre@trace@end%
 }%
 
@@ -161,7 +168,14 @@
 \newdimen\gre@dimen@interstafflinespace\relax%
 \def\gre@calculate@interstafflinespace{%
   \gre@trace{gre@calculate@interstafflinespace}%
-  \global\gre@dimen@interstafflinespace=\dimexpr((\gre@dimen@interstafflinedistancebase + \gre@dimen@stafflinethicknessbase) * \gre@factor - \gre@dimen@stafflinethicknessbase * \gre@stafflinefactor)\relax%
+  \ifgre@staffdimensions@zeroed
+    % dimensions intentionally zeroed by \gresetlines, save the new
+    % computed value but keep the effective value at 0pt
+    \global\gre@dimen@interstafflinespace@saved=\dimexpr((\gre@dimen@interstafflinedistancebase + \gre@dimen@stafflinethicknessbase) * \gre@factor - \gre@dimen@stafflinethicknessbase * \gre@stafflinefactor)\relax%
+    \global\gre@dimen@interstafflinespace=0pt\relax %
+  \else
+    \global\gre@dimen@interstafflinespace=\dimexpr((\gre@dimen@interstafflinedistancebase + \gre@dimen@stafflinethicknessbase) * \gre@factor - \gre@dimen@stafflinethicknessbase * \gre@stafflinefactor)\relax%
+  \fi
   \gre@trace@end%
 }%
 
@@ -982,10 +996,26 @@
 %This function sets the true raises of the two lines above the initial (it has to be called just as the boxes are placed in order to make sure that the values are all correct)
 \def\gre@calculate@annotationtrueraise{%
   \gre@trace{gre@calculate@annotationtrueraise}%
-  \global\advance\gre@dimen@annotationtrueraise by %
-    \dimexpr(\gre@dimen@staffheight %
-    + \gre@space@dimen@spacebeneathtext %
-    + \gre@space@dimen@spacelinestext)\relax%
+  %% When staff dimensions are zeroed (lines hphantom/invisible), use the
+  %% saved staffheight so the annotation keeps its normal vertical position.
+  %% The Lua post_linebreak callback positions the initial independently,
+  %% so without this the annotation would drop by staffheight while the
+  %% initial stays put, causing overlap.
+  \ifgre@staffdimensions@zeroed%
+    \global\advance\gre@dimen@annotationtrueraise by %
+      \dimexpr(\gre@dimen@stafflineheight@saved %
+        * \gre@count@stafflines %
+        + \gre@dimen@interstafflinespace@saved %
+        * \gre@count@stafflines %
+        - \gre@dimen@interstafflinespace@saved %
+        + \gre@space@dimen@spacebeneathtext %
+        + \gre@space@dimen@spacelinestext)\relax%
+  \else%
+    \global\advance\gre@dimen@annotationtrueraise by %
+      \dimexpr(\gre@dimen@staffheight %
+        + \gre@space@dimen@spacebeneathtext %
+        + \gre@space@dimen@spacelinestext)\relax%
+  \fi%
   \gre@style@annotation%
   \global\advance\gre@dimen@annotationtrueraise by \gre@space@dimen@annotationraise\relax%
   \gre@debugmsg{annotation}{Added user raise.}%
