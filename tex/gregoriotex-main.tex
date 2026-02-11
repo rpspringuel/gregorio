@@ -662,15 +662,20 @@
     + \gre@space@dimen@spacebeneathtext %
     + \gre@space@dimen@spacelinestext)\relax%
   \gre@debugmsg{spacing}{Raise alt text: \the\gre@dimen@temp@five}%
-  \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{%
-    \ifnum#2=0\relax
+  \ifnum#2=1\relax
+    % NABC: measure natural width for overflow detection
+    \setbox0=\hbox{#1}%
+    \ifdim\wd0 > \gre@dimen@nabc@maxwidth\relax
+      \global\gre@dimen@nabc@maxwidth=\wd0\relax
+    \fi
+    \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{\box0\hss}%
+  \else
+    \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{%
       \gre@style@abovelinestext
         \gre@applyphantomwrapper{\gre@abovelinestext@phantomwrapper}{#1}%
       \endgre@style@abovelinestext
-    \else
-      #1%
-    \fi
     \hss}%
+  \fi
   \unsetattribute{\gre@attr@part}%
   \gre@trace@end%
 }%
@@ -691,7 +696,12 @@
   \gre@trace{gre@typesettextbelowlines{#1}}%
   \gre@dimen@temp@five=\dimexpr(\gre@space@dimen@spacebeneathtext
     + \gre@space@dimen@spacelinestext)\relax
-  \leavevmode\raise\gre@dimen@temp@five\hbox attr \gre@attrid@part=8 to 0pt{#1\hss}%
+  % Measure natural width for overflow detection
+  \setbox0=\hbox{#1}%
+  \ifdim\wd0 > \gre@dimen@nabc@maxwidth\relax
+    \global\gre@dimen@nabc@maxwidth=\wd0\relax
+  \fi
+  \leavevmode\raise\gre@dimen@temp@five\hbox attr \gre@attrid@part=8 to 0pt{\box0\hss}%
   \gre@trace@end%
 }%
 
