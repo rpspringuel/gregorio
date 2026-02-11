@@ -846,29 +846,19 @@ local function adjust_additional_spaces(line, info, linenum)
   local translation_lower = lyrics_lower + translation_height
   local everything_raise = translation_lower + extra_space_beneath_text
 
-  -- When the staff is fully collapsed (lines + notes hphantom/invisible),
-  -- compact the annotation position so it sits closer to the lyrics/initial,
-  -- achieving the same ~-20.9pt overlap as the no-blnabc reference case.
-  -- When only staff lines are collapsed (notes still visible), compensate
-  -- for missing blnabc to preserve the normal -3.9pt overlap.
+  -- When the staff is collapsed, adjust the annotation position so it sits
+  -- at the correct distance from the lyrics/initial.
   local annotation_correction = 0
-  do
-    local staffheight = tex.dimen['gre@dimen@staffheight']
-    if staffheight == 0 and get_if('gre@staffdimensions@zeroed') then
-      if not get_if('gre@shownotes') then
-        -- Fully collapsed: compact layout
-        if info.has_blnabc and info.has_nabc then
-          -- Both voices present: blnabc pushes lyrics/initial down;
-          -- shift annotation down to match
-          annotation_correction = -get_per_line_space('belowlinesnabcheight')
-        end
-        -- When only blnabc (no nabc) or neither: blnabc_lower is 0
-        -- so lyrics aren't pushed down; no correction needed.
-      else
-        -- Only staff lines collapsed, notes still visible
-        if not info.has_blnabc then
-          annotation_correction = get_per_line_space('belowlinesnabcheight')
-        end
+  if staff_zeroed then
+    if not get_if('gre@shownotes') then
+      -- Fully collapsed (lines + notes hidden)
+      if info.has_blnabc and info.has_nabc then
+        annotation_correction = -get_per_line_space('belowlinesnabcheight')
+      end
+    else
+      -- Only staff lines collapsed, notes still visible
+      if not info.has_blnabc then
+        annotation_correction = get_per_line_space('belowlinesnabcheight')
       end
     end
   end

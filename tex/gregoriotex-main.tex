@@ -184,6 +184,7 @@
 %% calculate macros there check this flag.
 \newdimen\gre@dimen@stafflineheight@saved\relax%
 \newdimen\gre@dimen@interstafflinespace@saved\relax%
+\newdimen\gre@dimen@staffheight@saved\relax%
 \newif\ifgre@staffdimensions@zeroed%
 \gre@staffdimensions@zeroedfalse%
 
@@ -711,6 +712,28 @@
 \newcount\gre@lines@phantomwrapper%
 \gre@lines@phantomwrapper=0\relax%
 
+%% Helper macros for zeroing/restoring staff dimensions.
+%% The @saved values are maintained by the calculate functions, so toggling
+%% the flag and recalculating is sufficient; no manual save/restore needed.
+\def\gre@staffdimensions@unzero{%
+  \ifgre@staffdimensions@zeroed
+    \global\gre@staffdimensions@zeroedfalse
+    \gre@calculate@stafflineheight
+    \gre@calculate@interstafflinespace
+    \gre@calculate@staffheight
+    \gre@calculate@constantglyphraise
+  \fi
+}%
+\def\gre@staffdimensions@dozero{%
+  \ifgre@staffdimensions@zeroed\else
+    \global\gre@staffdimensions@zeroedtrue
+    \gre@calculate@stafflineheight
+    \gre@calculate@interstafflinespace
+    \gre@calculate@staffheight
+    \gre@calculate@constantglyphraise
+  \fi
+}%
+
 \def\gresetlines#1{%
   \gre@processvisibility{#1}%
     {\gre@showlinestrue}%
@@ -719,37 +742,14 @@
     {\protect\gresetlines}%
   % When lines are invisible or hphantom, zero the staff dimensions
   % so that all vertical positioning collapses (notes flatten, NABC lowers).
-  % When lines become visible again, restore the saved values.
+  % When lines are visible or phantom, restore the saved values.
   \ifgre@showlines
-    % visible: restore original dimensions if they were zeroed
-    \ifgre@staffdimensions@zeroed
-      \global\gre@dimen@stafflineheight=\gre@dimen@stafflineheight@saved\relax
-      \global\gre@dimen@interstafflinespace=\gre@dimen@interstafflinespace@saved\relax
-      \global\gre@staffdimensions@zeroedfalse
-      \gre@calculate@staffheight
-      \gre@calculate@constantglyphraise
-    \fi
+    \gre@staffdimensions@unzero
   \else
     \ifnum\gre@lines@phantomwrapper=1\relax
-      % phantom: lines hidden but space preserved, restore if needed
-      \ifgre@staffdimensions@zeroed
-        \global\gre@dimen@stafflineheight=\gre@dimen@stafflineheight@saved\relax
-        \global\gre@dimen@interstafflinespace=\gre@dimen@interstafflinespace@saved\relax
-        \global\gre@staffdimensions@zeroedfalse
-        \gre@calculate@staffheight
-        \gre@calculate@constantglyphraise
-      \fi
+      \gre@staffdimensions@unzero
     \else
-      % invisible or hphantom: zero the dimensions
-      \ifgre@staffdimensions@zeroed\else
-        \global\gre@dimen@stafflineheight@saved=\gre@dimen@stafflineheight\relax
-        \global\gre@dimen@interstafflinespace@saved=\gre@dimen@interstafflinespace\relax
-        \global\gre@staffdimensions@zeroedtrue
-      \fi
-      \global\gre@dimen@stafflineheight=0pt\relax
-      \global\gre@dimen@interstafflinespace=0pt\relax
-      \gre@calculate@staffheight
-      \gre@calculate@constantglyphraise
+      \gre@staffdimensions@dozero
     \fi
   \fi
 }
