@@ -405,6 +405,69 @@
   \endgroup
 }%
 
+% Flag to track whether NABC visibility requires horizontal spacing
+% preservation when notes are invisible.
+\newif\ifgre@nabc@needsspacing
+
+% Check if any NABC voice is visible, meaning horizontal spacing must be
+% preserved when notes are invisible to prevent NABC neume overlap.
+\def\gre@check@nabc@needsspacing{%
+  \gre@nabc@needsspacingfalse
+  \ifgre@nabcvoice@i@visible
+    \gre@nabc@needsspacingtrue
+  \else\ifgre@nabcvoice@ii@visible
+    \gre@nabc@needsspacingtrue
+  \fi\fi
+}%
+
+% Like \gre@noopglyph but preserves horizontal glyph width for NABC
+% positioning.  Renders no visible glyph content, but advances the cursor
+% by the glyph width and triggers deferred NABC rendering via
+% \gre@newglyphcommon.
+\def\gre@spacingnoopglyph#1#2#3#4#5#6#7{%
+  \gre@newglyphcommon
+  \setbox\gre@box@temp@width=\hbox{\gre@font@music #1}%
+  \global\gre@dimen@lastglyphwidth=\wd\gre@box@temp@width\relax
+  \kern\wd\gre@box@temp@width\relax
+  \ifgre@firstglyph
+    \gre@calculate@notesaligncenter{#4}%
+    \global\gre@firstglyphfalse
+  \fi
+  \gre@endofglyphcommon
+}%
+
+% Like \gre@notes@rendernabc but preserves horizontal glyph spacing.
+% Used when notes are invisible but NABC is visible, so that NABC neumes
+% are correctly positioned horizontally instead of overlapping.
+\def\gre@notes@rendernabc@withspacing#1{%
+  \begingroup
+    \let\GreGlyph\gre@spacingnoopglyph
+    \let\GreGlyphHeights\gre@noopglyphheights
+    % Suppress bar glyphs (same as \gre@notes@rendernabc)
+    \def\GreInDivisioMinimis##1##2##3{}%
+    \def\GreDivisioMinimis##1##2##3{}%
+    \def\GreInDivisioMinimisHigh##1##2##3{}%
+    \def\GreDivisioMinimisHigh##1##2##3{}%
+    \def\GreInDivisioMinima##1##2##3{}%
+    \def\GreDivisioMinima##1##2##3{}%
+    \def\GreInDivisioMinimaHigh##1##2##3{}%
+    \def\GreDivisioMinimaHigh##1##2##3{}%
+    \def\GreInDivisioMinimaParen##1##2##3{}%
+    \def\GreDivisioMinimaParen##1##2##3{}%
+    \def\GreInDivisioMinimaParenHigh##1##2##3{}%
+    \def\GreDivisioMinimaParenHigh##1##2##3{}%
+    \def\GreInDivisioMinor##1##2{}%
+    \def\GreDivisioMinor##1##2{}%
+    \def\GreInDivisioMaior##1##2{}%
+    \def\GreDivisioMaior##1##2{}%
+    \def\GreInDivisioFinalis##1##2{}%
+    \def\GreDivisioFinalis##1##2{}%
+    \def\GreBarBrace##1{}%
+    \def\GreBarVEpisema##1{}%
+    #1%
+  \endgroup
+}%
+
 \def\gresetnotes#1{%
   \gre@processvisibility{#1}%
     {\gre@shownotestrue}%
@@ -451,7 +514,12 @@
     \ifnum\gre@notes@phantomwrapper>0\relax
       \setbox\gre@box@syllablenotes=\hbox{\gre@applynotesphantom{\gre@notes@phantomwrapper}{#1}}%
     \else
-      \setbox\gre@box@syllablenotes=\box\voidb@x%
+      \gre@check@nabc@needsspacing
+      \ifgre@nabc@needsspacing
+        \setbox\gre@box@syllablenotes=\hbox{\gre@notes@rendernabc@withspacing{#1}}%
+      \else
+        \setbox\gre@box@syllablenotes=\box\voidb@x%
+      \fi
     \fi
   \fi%
   \gre@debugmsg{spacing}{Width of notes: \the\wd\gre@box@syllablenotes}%
@@ -1161,8 +1229,14 @@
     \ifnum\gre@notes@phantomwrapper>0\relax
       \gre@applynotesphantom{\gre@notes@phantomwrapper}{#9}%
     \else
-      % Notes disabled: render NABC without affecting spacing
-      \hbox to 0pt{\gre@notes@rendernabc{#9}\hss}%
+      \gre@check@nabc@needsspacing
+      \ifgre@nabc@needsspacing
+        % NABC visible: preserve horizontal spacing for proper positioning
+        \gre@notes@rendernabc@withspacing{#9}%
+      \else
+        % Notes disabled: render NABC without affecting spacing
+        \hbox to 0pt{\gre@notes@rendernabc{#9}\hss}%
+      \fi
     \fi
   \fi%
   \GreNoBreak % no line breaks between notes and end of syllable skips
@@ -1445,8 +1519,14 @@
       \ifnum\gre@notes@phantomwrapper>0\relax
         \gre@applyphantomwrapper{\gre@notes@phantomwrapper}{#9}%
       \else
-        % Notes disabled: render NABC without affecting spacing
-        \hbox to 0pt{\gre@notes@rendernabc{#9}\hss}%
+        \gre@check@nabc@needsspacing
+        \ifgre@nabc@needsspacing
+          % NABC visible: preserve horizontal spacing for proper positioning
+          \gre@notes@rendernabc@withspacing{#9}%
+        \else
+          % Notes disabled: render NABC without affecting spacing
+          \hbox to 0pt{\gre@notes@rendernabc{#9}\hss}%
+        \fi
       \fi
     \fi%
     \global\let\gre@newlinecommon\gre@saved@prelinedelay@newlinecommon %
