@@ -71,6 +71,7 @@ local part_translation = 5
 local part_alt = 6
 local part_nabc = 7
 local part_blnabc = 8
+local part_annotation = 9
 
 local dash_attr = luatexbase.attributes['gre@attr@dash']
 local potentialdashvalue   = 1
@@ -788,14 +789,31 @@ local function adjust_additional_spaces(line, info, linenum)
   -- how much to raise/lower each part
   local commentary_raise = additional_top_space_alt
 
+  -- When staff dimensions are zeroed (lines hphantom/invisible), the
+  -- abovelinesnabcraise gap between the (invisible) staff top and NABC
+  -- is unnecessary whitespace.  Skip it so the NABC lines sit closer
+  -- to the lyrics/below-lines content.
+  local staff_zeroed = get_if('gre@staffdimensions@zeroed')
+
   local cur = 0 -- vertical position without any additional space
   local add = 0 -- with additional space
 
   local nabc_raise = 0
   if info.has_nabc then
-    cur = cur + get_per_line_space('abovelinesnabcraise')
+    if not staff_zeroed then
+      cur = cur + get_per_line_space('abovelinesnabcraise')
+    end
     add = math.max(add, cur + additional_top_space_nabc)
     nabc_raise = add
+    cur = cur + get_per_line_space('abovelinesnabcheight')
+    add = add + get_per_line_space('abovelinesnabcheight')
+  elseif info.has_blnabc and staff_zeroed then
+    -- When only blnabc is visible and the staff is collapsed, treat it
+    -- like nabc for stacking: reserve abovelinesnabcheight in the chain
+    -- so that above-lines text sits at the proper distance.  Without this,
+    -- the alt-text→blnabc gap would be much larger than alt-text→nabc
+    -- because belowlinesnabcheight (which normally pushes blnabc below
+    -- the staff) is significantly bigger than abovelinesnabcheight.
     cur = cur + get_per_line_space('abovelinesnabcheight')
     add = add + get_per_line_space('abovelinesnabcheight')
   end
@@ -815,12 +833,36 @@ local function adjust_additional_spaces(line, info, linenum)
 
   local blnabc_lower = 0
   if info.has_blnabc then
-    blnabc_lower = get_per_line_space('belowlinesnabcheight')
+    if staff_zeroed and not info.has_nabc then
+      -- When only blnabc is visible and the staff is collapsed, don't
+      -- push blnabc down: it already sits at the same TeX base position
+      -- as nabc (both raised by spacelinestext when staffheight=0).
+      blnabc_lower = 0
+    else
+      blnabc_lower = get_per_line_space('belowlinesnabcheight')
+    end
   end
   local lyrics_lower = blnabc_lower + extra_space_lines_text + additional_bottom_space
   local translation_lower = lyrics_lower + translation_height
   local everything_raise = translation_lower + extra_space_beneath_text
-  
+
+  -- When the staff is collapsed, adjust the annotation position so it sits
+  -- at the correct distance from the lyrics/initial.
+  local annotation_correction = 0
+  if staff_zeroed then
+    if not get_if('gre@shownotes') then
+      -- Fully collapsed (lines + notes hidden)
+      if info.has_blnabc and info.has_nabc then
+        annotation_correction = -get_per_line_space('belowlinesnabcheight')
+      end
+    else
+      -- Only staff lines collapsed, notes still visible
+      if not info.has_blnabc then
+        annotation_correction = get_per_line_space('belowlinesnabcheight')
+      end
+    end
+  end
+
   -- Recursively traverse the tree, shifting parts up or down. The notes stay put for now.
   local function visit(cur)
     local changed = false
@@ -851,6 +893,12 @@ local function adjust_additional_spaces(line, info, linenum)
         child.head = node.insert_before(child.head, child.head, g)
         child.height = child.height + g.width
         changed = true
+      elseif child_part_attr == part_annotation then
+        if annotation_correction ~= 0 then
+          debugmessage('adjust_additional_spaces', 'shift annotation by %spt', annotation_correction/2^16)
+          child.shift = child.shift - annotation_correction
+          changed = true
+        end
       elseif child_part_attr == part_blnabc then
         debugmessage('adjust_additional_spaces', 'shift below-lines nabc down by %spt', blnabc_lower/2^16)
         child.shift = child.shift + blnabc_lower

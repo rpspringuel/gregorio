@@ -179,6 +179,15 @@
 %% vertical spaces
 %%%%%%%%%%%%%%%%%%%
 
+%% Flag and saved dimensions for zeroing staff geometry when lines are hidden.
+%% Must be declared before loading gregoriotex-spaces.tex because the
+%% calculate macros there check this flag.
+\newdimen\gre@dimen@stafflineheight@saved\relax%
+\newdimen\gre@dimen@interstafflinespace@saved\relax%
+\newdimen\gre@dimen@staffheight@saved\relax%
+\newif\ifgre@staffdimensions@zeroed%
+\gre@staffdimensions@zeroedfalse%
+
 \input gregoriotex-spaces.tex%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -399,7 +408,7 @@
     \gre@hskip\gre@skip@temp@four %
     \kern\gre@dimen@temp@five %
     \gre@debugmsg{annotation}{And place the annotation.}%
-    \raise\gre@dimen@annotationtrueraise\box\gre@box@annotation%
+    \hbox attr \gre@attrid@part=9 {\raise\gre@dimen@annotationtrueraise\box\gre@box@annotation}%
     \gre@debugmsg{annotation}{Move to beginning of staff.}%
     \kern\gre@dimen@temp@five %
   \fi %
@@ -703,12 +712,46 @@
 \newcount\gre@lines@phantomwrapper%
 \gre@lines@phantomwrapper=0\relax%
 
+%% Helper macros for zeroing/restoring staff dimensions.
+%% The @saved values are maintained by the calculate functions, so toggling
+%% the flag and recalculating is sufficient; no manual save/restore needed.
+\def\gre@staffdimensions@unzero{%
+  \ifgre@staffdimensions@zeroed
+    \global\gre@staffdimensions@zeroedfalse
+    \gre@calculate@stafflineheight
+    \gre@calculate@interstafflinespace
+    \gre@calculate@staffheight
+    \gre@calculate@constantglyphraise
+  \fi
+}%
+\def\gre@staffdimensions@dozero{%
+  \ifgre@staffdimensions@zeroed\else
+    \global\gre@staffdimensions@zeroedtrue
+    \gre@calculate@stafflineheight
+    \gre@calculate@interstafflinespace
+    \gre@calculate@staffheight
+    \gre@calculate@constantglyphraise
+  \fi
+}%
+
 \def\gresetlines#1{%
   \gre@processvisibility{#1}%
     {\gre@showlinestrue}%
     {\gre@showlinesfalse}%
     {\gre@lines@phantomwrapper}%
     {\protect\gresetlines}%
+  % When lines are invisible or hphantom, zero the staff dimensions
+  % so that all vertical positioning collapses (notes flatten, NABC lowers).
+  % When lines are visible or phantom, restore the saved values.
+  \ifgre@showlines
+    \gre@staffdimensions@unzero
+  \else
+    \ifnum\gre@lines@phantomwrapper=1\relax
+      \gre@staffdimensions@unzero
+    \else
+      \gre@staffdimensions@dozero
+    \fi
+  \fi
 }
 
 %% box containing the stafflines for other lines than the first
