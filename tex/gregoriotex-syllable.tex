@@ -378,7 +378,7 @@
 \def\gre@noopglyphheights#1#2{}%
 
 % Suppress all bar glyph definitions so that bars produce no output.
-% Used inside \gre@notes@rendernabc and \gre@notes@rendernabc@withspacing.
+% Used inside \gre@notes@rendernabc and \gre@notes@rendernabc@tight.
 \def\gre@suppress@bars{%
   \def\GreInDivisioMinimis##1##2##3{}%
   \def\GreDivisioMinimis##1##2##3{}%
@@ -456,14 +456,11 @@
   \fi\fi
 }%
 
-% Like \gre@noopglyph but preserves horizontal glyph width for NABC
-% positioning.  Renders no visible glyph content, but advances the cursor
-% by the glyph width and triggers deferred NABC rendering via
-% \gre@newglyphcommon.
-\def\gre@spacingnoopglyph#1#2#3#4#5#6#7{%
+% Zero-width glyph handler that triggers NABC rendering and computes the
+% alignment center for the first glyph, but does not advance the cursor.
+% Used by \gre@notes@rendernabc@tight for NABC-only horizontal spacing.
+\def\gre@nabconlyglyph#1#2#3#4#5#6#7{%
   \gre@newglyphcommon
-  \setbox\gre@box@temp@width=\hbox{\gre@font@music #1}%
-  \kern\wd\gre@box@temp@width\relax
   \ifgre@firstglyph
     \gre@calculate@notesaligncenter{#4}%
     \global\gre@firstglyphfalse
@@ -471,14 +468,18 @@
   \gre@endofglyphcommon
 }%
 
-% Like \gre@notes@rendernabc but preserves horizontal glyph spacing.
-% Used when notes are invisible but NABC is visible, so that NABC neumes
-% are correctly positioned horizontally instead of overlapping.
-\def\gre@notes@rendernabc@withspacing#1{%
+% Render NABC without preserving any note glyph or inter-element spacing.
+% The total horizontal width comes entirely from \gre@compute@nabc@extrakern,
+% which expands the syllable box to the NABC width.  This produces tighter
+% spacing than the hphantom path because inter-glyph and inter-element glue
+% is suppressed.
+\def\gre@notes@rendernabc@tight#1{%
   \begingroup
-    \let\GreGlyph\gre@spacingnoopglyph
+    \let\GreGlyph\gre@nabconlyglyph
     \let\GreGlyphHeights\gre@noopglyphheights
     \gre@suppress@bars
+    \def\GreEndOfElement##1##2##3{}%
+    \def\GreEndOfGlyph##1{}%
     #1%
   \endgroup
 }%
@@ -535,7 +536,7 @@
     \else
       \gre@check@nabc@needsspacing
       \ifgre@nabc@needsspacing
-        \setbox\gre@box@syllablenotes=\hbox{\gre@notes@rendernabc@withspacing{#1}}%
+        \setbox\gre@box@syllablenotes=\hbox{\gre@notes@rendernabc@tight{#1}}%
         \gre@compute@nabc@extrakern
       \else
         \setbox\gre@box@syllablenotes=\box\voidb@x%
@@ -1255,8 +1256,8 @@
     \else
       \gre@check@nabc@needsspacing
       \ifgre@nabc@needsspacing
-        % NABC visible: preserve horizontal spacing for proper positioning
-        \gre@notes@rendernabc@withspacing{#9}%
+        % NABC visible: render with tight (NABC-only) spacing
+        \gre@notes@rendernabc@tight{#9}%
         % Apply per-syllable NABC kern (computed in \gre@syllablenotes)
         \ifdim\gre@dimen@nabc@extrakern>0pt\relax
           \kern\gre@dimen@nabc@extrakern
@@ -1549,8 +1550,8 @@
       \else
         \gre@check@nabc@needsspacing
         \ifgre@nabc@needsspacing
-          % NABC visible: preserve horizontal spacing for proper positioning
-          \gre@notes@rendernabc@withspacing{#9}%
+          % NABC visible: render with tight (NABC-only) spacing
+          \gre@notes@rendernabc@tight{#9}%
           % Apply per-syllable NABC kern (computed in \gre@syllablenotes)
           \ifdim\gre@dimen@nabc@extrakern>0pt\relax
             \kern\gre@dimen@nabc@extrakern
