@@ -86,6 +86,12 @@
   \fi %
 }
 
+% Flush pending NABC neumes for elements without glyphs (empty GABC snippet)
+\def\GreFlushNABC{%
+  \gre@currentnabcvoice@i
+  \gre@currentnabcvoice@ii
+}
+
 \newif\ifgre@nabcfontloaded%
 \gre@nabcfontloadedfalse%
 

@@ -878,12 +878,33 @@ note:
         free($1.text);
         nabc_state = (nabc_state + 1) % (nabc_lines+1);
     }
+    | NABC_CUT {
+        if (!nabc_lines) {
+            gregorio_message(_("You used character \"|\" in gabc without "
+                               "setting \"nabc-lines\" parameter. Please "
+                               "set it in your gabc header."),
+                             "det_score", VERBOSITY_FATAL, 0);
+        }
+        if (nabc_state == 0) {
+            /* empty GABC snippet: create an empty element */
+            gregorio_add_element(&elements[voice], NULL);
+            current_element = elements[voice];
+            while (current_element->next) {
+                current_element = current_element->next;
+            }
+        }
+        nabc_state = (nabc_state + 1) % (nabc_lines+1);
+    }
     | CLOSING_BRACKET {
-        elements[voice]=NULL;
+        if (nabc_state == 0) {
+            elements[voice]=NULL;
+        }
         nabc_state=0;
     }
     | closing_bracket_with_space {
-        elements[voice]=NULL;
+        if (nabc_state == 0) {
+            elements[voice]=NULL;
+        }
         nabc_state=0;
         update_position_with_space();
     }
