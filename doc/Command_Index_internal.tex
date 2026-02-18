@@ -1369,11 +1369,11 @@ Runs a command for each string in a comma-separated list of strings.
 \macroname{\textbackslash gre@parsecommas@options}{}{gregoriotex-common.tex}
 Internal to \verb|\gre@parsecommas|.
 
-\macroname{\textbackslash gre@nabcboicechar}{\#1\#2}{gregoriotex-nabc.tex}
+\macroname{\textbackslash gre@nabcvoicechar}{[\optional{\#1}]\{\#2\}}{gregoriotex-nabc.tex}
 Prints the nabc glyphs for the given nabc string.
 
 \begin{argtable}
-  \#1 & integer & the nabc voice: 1 (default) = above staff, 2 = below staff.\\
+  \#1 & integer & Optional. The nabc voice: 1 (default) = above staff, 2 = below staff.\\
   \#2 & string & The \texttt{nabc} syntax which indicates what neumes are to be printed.\\
 \end{argtable}
 
@@ -1416,11 +1416,11 @@ The font for some of the extra characters, such as the bar for barred letters.
 \macroname{\textbackslash gre@font@nabc}{}{gregoriotex-nabc.tex}
 The font for ancient notation.
 
-\macroname{\textbackslash gre@setnabcvoicefont}{\#1\#2\#3}{gregoriotex-nabc.tex}
+\macroname{\textbackslash gre@setnabcvoicefont}{[\optional{\#1}]\{\#2\#3\}}{gregoriotex-nabc.tex}
 Prints the nabc glyphs for the given nabc string.
 
 \begin{argtable}
-  \#1 & integer & the nabc voice: 1 (default) = above staff, 2 = below staff.\\
+  \#1 & integer & Optional. The nabc voice: 1 (default) = above staff, 2 = below staff.\\
   \#2 & string & the name of the font, either \texttt{gregall}, \texttt{grelaon}, or \texttt{gresgmodern}\\
   \#3 & integer & point size at which the font should be loaded\\
 \end{argtable}
