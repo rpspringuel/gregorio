@@ -508,6 +508,12 @@ Macro to hold the height of the current flat for the secondary clef (\texttt{3} 
 \macroname{\textbackslash gre@currenttextabovelines}{}{gregoriotex-main.tex}
 Macro for storing the text which needs to be placed above the lines.
 
+\macroname{\textbackslash gre@currentnabcvoice@i}{}{gregoriotex-main.tex}
+Macro for storing the nabc neumes which need to be placed above the lines.
+
+\macroname{\textbackslash gre@currentnabcvoice@ii}{}{gregoriotex-main.tex}
+Macro for storing the nabc neumes which need to be placed below the lines.
+
 \macroname{\textbackslash gre@typesettextabovelines}{\#1\#2}{gregoriotex-main.tex}
 Macro for typesetting the text or nabc neumes above the lines.
 
@@ -1010,12 +1016,6 @@ desired case.
   & \texttt{26} & Space after after a non-punctum inclinatum and before the upright punctum inclinatum. \\
 \end{argtable}
 
-\macroname{\textbackslash gre@nabcfontname}{}{gregoriotex-main.tex}
-Macro which stores the name of the currently selected font for \texttt{nabc}.
-
-\macroname{\textbackslash gre@nabcfontsize}{}{gregoriotex-main.tex}
-Macro which stores the size of the currently selected font for \texttt{nabc}.
-
 \macroname{\textbackslash gre@endsyllablepart}{}{gregoriotex-syllable.tex}
 Macro which stores the end part of the current syllable (that which comes after the alignment part).
 
@@ -1218,12 +1218,6 @@ Empty macro which is used to determine if the symbols have been loaded and preve
 \macroname{\textbackslash gre@hskip}{}{gregoriotex-signs.tex}
 Alias for \verb=\hskip= or \verb=\kern=.  We use this rather than those functions directly so that the same element can appear in discretionaries where \verb=\kern= is allowed but \verb=\hskip= is not by simply changing the assignment of this macro when we enter one.
 
-\macroname{\textbackslash gre@localleftbox}{}{gregoriotex-main.tex}
-Alias for \verb=\luatexlocalleftbox= or \verb=\localleftbox=, depending on \LaTeX\ version.
-
-\macroname{\textbackslash gre@localrightbox}{}{gregoriotex-main.tex}
-Alias for \verb=\luatexlocalrightbox= or \verb=\localrightbox=, depending on \LaTeX\ version.
-
 \macroname{\textbackslash gre@resizebox}{}{gregoriotex-main.tex}
 Alias for \verb=\resizebox=.
 
@@ -1348,10 +1342,6 @@ Prevents the current syllable from overlapping with the previous syllable.
       & note & the current syllable is a note syllable.\\
 \end{argtable}
 
-\macroname{\textbackslash gre@read@temp}{}{gregoriotex-main.tex}
-File handle used to mark auto-compiled gabc files as dependencies for tools
-like latexmk.
-
 \macroname{\textbackslash gre@arg@oftwo@first}{\#1\#2}{gregoriotex-syllable.tex}
 Evaluates to the first of its arguments.
 
@@ -1378,6 +1368,15 @@ Runs a command for each string in a comma-separated list of strings.
 
 \macroname{\textbackslash gre@parsecommas@options}{}{gregoriotex-common.tex}
 Internal to \verb|\gre@parsecommas|.
+
+\macroname{\textbackslash gre@nabcvoicechar}{[\optional{\#1}]\{\#2\}}{gregoriotex-nabc.tex}
+Prints the nabc glyphs for the given nabc string.
+
+\begin{argtable}
+  \#1 & integer & Optional. The nabc voice: 1 (default) = above staff, 2 = below staff.\\
+  \#2 & string & The \texttt{nabc} syntax which indicates what neumes are to be printed.\\
+\end{argtable}
+
 
 \subsection{Auxiliary File}
 Gregorio\TeX\ creates its own auxiliary file (extension \texttt{gaux}) which it uses to store information between successive typesetting runs.  This allows for such features as the dynamic interline spacing.  The following functions are used to interact with that auxiliary file.
@@ -1416,6 +1415,16 @@ The font for some of the extra characters, such as the bar for barred letters.
 
 \macroname{\textbackslash gre@font@nabc}{}{gregoriotex-nabc.tex}
 The font for ancient notation.
+
+\macroname{\textbackslash gre@setnabcvoicefont}{[\optional{\#1}]\{\#2\#3\}}{gregoriotex-nabc.tex}
+Prints the nabc glyphs for the given nabc string.
+
+\begin{argtable}
+  \#1 & integer & Optional. The nabc voice: 1 (default) = above staff, 2 = below staff.\\
+  \#2 & string & the name of the font, either \texttt{gregall}, \texttt{grelaon}, or \texttt{gresgmodern}\\
+  \#3 & integer & point size at which the font should be loaded\\
+\end{argtable}
+
 
 \macroname{\textbackslash gre@font@initial}{}{gregoriotex.tex}
 The font for the default initial format in Plain \TeX.
@@ -1881,6 +1890,9 @@ Boolean indicating whether the notes should be shown.
 
 \macroname{\textbackslash ifgre@nabcvoice@i@visible}{}{gregoriotex-nabc.tex}
 Boolean indicating whether the first nabc voice should be shown.
+
+\macroname{\textbackslash ifgre@nabcvoice@ii@visible}{}{gregoriotex-nabc.tex}
+Boolean indicating whether the second nabc voice should be shown.
 
 \macroname{\textbackslash ifgre@showlyrics}{}{gregoriotex-syllable.tex}
 Boolean indicating whether the lyrics should be shown.
