@@ -122,6 +122,73 @@
 }%
 
 %%%%%%%%%%%%%
+% Helper macro for visibility values
+%%%%%%%%%%%%%
+
+% Helper macro to process visibility values with phantom support and deprecation warnings
+% #1 - the value to process (visible/invisible/phantom/hphantom)
+% #2 - command to execute for visible (e.g., \gre@showlyricstrue)
+% #3 - command to execute for invisible (e.g., \gre@showlyricsfalse)
+% #4 - phantom wrapper count variable name (e.g., \gre@lyrics@phantomwrapper)
+% #5 - macro name for error messages (e.g., \protect\gresetlyrics)
+\def\gre@processvisibility#1#2#3#4#5{%
+  \IfStrEqCase{#1}{%
+    {visible}{#2#4=0\relax}%
+    {invisible}{#3#4=0\relax}%
+    {phantom}{#3#4=1\relax}%
+    {hphantom}{#3#4=2\relax}%
+  }[% all other cases
+    \gre@error{Unrecognized option "#1" for #5\MessageBreak Possible options are: 'visible', 'invisible', 'phantom', and 'hphantom'}%
+  ]%
+}%
+
+% Simplified version for commands that don't support phantom options
+% #1 - option string (visible/invisible)
+% #2 - command to execute for visible
+% #3 - command to execute for invisible
+% #4 - macro name for error messages
+\def\gre@processvisibilitynophantom#1#2#3#4{%
+  \IfStrEqCase{#1}{%
+    {visible}{#2}%
+    {invisible}{#3}%
+  }[% all other cases
+    \gre@error{Unrecognized option "#1" for #4\MessageBreak Possible options are: 'visible' and 'invisible'}%
+  ]%
+}%
+
+% Simplified version for commands that accept visible/invisible/phantom with wrapper control
+% #1 - option string (visible/invisible/phantom)
+% #2 - command to execute for visible/phantom
+% #3 - command to execute for invisible
+% #4 - phantom wrapper count variable name
+% #5 - macro name for error messages
+\def\gre@processvisibilitywithphantom#1#2#3#4#5{%
+  \IfStrEqCase{#1}{%
+    {visible}{#2#4=0\relax}%
+    {invisible}{#3#4=0\relax}%
+    {phantom}{#2#4=1\relax}%
+  }[% all other cases
+    \gre@error{Unrecognized option "#1" for #5\MessageBreak Possible options are: 'visible', 'invisible', and 'phantom'}%
+  ]%
+}%
+
+% Helper macro to apply phantom wrapper based on counter value
+% #1 - phantom wrapper counter (0=no wrapper, 1=\phantom, 2=\hphantom)
+% #2 - content to wrap
+\def\gre@applyphantomwrapper#1#2{%
+  \ifcase#1\relax
+    % 0: no wrapper
+    #2%
+  \or
+    % 1: \phantom
+    \phantom{#2}%
+  \or
+    % 2: \hphantom
+    \hphantom{#2}%
+  \fi
+}%
+
+%%%%%%%%%%%%%
 % Internal function tracing
 %%%%%%%%%%%%%
 

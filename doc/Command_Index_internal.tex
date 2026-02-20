@@ -68,6 +68,54 @@ Macro that handles obsolescence errors.
   \#2 & string & name of the correct macro to use\\
 \end{argtable}
 
+\macroname{\textbackslash gre@processvisibility}{\#1\#2\#3\#4\#5}{gregoriotex-common.tex}
+Helper macro to process visibility values with phantom support.  Accepts \texttt{visible}, \texttt{invisible}, \texttt{phantom}, and \texttt{hphantom} as input and executes the appropriate command while setting the phantom wrapper counter.
+
+\begin{argtable}
+  \#1 & \texttt{visible} & Element is shown normally.\\
+  & \texttt{invisible} & Element is hidden and takes no space.\\
+  & \texttt{phantom} & Element is hidden but preserves both horizontal and vertical space.\\
+  & \texttt{hphantom} & Element is hidden but preserves only horizontal space.\\
+  \#2 & command & Command to execute when the element is visible (\eg \verb=\gre@showlyricstrue=).\\
+  \#3 & command & Command to execute when the element is invisible (\eg \verb=\gre@showlyricsfalse=).\\
+  \#4 & count & Phantom wrapper count variable to set (\eg \verb=\gre@lyrics@phantomwrapper=).\\
+  \#5 & string & Macro name for error messages (\eg \verb=\protect\gresetlyrics=).\\
+\end{argtable}
+
+\macroname{\textbackslash gre@processvisibilitynophantom}{\#1\#2\#3\#4}{gregoriotex-common.tex}
+Simplified version of \verb=\gre@processvisibility= for commands that do not support phantom options.  Only accepts \texttt{visible} and \texttt{invisible}.
+
+\begin{argtable}
+  \#1 & \texttt{visible} & Element is shown normally.\\
+  & \texttt{invisible} & Element is hidden.\\
+  \#2 & command & Command to execute when visible.\\
+  \#3 & command & Command to execute when invisible.\\
+  \#4 & string & Macro name for error messages.\\
+\end{argtable}
+
+\macroname{\textbackslash gre@processvisibilitywithphantom}{\#1\#2\#3\#4\#5}{gregoriotex-common.tex}
+Simplified version of \verb=\gre@processvisibility= that accepts \texttt{visible}, \texttt{invisible}, and \texttt{phantom} (but not \texttt{hphantom}).  Unlike the full version, both \texttt{visible} and \texttt{phantom} execute the same visibility command, differing only in the phantom wrapper counter value.
+
+\begin{argtable}
+  \#1 & \texttt{visible} & Element is shown normally.\\
+  & \texttt{invisible} & Element is hidden and takes no space.\\
+  & \texttt{phantom} & Element is hidden but preserves horizontal space.\\
+  \#2 & command & Command to execute when visible or phantom.\\
+  \#3 & command & Command to execute when invisible.\\
+  \#4 & count & Phantom wrapper count variable to set.\\
+  \#5 & string & Macro name for error messages.\\
+\end{argtable}
+
+\macroname{\textbackslash gre@applyphantomwrapper}{\#1\#2}{gregoriotex-common.tex}
+Applies a \TeX\ phantom wrapper around content based on a counter value.  Used to make rendered content invisible while preserving its spacing.
+
+\begin{argtable}
+  \#1 & \texttt{0} & No wrapper; content is typeset normally.\\
+  & \texttt{1} & Wraps content in \verb=\phantom=, preserving both horizontal and vertical space.\\
+  & \texttt{2} & Wraps content in \verb=\hphantom=, preserving only horizontal space.\\
+  \#2 & content & The material to be (optionally) wrapped.\\
+\end{argtable}
+
 \macroname{\textbackslash gre@allowdeprecated@asboolean}{}{gregoriotex-main.tex}
 Macro that evaluates \texttt{true} or \texttt{false} depending on whether
 deprecated usage is allowed.  This is used to pass the value of
@@ -529,6 +577,12 @@ Macro to typeset a centered translation.
 \macroname{\textbackslash gre@generatelines}{}{gregoriotex-main.tex}
 Macro to (re)populate the box containing the lines.
 
+\macroname{\textbackslash gre@staffdimensions@unzero}{}{gregoriotex-main.tex}
+Restores the staff dimensions (line height, inter-line space, staff height, and constant glyph raise) from their saved values if they were previously zeroed.  Only takes effect when \verb=\ifgre@staffdimensions@zeroed= is true; otherwise it is a no-op.
+
+\macroname{\textbackslash gre@staffdimensions@dozero}{}{gregoriotex-main.tex}
+Zeroes the staff dimensions (line height, inter-line space, staff height, and constant glyph raise) so that all vertical positioning collapses.  The pre-zeroed values are preserved in \verb=\gre@dimen@stafflineheight@saved=, \verb=\gre@dimen@interstafflinespace@saved=, and \verb=\gre@dimen@staffheight@saved= for later restoration.  Only takes effect when \verb=\ifgre@staffdimensions@zeroed= is false; otherwise it is a no-op.
+
 \macroname{\textbackslash gre@lastoflinecount}{}{gregoriotex-main.tex}
 Count to track where on the line we are.  Values are \texttt{0} (we are not near the end of a line), \texttt{1} (we’re at the last syllable of the line), and \texttt{2} (we just set the last syllable of the line and so are at the first syllable of a new line).
 
@@ -730,6 +784,52 @@ Macro for populating \verb=\gre@box@syllablenotes=.
 
 \begin{argtable}
   \#1 & string & The contents to be placed in the box\\
+\end{argtable}
+
+\macroname{\textbackslash gre@applynotesphantom}{\#1\#2}{gregoriotex-syllable.tex}
+Notes-specific phantom wrapper that keeps NABC visible while making notes invisible.  It sets \verb=\ifgre@notes@invisrender= to true so that glyph rendering code suppresses note output, then typesets the content into a box and adjusts its dimensions according to the phantom mode.
+
+\begin{argtable}
+  \#1 & \texttt{0} & No wrapper (pass-through).\\
+  & \texttt{1} & Phantom mode: content is invisible but preserves full dimensions.\\
+  & \texttt{2} & Horizontal phantom mode: vertical dimensions (height and depth) are zeroed.\\
+  \#2 & content & The note material to render.\\
+\end{argtable}
+
+\macroname{\textbackslash gre@compute@nabc@extrakern}{}{gregoriotex-syllable.tex}
+Computes extra horizontal space needed when NABC neumes extend past the total width of the syllable notes.  If \verb=\gre@dimen@nabc@maxwidth= exceeds the width of \verb=\gre@box@syllablenotes=, the difference is stored in \verb=\gre@dimen@nabc@extrakern= and a kern of that amount is appended to the syllable notes box.
+
+\macroname{\textbackslash gre@check@nabc@needsspacing}{}{gregoriotex-syllable.tex}
+Checks if any NABC voice is visible and sets \verb=\ifgre@nabc@needsspacing= accordingly.  When true, horizontal spacing must be preserved even when notes are invisible, to prevent NABC neume overlap.
+
+\macroname{\textbackslash gre@nabconlyglyph}{\#1\#2\#3\#4\#5\#6\#7}{gregoriotex-syllable.tex}
+Zero-width glyph handler used by \verb=\gre@notes@rendernabc@tight=.  Triggers NABC rendering and computes the alignment center for the first glyph, but does not produce any note glyph output or advance the cursor.
+
+\begin{argtable}
+  \#1--\#7 & various & Same arguments as \verb=\GreGlyph=; all are consumed but only \#4 is used (for alignment center calculation on the first glyph).\\
+\end{argtable}
+
+\macroname{\textbackslash gre@notes@rendernabc@tight}{\#1}{gregoriotex-syllable.tex}
+Renders NABC neumes without preserving any note glyph or inter-element spacing.  Uses \verb=\gre@nabconlyglyph= instead of \verb=\GreGlyph= and suppresses all end-of-element and end-of-glyph callbacks, as well as bar output.  The total horizontal width comes entirely from \verb=\gre@compute@nabc@extrakern=.  This produces tighter spacing than the hphantom path.
+
+\begin{argtable}
+  \#1 & content & The notes material to process for NABC rendering.\\
+\end{argtable}
+
+\macroname{\textbackslash gre@noopglyph}{\#1\#2\#3\#4\#5\#6\#7}{gregoriotex-syllable.tex}
+No-op glyph handler that consumes the same arguments as \verb=\GreGlyph= but produces no visible output.  Used as a replacement for \verb=\GreGlyph= inside \verb=\gre@notes@rendernabc= to suppress note rendering while still allowing NABC callbacks to fire.
+
+\macroname{\textbackslash gre@noopglyphheights}{\#1\#2}{gregoriotex-syllable.tex}
+No-op glyph heights handler that consumes the same arguments as \verb=\GreGlyphHeights= but produces no output.  Used as a replacement for \verb=\GreGlyphHeights= when suppressing note rendering.
+
+\macroname{\textbackslash gre@suppress@bars}{}{gregoriotex-syllable.tex}
+Redefines all bar glyph macros (\verb=\GreDivisioMinimis=, \verb=\GreDivisioMinor=, etc.) to no-ops so that bars produce no output.  Used inside \verb=\gre@notes@rendernabc= and \verb=\gre@notes@rendernabc@tight=.
+
+\macroname{\textbackslash gre@notes@rendernabc}{\#1}{gregoriotex-syllable.tex}
+Renders the notes content with note glyphs replaced by no-ops and bars suppressed, so that only NABC callbacks execute.  Unlike \verb=\gre@notes@rendernabc@tight=, this version preserves inter-element and inter-glyph spacing.
+
+\begin{argtable}
+  \#1 & content & The notes material to process for NABC rendering.\\
 \end{argtable}
 
 \macroname{\textbackslash gre@symbolfontsize}{}{gregoriotex-symbols.tex}
@@ -1894,6 +1994,15 @@ Boolean indicating whether the first nabc voice should be shown.
 \macroname{\textbackslash ifgre@nabcvoice@ii@visible}{}{gregoriotex-nabc.tex}
 Boolean indicating whether the second nabc voice should be shown.
 
+\macroname{\textbackslash ifgre@staffdimensions@zeroed}{}{gregoriotex-main.tex}
+Boolean indicating whether the staff dimensions (line height, inter-line space, and total staff height) have been zeroed.  Set to true by \verb=\gre@staffdimensions@dozero= when lines are made invisible or hphantom, and cleared by \verb=\gre@staffdimensions@unzero= when lines are restored.
+
+\macroname{\textbackslash ifgre@nabc@needsspacing}{}{gregoriotex-syllable.tex}
+Boolean indicating whether any NABC voice is visible and therefore requires horizontal spacing to be preserved even when notes are invisible.  Set by \verb=\gre@check@nabc@needsspacing=.
+
+\macroname{\textbackslash ifgre@notes@invisrender}{}{gregoriotex-syllable.tex}
+Boolean indicating that notes are being typeset in invisible-rendering mode.  Set to true inside \verb=\gre@applynotesphantom= so that glyph rendering code can suppress note output while still allowing NABC neumes to be rendered.
+
 \macroname{\textbackslash ifgre@showlyrics}{}{gregoriotex-syllable.tex}
 Boolean indicating whether the lyrics should be shown.
 
@@ -1902,6 +2011,30 @@ Boolean indicating whether the translation should be shown.
 
 \macroname{\textbackslash ifgre@showabovelinestext}{}{gregoriotex-main.tex}
 Boolean indicating whether the above lines text should be shown.
+
+\macroname{\textbackslash gre@lyrics@phantomwrapper}{}{gregoriotex-syllable.tex}
+Count controlling the phantom wrapper mode for lyrics.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=, \texttt{2}~=~\verb=\hphantom=.  Set by \verb=\gresetlyrics=.
+
+\macroname{\textbackslash gre@notes@phantomwrapper}{}{gregoriotex-syllable.tex}
+Count controlling the phantom wrapper mode for notes.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=, \texttt{2}~=~\verb=\hphantom=.  Set by \verb=\gresetnotes=.
+
+\macroname{\textbackslash gre@abovelinestext@phantomwrapper}{}{gregoriotex-main.tex}
+Count controlling the phantom wrapper mode for above-lines text.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=.  Set by \verb=\gresetabovelinestext=.
+
+\macroname{\textbackslash gre@lines@phantomwrapper}{}{gregoriotex-main.tex}
+Count controlling the phantom wrapper mode for staff lines.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=, \texttt{2}~=~\verb=\hphantom=.  Set by \verb=\gresetlines=.
+
+\macroname{\textbackslash gre@translation@phantomwrapper}{}{gregoriotex-main.tex}
+Count controlling the phantom wrapper mode for the translation text.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=.  Set by \verb=\gresettranslation=.
+
+\macroname{\textbackslash gre@nabcvoice@i@phantomwrapper}{}{gregoriotex-nabc.tex}
+Count controlling the phantom wrapper mode for the first NABC voice.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=.  Set by \verb=\gresetnabc=.
+
+\macroname{\textbackslash gre@nabcvoice@ii@phantomwrapper}{}{gregoriotex-nabc.tex}
+Count controlling the phantom wrapper mode for the second NABC voice.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=.  Set by \verb=\gresetnabc=.
+
+\macroname{\textbackslash gre@clef@phantomwrapper}{}{gregoriotex-signs.tex}
+Count controlling the phantom wrapper mode for the clef.  Values: \texttt{0}~=~no wrapper, \texttt{1}~=~\verb=\phantom=, \texttt{2}~=~\verb=\hphantom=.  Set by \verb=\gresetclef=.
 
 \macroname{\textbackslash gre@count@initiallines}{}{gregoriotex-syllable.tex}
 Number of lines the initial takes up.
@@ -2086,8 +2219,23 @@ Distance representing the difference between the actual size of the staff lines 
 \macroname{\textbackslash gre@dimen@stafflineheight}{}{gregoriotex-spaces.tex}
 The height of the staff line.
 
+\macroname{\textbackslash gre@dimen@stafflineheight@saved}{}{gregoriotex-main.tex}
+Saved (pre-zeroed) value of the staff line height.  This dimension always holds the true computed value of \verb=\gre@dimen@stafflineheight= regardless of whether staff dimensions have been zeroed.  Computed as \texttt{stafflinethicknessbase $\times$ stafflinefactor}.
+
 \macroname{\textbackslash gre@dimen@interstafflinespace}{}{gregoriotex-spaces.tex}
 The space between the lines.
+
+\macroname{\textbackslash gre@dimen@interstafflinespace@saved}{}{gregoriotex-main.tex}
+Saved (pre-zeroed) value of the inter-staff-line space.  This dimension always holds the true computed value of \verb=\gre@dimen@interstafflinespace= regardless of whether staff dimensions have been zeroed.
+
+\macroname{\textbackslash gre@dimen@staffheight@saved}{}{gregoriotex-main.tex}
+Saved (pre-zeroed) value of the total staff height.  This dimension always holds the true computed value of \verb=\gre@dimen@staffheight= regardless of whether staff dimensions have been zeroed.  Computed from \verb=\gre@dimen@stafflineheight@saved= and \verb=\gre@dimen@interstafflinespace@saved=.
+
+\macroname{\textbackslash gre@dimen@nabc@maxwidth}{}{gregoriotex-syllable.tex}
+Tracks the maximum NABC width for the current syllable across all voices.  Used to detect when NABC extends past the total glyph width and extra horizontal space is needed at the end of the syllable to prevent overlap with the next NABC.  Reset to 0pt at the start of each syllable.
+
+\macroname{\textbackslash gre@dimen@nabc@extrakern}{}{gregoriotex-syllable.tex}
+Stores the extra kern needed at the end of the syllable to accommodate NABC overflow.  Computed by \verb=\gre@compute@nabc@extrakern= during the pre-measurement pass in \verb=\gre@syllablenotes= and applied after the real notes typesetting in \verb=\GreSyllable=.  Reset to 0pt at the start of each syllable.
 
 \macroname{\textbackslash gre@dimen@glyphraisevalue}{}{gregoriotex-spaces.tex}
 The value that a particular glyph must be raised to be set in the correct position.
