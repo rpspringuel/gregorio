@@ -82,6 +82,7 @@
 \hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=green, urlcolor=green}
 
 \usepackage{longtable}
+\usepackage{xltabular}
 \usepackage{multirow}
 \usepackage{pdflscape}
 \usepackage{hhline}
@@ -114,6 +115,15 @@
   \index{#1}}
   %\addcontentsline{toc}{subsubsection}{#1}}
 
+\newcommand{\longmacroname}[3]{%
+  \clearpage
+  \vspace{3.25ex plus 1ex minus .2ex}%
+  \makebox[\linewidth]{\ttfamily\bfseries #1#2%
+  \hspace{\fill}\normalfont\itshape #3}%
+  \vspace{1.5ex plus .2ex}%
+  \index{#1}}
+  %\addcontentsline{toc}{subsubsection}{#1}}
+
 \newcommand{\optional}[1]{{\itshape #1}}
 
 \lstset{backgroundcolor=\color{lightgray},
@@ -137,6 +147,16 @@
     Arg & Value & Description \\
     \hline}%
   {\endtabularx\bigskip}
+
+\newenvironment{longargtable}{%
+  \bigskip\rowcolors{1}{lightgray}{lightgray}
+  \xltabular{\textwidth}{clX}
+    Arg & Value & Description \\
+    \hline\endhead
+    \multicolumn{3}{r}{\itshape Continued next page}\\\endfoot
+    \endlastfoot}%
+  {\endxltabular\bigskip}
+
 
 \makeatletter%
 \NewDocumentEnvironment{gdimension}{m}{\macroname{#1}{}{gregoriotex-gsp-default.tex}}{%
