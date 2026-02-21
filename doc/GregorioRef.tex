@@ -102,6 +102,11 @@
 \let\oldsubsubsection\subsubsection
 \def\subsubsection{\filbreak\breakablefalse\oldsubsubsection}
 
+% macro used to title a macro description, arguments are
+% #1: the name of the macro
+% #2: the argument pattern the macro takes
+% #3: the file in which the macro is defined
+% contains page breaking controls so that a macro’s description all stays on the same page
 \newcommand{\macroname}[3]{%
   \vspace{3.25ex plus 1ex minus .2ex}%
   \ifbreakable%
@@ -115,6 +120,10 @@
   \index{#1}}
   %\addcontentsline{toc}{subsubsection}{#1}}
 
+% macro used to title a macro description when said description takes more than a single page 
+% (usually because of the use of longargtable instead of argtable)
+% arguments are the same as for \macroname
+% this macro will always force a pagebreak before beginning the macro description
 \newcommand{\longmacroname}[3]{%
   \clearpage
   \vspace{3.25ex plus 1ex minus .2ex}%
@@ -141,6 +150,7 @@
 \font\greextra = {name:greextra} at 12 pt\relax
 \newcommand{\excluded}[1]{{\tiny\itshape #1}}
 
+% normal table used when describing the arguments of a macro
 \newenvironment{argtable}{%
   \bigskip\rowcolors{1}{lightgray}{lightgray}
   \tabularx{\textwidth}{clX}
@@ -148,6 +158,7 @@
     \hline}%
   {\endtabularx\bigskip}
 
+% long table (capable of spanning multiple pages) used when describing the arguments of a macro
 \newenvironment{longargtable}{%
   \bigskip\rowcolors{1}{lightgray}{lightgray}
   \xltabular{\textwidth}{clX}
