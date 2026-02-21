@@ -1,13 +1,38 @@
 Documentation for gregorio and gregoriotex
 ==========================================
 
-This folder contains the source files of a manual is primarily intended for
-developers. Users should not expect to find an indepth guide on using gregorio.
+This folder contains the source files of two manuals that are primarily intended for
+developers. Users should not expect to find an in-depth guide on using gregorio.
 
 You can find a compiled PDF version in the files of each [Gregorio release](https://github.com/gregorio-project/gregorio/releases).
 
 Developers can use this manual as a reference for information on the
 internal workings of gregorio.
+
+The manual is divided into two files.  The first, GregorioRef.tex, contains several parts:
+
+ * Command_Index_User.tex: This file documents the user interface.  That includes package
+   options, user macros (mostly prefixed by `\gre`), counts, distances, penalties, and
+   colors.
+ * Command_Index_gregorio.tex: This file documents the macros written to gtex files by the
+   executable.  These should all be prefixed by `\Gre`.
+ * Command_Index_internal.tex: This file documents the internal macros used by GregorioTeX
+   to carryout various tasks as it typesets a score.  These should all be prefixed by
+   `\gre@`.
+ * Gabc.tex: This file documents the gabc syntax.
+ * Appendix_Font_Tables.tex: This is the source for the appendix which lists all the
+   available glyphs in the greciliae font and any variant glyphs contained within.  This
+   table is generated automatically, so updates to this file should not be necessary.
+ 
+The second file, GregorioNabcRef.tex, documents the nabc syntax which provides the ability
+to describe some adiastematic neumes (see below).
+
+Whenever modifications are made to the codebase, the manual source files should be updated
+to reflect the changes.  To aid with identifying needed changes, please use the
+`doc_check.sh` script in the parent to this directory.  Running this script will generate
+a text file with 2 lists in it: macros which are currently undocumented and macros which
+are documented but no longer appear in the code base.  This script doesn't look at the
+gabc or nabc syntax.
 
 ## Building
 

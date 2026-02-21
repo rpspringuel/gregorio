@@ -176,6 +176,15 @@
 %% vertical spaces
 %%%%%%%%%%%%%%%%%%%
 
+%% Flag and saved dimensions for zeroing staff geometry when lines are hidden.
+%% Must be declared before loading gregoriotex-spaces.tex because the
+%% calculate macros there check this flag.
+\newdimen\gre@dimen@stafflineheight@saved\relax%
+\newdimen\gre@dimen@interstafflinespace@saved\relax%
+\newdimen\gre@dimen@staffheight@saved\relax%
+\newif\ifgre@staffdimensions@zeroed%
+\gre@staffdimensions@zeroedfalse%
+
 \input gregoriotex-spaces.tex%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -396,7 +405,7 @@
     \gre@hskip\gre@skip@temp@four %
     \kern\gre@dimen@temp@five %
     \gre@debugmsg{annotation}{And place the annotation.}%
-    \raise\gre@dimen@annotationtrueraise\box\gre@box@annotation%
+    \hbox attr \gre@attrid@part=9 {\raise\gre@dimen@annotationtrueraise\box\gre@box@annotation}%
     \gre@debugmsg{annotation}{Move to beginning of staff.}%
     \kern\gre@dimen@temp@five %
   \fi %
@@ -614,14 +623,15 @@
 
 \newif\ifgre@showabovelinestext%
 \gre@showabovelinestexttrue%
+\newcount\gre@abovelinestext@phantomwrapper%
+\gre@abovelinestext@phantomwrapper=0\relax%
 
 \def\gresetabovelinestext#1{%
-  \IfStrEqCase{#1}{%
-    {visible}{\gre@showabovelinestexttrue}%
-    {invisible}{\gre@showabovelinestextfalse}%
-    }[% all other cases
-      \gre@error{Unknown option, "#1" for \protect\gresetabovelinestext\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibilitywithphantom{#1}%
+    {\gre@showabovelinestexttrue}%
+    {\gre@showabovelinestextfalse}%
+    {\gre@abovelinestext@phantomwrapper}%
+    {\protect\gresetabovelinestext}%
 }%
 
 \xdef\gre@currenttextabovelines{}%
@@ -649,13 +659,20 @@
     + \gre@space@dimen@spacebeneathtext %
     + \gre@space@dimen@spacelinestext)\relax%
   \gre@debugmsg{spacing}{Raise alt text: \the\gre@dimen@temp@five}%
-  \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{%
-    \ifnum#2=0\relax
-      \gre@style@abovelinestext#1\endgre@style@abovelinestext
-    \else
-      #1%
+  \ifnum#2=1\relax
+    % NABC: measure natural width for overflow detection
+    \setbox0=\hbox{#1}%
+    \ifdim\wd0 > \gre@dimen@nabc@maxwidth\relax
+      \global\gre@dimen@nabc@maxwidth=\wd0\relax
     \fi
+    \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{\box0\hss}%
+  \else
+    \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{%
+      \gre@style@abovelinestext
+        \gre@applyphantomwrapper{\gre@abovelinestext@phantomwrapper}{#1}%
+      \endgre@style@abovelinestext
     \hss}%
+  \fi
   \unsetattribute{\gre@attr@part}%
   \gre@trace@end%
 }%
@@ -676,7 +693,12 @@
   \gre@trace{gre@typesettextbelowlines{#1}}%
   \gre@dimen@temp@five=\dimexpr(\gre@space@dimen@spacebeneathtext
     + \gre@space@dimen@spacelinestext)\relax
-  \leavevmode\raise\gre@dimen@temp@five\hbox attr \gre@attrid@part=8 to 0pt{#1\hss}%
+  % Measure natural width for overflow detection
+  \setbox0=\hbox{#1}%
+  \ifdim\wd0 > \gre@dimen@nabc@maxwidth\relax
+    \global\gre@dimen@nabc@maxwidth=\wd0\relax
+  \fi
+  \leavevmode\raise\gre@dimen@temp@five\hbox attr \gre@attrid@part=8 to 0pt{\box0\hss}%
   \gre@trace@end%
 }%
 
@@ -694,16 +716,49 @@
 %% first a macro to prevent the typesetting of the lines (useful for some people)
 \newif\ifgre@showlines%
 \gre@showlinestrue
+\newcount\gre@lines@phantomwrapper%
+\gre@lines@phantomwrapper=0\relax%
+
+%% Helper macros for zeroing/restoring staff dimensions.
+%% The @saved values are maintained by the calculate functions, so toggling
+%% the flag and recalculating is sufficient; no manual save/restore needed.
+\def\gre@staffdimensions@unzero{%
+  \ifgre@staffdimensions@zeroed
+    \global\gre@staffdimensions@zeroedfalse
+    \gre@calculate@stafflineheight
+    \gre@calculate@interstafflinespace
+    \gre@calculate@staffheight
+    \gre@calculate@constantglyphraise
+  \fi
+}%
+\def\gre@staffdimensions@dozero{%
+  \ifgre@staffdimensions@zeroed\else
+    \global\gre@staffdimensions@zeroedtrue
+    \gre@calculate@stafflineheight
+    \gre@calculate@interstafflinespace
+    \gre@calculate@staffheight
+    \gre@calculate@constantglyphraise
+  \fi
+}%
 
 \def\gresetlines#1{%
-  \IfStrEqCase{#1}{%
-    {visible}%
-      {\gre@showlinestrue}%
-    {invisible}%
-      {\gre@showlinesfalse}%
-    }[% all other cases
-      \gre@error{Unrecognized option "#1" for \protect\gresetlines\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibility{#1}%
+    {\gre@showlinestrue}%
+    {\gre@showlinesfalse}%
+    {\gre@lines@phantomwrapper}%
+    {\protect\gresetlines}%
+  % When lines are invisible or hphantom, zero the staff dimensions
+  % so that all vertical positioning collapses (notes flatten, NABC lowers).
+  % When lines are visible or phantom, restore the saved values.
+  \ifgre@showlines
+    \gre@staffdimensions@unzero
+  \else
+    \ifnum\gre@lines@phantomwrapper=1\relax
+      \gre@staffdimensions@unzero
+    \else
+      \gre@staffdimensions@dozero
+    \fi
+  \fi
 }
 
 %% box containing the stafflines for other lines than the first
@@ -839,14 +894,15 @@
 
 \newif\ifgre@showtranslation%
 \gre@showtranslationtrue%
+\newcount\gre@translation@phantomwrapper%
+\gre@translation@phantomwrapper=0\relax%
 
 \def\gresettranslation#1{%
-  \IfStrEqCase{#1}{%
-    {visible}{\gre@showtranslationtrue}%
-    {invisible}{\gre@showtranslationfalse}%
-    }[% all other cases
-      \gre@error{Unknown option, "#1" for \protect\gresettranslation\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibilitywithphantom{#1}%
+    {\gre@showtranslationtrue}%
+    {\gre@showtranslationfalse}%
+    {\gre@translation@phantomwrapper}%
+    {\protect\gresettranslation}%
 }%
 
 \def\GreWriteTranslation#1{%
@@ -855,10 +911,10 @@
       \setbox\gre@box@temp@width=\hbox{#1}%
       \gre@dimen@temp@five=\dimexpr((\wd\gre@box@syllabletext - \wd\gre@box@temp@width) / 2)\relax%
       \kern\gre@dimen@temp@five %
-      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@style@translation#1\endgre@style@translation\hss}}}%
+      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@applyphantomwrapper{\gre@translation@phantomwrapper}{\gre@style@translation#1\endgre@style@translation}\hss}}}%
       \kern-\gre@dimen@temp@five %
     \else %
-      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@style@translation#1\endgre@style@translation\hss}}}%
+      \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\vbox to 0pt{\vss\hbox to 0pt{\gre@applyphantomwrapper{\gre@translation@phantomwrapper}{\gre@style@translation#1\endgre@style@translation}\hss}}}%
     \fi %
   \fi%
 }%
@@ -869,7 +925,7 @@
       \GreBeginNLBArea{0}{1}%
     \fi %
     \gre@attr@center=1\relax %
-    \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\kern 0pt\vbox to 0pt{\vss\hbox to 0pt{\gre@style@translation#1\endgre@style@translation\hss}}\kern 0pt}%
+    \raise\gre@space@dimen@spacebeneathtext\hbox attr \gre@attrid@part=5 to 0pt{\kern 0pt\vbox to 0pt{\vss\hbox to 0pt{\gre@applyphantomwrapper{\gre@translation@phantomwrapper}{\gre@style@translation#1\endgre@style@translation}\hss}}\kern 0pt}%
     \unsetattribute{\gre@attr@center}%
     \relax %
   \fi%

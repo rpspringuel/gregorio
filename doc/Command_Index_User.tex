@@ -403,8 +403,10 @@ Macro for changing the color of the staff lines.   The two most common colors yo
 Macro for setting whether the staff lines should be rendered or not.
 
 \begin{argtable}
-  \#1 & \texttt{visible} & The staff lines should be printed (default)\\
-  & \texttt{invisible} & The staff lines should not be printed
+  \#1 & \texttt{visible} & The staff lines should be printed (default)\\  
+  & \texttt{invisible} & The staff lines should not be printed\\  
+  & \texttt{phantom} & The staff lines are invisible but space is preserved\\
+  & \texttt{hphantom} & The staff lines are invisible with zero height, but horizontal spacing is preserved\\
 \end{argtable}
 
 \macroname{\textbackslash gresetlinesbehindpunctumcavum}{\{\#1\}}{gregoriotex-signs.tex}
@@ -946,7 +948,9 @@ Sets the visibility of the lyrics.
 
 \begin{argtable}
   \#1 & \texttt{visible} & Lyrics are visible (default).\\
-  & \texttt{invisible} & Lyrics are not visible.\\
+  & \texttt{invisible} & Lyrics are not visible (no space occupied).\\
+  & \texttt{phantom} & Lyrics are invisible but space is preserved.\\
+  & \texttt{hphantom} & Lyrics are invisible with zero height, but horizontal spacing is preserved.\\
 \end{argtable}
 
 \macroname{\textbackslash gresettranslation}{\{\#1\}}{gregoriotex-main.tex}
@@ -954,7 +958,8 @@ Sets the visibility of the translations.
 
 \begin{argtable}
   \#1 & \texttt{visible} & Translations are visible (default).\\
-  & \texttt{invisible} & Translations are not visible.\\
+  & \texttt{invisible} & Translations are not visible (no space occupied).\\
+  & \texttt{phantom} & Translations are invisible but space is preserved.
 \end{argtable}
 
 \macroname{\textbackslash gresetabovelinestext}{\{\#1\}}{gregoriotex-main.tex}
@@ -962,7 +967,8 @@ Sets the visibility of the above lines text.
 
 \begin{argtable}
   \#1 & \texttt{visible} & Above lines text are visible (default).\\
-  & \texttt{invisible} & Above lines text are not visible.\\
+  & \texttt{invisible} & Above lines text are not visible (no space occupied).\\
+  & \texttt{phantom} & Above lines text are invisible but space is preserved.
 \end{argtable}
 
 
@@ -1269,19 +1275,24 @@ Sets the visibility of the notes.
 
 \begin{argtable}
   \#1 & \texttt{visible} & Notes are visible (default).\\
-  & \texttt{invisible} & Notes are not visible.\\
+  & \texttt{invisible} & Notes are not visible (no space occupied).\\
+  & \texttt{phantom} & Notes are invisible but space is preserved.\\
+  & \texttt{hphantom} & Notes are invisible with zero height, but horizontal spacing is preserved.\\
 \end{argtable}
 
-\textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible.  However, the staff lines and clefs will still show up (since their visibility is controlled by other settings).
+\textbf{Nota Bene:} If the notes are set to be invisible, then bar lines, rythmic signs, and the like will also be invisible. However, the staff lines and clefs will still show up (since their visibility is controlled by other settings). NABC neumes are also unaffected and remain controlled independently by \verb=\gresetnabc=.
 
 \macroname{\textbackslash gresetnabc}{\{\#1\}\{\#2\}}{gregoriotex-nabc.tex}
-Sets the visibility of an nabc voice.
+Sets the visibility of an NABC voice.
 
 \begin{argtable}
-  \#1 & integer & The nabc voice number: 1 = above staff, 2 = below staff.\\
-  \#2 & \texttt{visible} & Notes are visible (default).\\
-  & \texttt{invisible} & Notes are not visible.\\
+  \#1 & integer & The NABC voice number: 1 = above staff, 2 = below staff.\\
+  \#2 & \texttt{visible} & NABC glyphs are visible (default).\\
+  & \texttt{invisible} & NABC glyphs are not visible (no space occupied).\\
+  & \texttt{phantom} & NABC glyphs are invisible but space is preserved.
 \end{argtable}
+
+\textbf{Important:} NABC glyphs visibility is controlled independently from notes visibility (\verb=\gresetnotes=). This allows you to hide the main notes (i.e. using \verb=\gresetnotes{invisible}= or some \verb=\gresetnotes{?phantom}= variant) while keeping NABC glyphs visible, which is useful for producing NABC-only output with lyrics.
 
 \macroname{\textbackslash greprintsigns}{\{\#1\}\{\#2\}}{gregoriotex-signs.tex}
 Macro to prevent rythmic signs from printing (all signs are printed by default):
@@ -1329,8 +1340,10 @@ Marco to determine how much space the hyphen at the end of a line occupies for t
 Macro to tell Gregorio\TeX\ whether the clefs should be printed or not.
 
 \begin{argtable}
-  \#1 & \texttt{visible} & Clefs will be printed (default)\\
-  & \texttt{invisible} & Clefs will not be printed
+  \#1 & \texttt{visible} & Clefs will be printed (default).\\
+  & \texttt{invisible} & Clefs will not be printed.\\
+  & \texttt{phantom} & Clefs are invisible but space is preserved.\\
+  & \texttt{hphantom} & Clefs are invisible with zero height, but horizontal spacing is preserved.\\
 \end{argtable}
 
 
@@ -2508,10 +2521,6 @@ Penalty to prevent a line break.
 
 \begin{gcount}{newlinepenalty}
 Penalty to force a line break.
-\end{gcount}
-
-\begin{gcount}{finalpenalty}
-The penalty applied after the final element of a score. Deprecated.
 \end{gcount}
 
 \macroname{looseness}{}{gregoriotex-gsp-default.tex}

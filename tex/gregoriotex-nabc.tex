@@ -62,26 +62,27 @@
 \gre@nabcvoice@i@visibletrue
 \newif\ifgre@nabcvoice@ii@visible
 \gre@nabcvoice@ii@visibletrue
+\newcount\gre@nabcvoice@i@phantomwrapper
+\gre@nabcvoice@i@phantomwrapper=0\relax
+\newcount\gre@nabcvoice@ii@phantomwrapper
+\gre@nabcvoice@ii@phantomwrapper=0\relax
 % define more of these when more voices are supported
 
 \def\gresetnabc#1#2{%
-  \IfStrEqCase{#2}{%
-    {visible}%
-      {\csname gre@nabcvoice@\romannumeral#1@visibletrue\endcsname}%
-    {invisible}%
-      {\csname gre@nabcvoice@\romannumeral#1@visiblefalse\endcsname}%
-    }[% all other cases
-      \gre@error{Unrecognized option "#2" for \protect\gresetnabc\MessageBreak Possible options are: 'visible' and 'invisible'}%
-    ]%
+  \gre@processvisibilitywithphantom{#2}%
+    {\csname gre@nabcvoice@\romannumeral#1@visibletrue\endcsname}%
+    {\csname gre@nabcvoice@\romannumeral#1@visiblefalse\endcsname}%
+    {\csname gre@nabcvoice@\romannumeral#1@phantomwrapper\endcsname}%
+    {\protect\gresetnabc}%
 }
 
 \def\GreNABCNeumes#1#2#3#4{%
   \csname ifgre@nabcvoice@\romannumeral#1@visible\endcsname %
     \ifcase#1\relax
       \or % 1
-        \GreSetNabcAboveLines{\GreNABCChar[1]{#2}}%
+        \GreSetNabcAboveLines{\gre@applyphantomwrapper{\gre@nabcvoice@i@phantomwrapper}{\GreNABCChar[1]{#2}}}%
       \or % 2
-        \GreSetNabcBelowLines{\GreNABCChar[2]{#2}}%
+        \GreSetNabcBelowLines{\gre@applyphantomwrapper{\gre@nabcvoice@ii@phantomwrapper}{\GreNABCChar[2]{#2}}}%
       \fi
   \fi %
 }

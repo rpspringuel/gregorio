@@ -4,6 +4,10 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 
 ## [Unreleased][develop]
 ### Added
+- Added unified visibility controls (`visible`, `invisible`, `phantom`, and `hphantom`). Solves [#1626](https://github.com/gregorio-project/gregorio/issues/1626).
+- Decouple visibility control for NABC and above-lines text from notes. Solves [#1547](https://github.com/gregorio-project/gregorio/issues/1547).
+- Added proper vertical spacing and alignment of score elements in NABC+lyrics-only contexts. Solves [#1694](https://github.com/gregorio-project/gregorio/issues/1694).
+- Added horizontal spacing preservation for NABC neumes, preventing overlap. Solves [#1699](https://github.com/gregorio-project/gregorio/issues/1699).
 - Added overtie/undertie special symbols (`<sp>ut</sp>` for `\greundertie`, `<sp>ot</sp>` for `\greovertie`, and `<sp>dt</sp>` for `\gredoubletie`), and a configurable lyric tying shorthand (`~` for `\GreLyricTie`).
 - Added support for the C23 standard (the default in GCC 15). The included build scripts continue to default to GNU89 C.
 
