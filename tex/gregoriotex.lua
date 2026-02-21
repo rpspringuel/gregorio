@@ -264,6 +264,7 @@ end
 
 local function write_greaux()
   if is_greaux_write_needed() then
+    kpse.record_output_file(auxname)
     local aux = io.open(auxname, 'w')
     if aux then
       log("Writing %s", auxname)
@@ -357,10 +358,9 @@ local function init(arg)
   snippet_filename = basepath..'.gsnippet'
   snippet_logname = basepath..'.gsniplog'
 
-  -- to get latexmk to realize the aux file is a dependency
-  texio.write_nl('('..auxname..')')
   if lfs.isfile(auxname) then
     log("Reading %s", auxname)
+    kpse.record_input_file(auxname)
     local score_info = dofile(auxname)
     last_syllables = score_info.last_syllables or {}
     state_hashes = score_info.state_hashes or {}
@@ -1248,7 +1248,10 @@ local function compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
 
   table.extend(cmd, {'-W', '-o', gtex_file, '-l', glog_file, gabc_file})
   info("running: %s", table.concat(cmd, ' '))
-  res = os.spawn(cmd)
+  kpse.record_input_file(gabc_file)
+  kpse.record_output_file(glog_file)
+  kpse.record_output_file(gtex_file)
+  local res = os.spawn(cmd)
 
   if res == nil then
     err("\nSomething went wrong when executing\n    '%s'.\n"
@@ -1261,15 +1264,8 @@ local function compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
     err("\nSomething went wrong when executing\n    '%s'",
         table.concat(cmd, ' '))
   else
-    -- Open glog_file for writing so that the LuaTeX recorder knows that gregorio wrote to it.
-    local glog = io.open(glog_file, 'a')
-    if glog == nil then
-      warn("\n Unable to open %s for writing. If another program depends on %s, latexmk may not recognize the dependency", glog_file, glog_file)
-    else
-      glog:close()
-    end
     -- Copy the contents of glog_file into warnings.
-    glog = io.open(glog_file, 'r')
+    local glog = io.open(glog_file, 'r')
     if glog == nil then
       err("\n Unable to open %s for reading", glog_file)
     else
@@ -1277,22 +1273,6 @@ local function compile_gabc(gabc_file, gtex_file, glog_file, allow_deprecated)
         warn(line)
       end
       glog:close()
-    end
-    
-    if res ~= 0 then
-      err("\nAn error occured when compiling the score file\n"
-          .."'%s' with %s.\nPlease check your score file.", gabc_file,
-          gregorio_exe())
-    else
-      -- The next few lines would open the gtex file for writing so that LuaTeX records the fact that gregorio has written to it
-      -- when the -recorder option is used.
-      -- However, in restricted \write18 mode, the gtex file might not be writable. Since we're the sole consumer of the gtex file, it should be okay not to record the write.
-      local gtex = io.open(gtex_file, 'a')
-      if gtex == nil then
-        warn("\n Unable to open %s for writing. If another program depends on %s, latexmk may not recognize the dependency.", gtex_file, gtex_file)
-      else
-        gtex:close()
-      end
     end
   end
 end
@@ -1382,6 +1362,8 @@ local function include_score(gabc_file, force_gabccompile, allow_deprecated)
       if gtex_timestamp < gabc_timestamp then
         log("%s has been modified and %s needs to be updated. Recompiling the gabc file", gabc_found, gtex_file)
         needs_compile = true
+      else
+        log("%s has not been modified. Using %s", gabc_found, gtex_file)
       end
     else
       log("The file %s does not exist. Compiling gabc file", gtex_file)
@@ -1420,6 +1402,7 @@ end
 
 local function direct_gabc(gabc, header, allow_deprecated)
   info('Processing gabc snippet...')
+  kpse.record_output_file(snippet_filename)
   local f = io.open(snippet_filename, 'w')
   -- trims spaces on both ends (trim6 from http://lua-users.org/wiki/StringTrim)
   gabc = gabc:match('^()%s*$') and '' or gabc:match('^%s*(.*%S)')
