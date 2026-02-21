@@ -25,14 +25,14 @@ The manual is divided into two files.  The first, GregorioRef.tex, contains seve
    table is generated automatically, so updates to this file should not be necessary.
  
 The second file, GregorioNabcRef.tex, documents the nabc syntax which provides the ability
-to describe some adiastematic neumes.
+to describe some adiastematic neumes (see below).
 
 Whenever modifications are made to the codebase, the manual source files should be updated
 to reflect the changes.  To aid with identifying needed changes, please use the
 `doc_check.sh` script in the parent to this directory.  Running this script will generate
 a text file with 2 lists in it: macros which are currently undocumented and macros which
 are documented but no longer appear in the code base.  This script doesn't look at the
-gabc syntax.
+gabc or nabc syntax.
 
 ## Building
 
