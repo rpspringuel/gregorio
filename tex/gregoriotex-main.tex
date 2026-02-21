@@ -700,20 +700,20 @@
 }%
 
 % Phase 2: Place voice 1 (above staff)
-\def\gre@nabc@place@above{%
+\def\gre@nabc@place@voice@i{%
   \gre@attr@part=7\relax%
   \gre@dimen@temp@five=\dimexpr(\gre@dimen@staffheight %
     + \gre@space@dimen@spacebeneathtext %
     + \gre@space@dimen@spacelinestext)\relax%
-  \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{\unhbox\gre@box@nabcvoicei\hss}%
+  \leavevmode\raise\gre@dimen@temp@five\hbox to 0pt{\unhbox\gre@box@nabc@voice@i\hss}%
   \unsetattribute{\gre@attr@part}%
 }%
 
 % Phase 2: Place voice 2 (below staff)
-\def\gre@nabc@place@below{%
+\def\gre@nabc@place@voice@ii{%
   \gre@dimen@temp@five=\dimexpr(\gre@space@dimen@spacebeneathtext
     + \gre@space@dimen@spacelinestext)\relax
-  \leavevmode\raise\gre@dimen@temp@five\hbox attr \gre@attrid@part=8 to 0pt{\unhbox\gre@box@nabcvoiceii\hss}%
+  \leavevmode\raise\gre@dimen@temp@five\hbox attr \gre@attrid@part=8 to 0pt{\unhbox\gre@box@nabc@voice@ii\hss}%
 }%
 
 % Deferred macros for two-phase processing.
@@ -726,22 +726,22 @@
 
 \def\GreSetNabcAboveLines#1{%
   \gdef\gre@nabc@pre@voice@i{%
-    \gre@nabc@prepare{#1}\gre@box@nabcvoicei%
+    \gre@nabc@prepare{#1}\gre@box@nabc@voice@i%
     \gdef\gre@nabc@pre@voice@i{}%
   }%
   \gdef\gre@nabc@emit@voice@i{%
-    \gre@nabc@place@above%
+    \gre@nabc@place@voice@i%
     \gdef\gre@nabc@emit@voice@i{}%
   }%
 }%
 
 \def\GreSetNabcBelowLines#1{%
   \gdef\gre@nabc@pre@voice@ii{%
-    \gre@nabc@prepare{#1}\gre@box@nabcvoiceii%
+    \gre@nabc@prepare{#1}\gre@box@nabc@voice@ii%
     \gdef\gre@nabc@pre@voice@ii{}%
   }%
   \gdef\gre@nabc@emit@voice@ii{%
-    \gre@nabc@place@below%
+    \gre@nabc@place@voice@ii%
     \gdef\gre@nabc@emit@voice@ii{}%
   }%
 }%
