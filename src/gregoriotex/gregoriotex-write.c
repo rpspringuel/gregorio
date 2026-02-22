@@ -4201,6 +4201,7 @@ static void write_syllable(FILE *f, gregorio_syllable *syllable,
                 signed char high_pitch = UNDETERMINED_HEIGHT;
                 signed char low_pitch = UNDETERMINED_HEIGHT;
                 size_t i;
+                bool has_nabc = false;
                 compute_element_height_extrema(element, &high_pitch,
                         &low_pitch);
                 fixup_height_extrema(&high_pitch, &low_pitch);
@@ -4210,7 +4211,15 @@ static void write_syllable(FILE *f, gregorio_syllable *syllable,
                         tex_escape_text(f, element->nabc[i]);
                         fprintf(f, "}{%d}{%d}%%\n", pitch_value(high_pitch),
                                 pitch_value(low_pitch));
+                        has_nabc = true;
                     }
+                }
+                /* If the element has NABC but no glyphs (empty GABC
+                 * snippet), flush the NABC neumes now since there will
+                 * be no \GreGlyph to trigger rendering (#1700) */
+                if (has_nabc && element->type == GRE_ELEMENT
+                        && !element->u.first_glyph) {
+                    fprintf(f, "\\GreFlushNABC%%\n");
                 }
             }
             switch (element->type) {
