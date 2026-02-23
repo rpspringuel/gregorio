@@ -9,6 +9,14 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 
 
 ## [6.2.0-beta1] - 2026-02-23
+### Fixed
+- Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.  See [#1642](https://github.com/gregorio-project/gregorio/issues/1642).
+- Error messages from executable have been cleaned up to be more uniform.  See [#1644](https://github.com/gregorio-project/gregorio/issues/1644).
+- NABC neumes are now rendered for syllables with empty GABC/NABC snippets when NABC content is present (e.g. `(|vi|ta)`, `(|vi)`, `(||ta)`, `(g||ta)`).  See [#1700](https://github.com/gregorio-project/gregorio/issues/1700).
+- Commentary will now print even if the first syllable of the score has no lyric text.  See [#1678](https://github.com/gregorio-project/gregorio/issues/1678).
+- You can now have both nabc neumes and above line text.  See [#1559](https://github.com/gregorio-project/gregorio/pull/1559).
+- Error raised by double blank lines has been fixed.  See [#1652](https://github.com/gregorio-project/gregorio/issues/1652).
+
 ### Added
 - Added unified visibility controls (`visible`, `invisible`, `phantom`, and `hphantom`). Solves [#1626](https://github.com/gregorio-project/gregorio/issues/1626).
 - Decouple visibility control for NABC and above-lines text from notes. Solves [#1547](https://github.com/gregorio-project/gregorio/issues/1547).
@@ -16,18 +24,6 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - Added horizontal spacing preservation for NABC neumes, preventing overlap. Solves [#1699](https://github.com/gregorio-project/gregorio/issues/1699).
 - Added overtie/undertie special symbols (`<sp>ut</sp>` for `\greundertie`, `<sp>ot</sp>` for `\greovertie`, and `<sp>dt</sp>` for `\gredoubletie`), and a configurable lyric tying shorthand (`~` for `\GreLyricTie`).
 - Added support for the C23 standard (the default in GCC 15). The included build scripts continue to default to GNU89 C.
-
-### Fixed
-- Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.  See [#1642](https://github.com/gregorio-project/gregorio/issues/1642).
-- Error messages from executable have been cleaned up to be more uniform.  See [#1644](https://github.com/gregorio-project/gregorio/issues/1644).
-- NABC neumes are now rendered for syllables with empty GABC/NABC snippets when NABC content is present (e.g. `(|vi|ta)`, `(|vi)`, `(||ta)`, `(g||ta)`).  See [#1700](https://github.com/gregorio-project/gregorio/issues/1700).
-
-### Fixed
-- Commentary will now print even if the first syllable of the score has no lyric text.  See [#1678](https://github.com/gregorio-project/gregorio/issues/1678).
-- You can now have both nabc neumes and above line text.  See [#1559](https://github.com/gregorio-project/gregorio/pull/1559).
-- Error raised by double blank lines has been fixed.  See [#1652](https://github.com/gregorio-project/gregorio/issues/1652).
-
-### Added
 - Added new option `\gresetlastline{trimmed}`, which sets the last line ragged and also trims the staff lines. See [#1418](https://github.com/gregorio-project/gregorio/issues/1418).
 - Nabc can now appear below the staff in addition (or instead of) above.  See [#1645](https://github.com/gregorio-project/gregorio/issues/1645).
 

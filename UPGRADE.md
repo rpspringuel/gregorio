@@ -6,6 +6,8 @@ This file contains instructions to upgrade to a new release of Gregorio.  These 
 
 ## [Unreleased][CTAN]
 
+## 6.2
+
 ### LuaTeX >= 1.0 required
 
 The minimum required version of LuaTeX is now 1.0 (released in 2016).  Attempts to compile documents with older versions of LuaTeX will result in an error.
