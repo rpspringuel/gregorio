@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][develop]
+
+
+## [Unreleased][CTAN]
+
+
+## [6.2.0-beta1] - 2026-02-23
 ### Added
 - Added unified visibility controls (`visible`, `invisible`, `phantom`, and `hphantom`). Solves [#1626](https://github.com/gregorio-project/gregorio/issues/1626).
 - Decouple visibility control for NABC and above-lines text from notes. Solves [#1547](https://github.com/gregorio-project/gregorio/issues/1547).
@@ -16,7 +22,6 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - Error messages from executable have been cleaned up to be more uniform.  See [#1644](https://github.com/gregorio-project/gregorio/issues/1644).
 - NABC neumes are now rendered for syllables with empty GABC/NABC snippets when NABC content is present (e.g. `(|vi|ta)`, `(|vi)`, `(||ta)`, `(g||ta)`).  See [#1700](https://github.com/gregorio-project/gregorio/issues/1700).
 
-## [Unreleased][CTAN]
 ### Fixed
 - Commentary will now print even if the first syllable of the score has no lyric text.  See [#1678](https://github.com/gregorio-project/gregorio/issues/1678).
 - You can now have both nabc neumes and above line text.  See [#1559](https://github.com/gregorio-project/gregorio/pull/1559).
