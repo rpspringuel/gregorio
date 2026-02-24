@@ -1345,6 +1345,9 @@ Macro to print a nabc character above the lines.
   \#4 & integer & The low pitch of the notes covered by the nabc character(s).\\
 \end{argtable}
 
+\macroname{\textbackslash GreFlushNABC}{}{gregoriotex-nabc.tex}
+Flushes pending NABC neumes for syllables whose gabc element has no note glyphs (e.g.\ an empty gabc snippet).  Executes both the preparation phase (\textbackslash gre@nabc@pre@voice@i, \textbackslash gre@nabc@pre@voice@ii) and the placement phase (\textbackslash gre@nabc@emit@voice@i, \textbackslash gre@nabc@emit@voice@ii) so that NABC content is rendered even when no \textbackslash GreGlyph callback fires.
+
 \macroname{\textbackslash GreNABCChar}{[\#1]\{\#2\}}{gregoriotex-nabc.tex}
 Macro to print a nabc character.
 

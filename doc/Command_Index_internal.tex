@@ -1472,7 +1472,7 @@ Prints the nabc glyphs for the given nabc string.
 \end{argtable}
 
 \macroname{\textbackslash gre@nabc@prepare}{\#1\#2}{gregoriotex-main.tex}
-Phase 1 of NABC two-phase processing: pre-evaluates NABC content, emits note-level kern for left overflow (in \texttt{neume} alignment mode), and saves the rendered content in a box register.
+Phase 1 of NABC two-phase processing: pre-evaluates NABC content, tracks the maximum NABC width in \verb=\gre@dimen@nabc@maxwidth= for right-overflow detection by \verb=\gre@compute@nabc@extrakern=, emits note-level kern for left overflow (in \texttt{neume} alignment mode), and saves the rendered content in a box register.  No part attribute is set during this phase; the part attribute (7 for voice~1, 8 for voice~2) is applied only during Phase~2 (place) to avoid stray attributes when preparing voice~2.
 
 \begin{argtable}
   \#1 & content & The NABC content (from \textbackslash GreNABCChar)\\
