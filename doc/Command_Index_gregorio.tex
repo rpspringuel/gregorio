@@ -1067,10 +1067,10 @@ Macro to place argument containing Nabc neumes below the lines.
 \end{argtable}
 
 \macroname{\textbackslash GreSetNabcAboveLinesDeferred}{\#1}{gregoriotex-main.tex}
-Deferred variant of \verb=\GreSetNabcAboveLines= used when skip-accidentals is
-enabled for voice~1 (\verb=\gresetnabcskipaccidentals[1]{true}=).  The
+Deferred variant of \verb=\GreSetNabcAboveLines= used when skip-alterations is
+enabled for voice~1 (\verb=\gresetnabcskipalterations[1]{true}=).  The
 pre-phase is guarded by \verb=\ifgre@nabc@in@alteration= so it silently
-postpones execution during free-standing accidental signs and fires only at
+postpones execution during free-standing alteration signs and fires only at
 the next real \verb=\GreGlyph= call, anchoring the neume to the first square
 note.  The emit-phase is likewise guarded by \verb=\ifgre@nabc@voice@i@ready=
 to prevent placing an empty box before the pre-phase has run.
@@ -1080,8 +1080,8 @@ to prevent placing an empty box before the pre-phase has run.
 \end{argtable}
 
 \macroname{\textbackslash GreSetNabcBelowLinesDeferred}{\#1}{gregoriotex-main.tex}
-Deferred variant of \verb=\GreSetNabcBelowLines= used when skip-accidentals is
-enabled for voice~2 (\verb=\gresetnabcskipaccidentals[2]{true}=).  Mirrors
+Deferred variant of \verb=\GreSetNabcBelowLines= used when skip-alterations is
+enabled for voice~2 (\verb=\gresetnabcskipalterations[2]{true}=).  Mirrors
 \verb=\GreSetNabcAboveLinesDeferred= but targets voice~2 (below staff), using
 \verb=\ifgre@nabc@voice@ii@ready= and the \verb=\gre@nabc@*@voice@ii= macros.
 
@@ -1362,7 +1362,7 @@ A Lua\TeX\ attribute which designates a unique identifier for each score.
 Macro called by the generated \texttt{.gtex} file to typeset the neumes of one
 NABC voice for a GABC element.  Dispatches to \verb=\GreSetNabcAboveLines= or
 \verb=\GreSetNabcBelowLines= (possibly the Deferred variant when
-\verb=\gresetnabcskipaccidentals= is enabled for that voice).
+\verb=\gresetnabcskipalterations= is enabled for that voice).
 
 \begin{argtable}
   \#1 & integer & NABC voice number: 1 = above staff, 2 = below staff.\\

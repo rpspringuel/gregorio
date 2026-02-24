@@ -1488,15 +1488,15 @@ Phase 2 of NABC two-phase processing for voice 2 (below staff): places the pre-r
 \macroname{\textbackslash gre@nabc@pre@voice@i}{}{gregoriotex-main.tex}
 Deferred macro for phase~1 processing of NABC voice~1 (above staff).  Set by
 \verb=\GreSetNabcAboveLines= (or \verb=\GreSetNabcAboveLinesDeferred= when
-skip-accidentals is enabled), called from \verb=\gre@newglyphcommon=.  When set
+skip-alterations is enabled), called from \verb=\gre@newglyphcommon=.  When set
 by the deferred variant, guarded by \verb=\ifgre@nabc@in@alteration=: execution
-is postponed during free-standing accidentals and fires at the next real glyph.
+is postponed during free-standing alterations and fires at the next real glyph.
 After execution, resets itself to empty.
 
 \macroname{\textbackslash gre@nabc@pre@voice@ii}{}{gregoriotex-main.tex}
 Deferred macro for phase~1 processing of NABC voice~2 (below staff).  Set by
 \verb=\GreSetNabcBelowLines= (or \verb=\GreSetNabcBelowLinesDeferred= when
-skip-accidentals is enabled), called from \verb=\gre@newglyphcommon=.  Mirrors
+skip-alterations is enabled), called from \verb=\gre@newglyphcommon=.  Mirrors
 \verb=\gre@nabc@pre@voice@i= for voice~2.  After execution, resets itself to empty.
 
 \macroname{\textbackslash gre@nabc@emit@voice@i}{}{gregoriotex-main.tex}
@@ -1527,25 +1527,25 @@ Sets the NABC horizontal alignment mode for a specific voice.
   & \texttt{full} & Align to the entire complex glyph descriptor (default)\\
 \end{argtable}
 
-\macroname{\textbackslash gre@setnabcskipaccidentals@global}{\#1}{gregoriotex-nabc.tex}
-Sets the skip-accidentals flag for all NABC voices simultaneously.  Internal
-implementation of \verb=\gresetnabcskipaccidentals= when called without the
+\macroname{\textbackslash gre@setnabcskipalterations@global}{\#1}{gregoriotex-nabc.tex}
+Sets the skip-alterations flag for all NABC voices simultaneously.  Internal
+implementation of \verb=\gresetnabcskipalterations= when called without the
 optional voice argument.
 
 \begin{argtable}
-  \#1 & \texttt{true} & Enable skip-accidentals for all voices\\
-  & \texttt{false} & Disable skip-accidentals for all voices (default)\\
+  \#1 & \texttt{true} & Enable skip-alterations for all voices\\
+  & \texttt{false} & Disable skip-alterations for all voices (default)\\
 \end{argtable}
 
-\macroname{\textbackslash gre@setnabcskipaccidentals@voice}{[\#1]\{\#2\}}{gregoriotex-nabc.tex}
-Sets the skip-accidentals flag for a specific NABC voice.  Internal
-implementation of \verb=\gresetnabcskipaccidentals= when called with the
+\macroname{\textbackslash gre@setnabcskipalterations@voice}{[\#1]\{\#2\}}{gregoriotex-nabc.tex}
+Sets the skip-alterations flag for a specific NABC voice.  Internal
+implementation of \verb=\gresetnabcskipalterations= when called with the
 optional voice argument.
 
 \begin{argtable}
   \#1 & integer & The nabc voice number: 1 = above staff, 2 = below staff\\
-  \#2 & \texttt{true} & Enable skip-accidentals for the given voice\\
-  & \texttt{false} & Disable skip-accidentals for the given voice\\
+  \#2 & \texttt{true} & Enable skip-alterations for the given voice\\
+  & \texttt{false} & Disable skip-alterations for the given voice\\
 \end{argtable}
 
 
@@ -2066,20 +2066,20 @@ Boolean indicating whether the first nabc voice should be shown.
 \macroname{\textbackslash ifgre@nabcvoice@ii@visible}{}{gregoriotex-nabc.tex}
 Boolean indicating whether the second nabc voice should be shown.
 
-\macroname{\textbackslash ifgre@nabc@voice@i@skipaccidentals}{}{gregoriotex-nabc.tex}
+\macroname{\textbackslash ifgre@nabc@voice@i@skipalterations}{}{gregoriotex-nabc.tex}
 When true, NABC neumes for voice~1 are anchored to the first real square note,
-skipping any leading free-standing accidental signs.  Controlled by
-\verb=\gresetnabcskipaccidentals=.
+skipping any leading free-standing alteration signs.  Controlled by
+\verb=\gresetnabcskipalterations=.
 
-\macroname{\textbackslash ifgre@nabc@voice@ii@skipaccidentals}{}{gregoriotex-nabc.tex}
+\macroname{\textbackslash ifgre@nabc@voice@ii@skipalterations}{}{gregoriotex-nabc.tex}
 When true, NABC neumes for voice~2 are anchored to the first real square note,
-skipping any leading free-standing accidental signs.  Mirrors
-\verb=\ifgre@nabc@voice@i@skipaccidentals= for voice~2.
+skipping any leading free-standing alteration signs.  Mirrors
+\verb=\ifgre@nabc@voice@i@skipalterations= for voice~2.
 
 \macroname{\textbackslash ifgre@nabc@in@alteration}{}{gregoriotex-nabc.tex}
 Set to true by \verb=\gre@alteration@visible= around its internal call to
 \verb=\gre@newglyphcommon=, so that the deferred NABC pre/emit macros can detect
-they are being triggered by a free-standing accidental sign rather than by a real
+they are being triggered by a free-standing alteration sign rather than by a real
 glyph and defer execution accordingly.
 
 \macroname{\textbackslash ifgre@nabc@voice@i@ready}{}{gregoriotex-main.tex}
