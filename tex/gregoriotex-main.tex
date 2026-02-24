@@ -698,8 +698,10 @@
 % Phase 1: Pre-evaluate NABC content, emit kern, save content.
 % #1: content (from \GreNABCChar)
 % #2: box register to save to
+% Note: no part attribute is set here.  The part attribute (7 for voice 1,
+% 8 for voice 2) is applied only during Phase 2 (place), so that content
+% nodes do not carry a stray part=7 when preparing voice 2.
 \def\gre@nabc@prepare#1#2{%
-  \gre@attr@part=7\relax%
   \setbox\gre@box@nabctemp=\hbox{#1}%
   % Track maximum NABC width for right-overflow detection (extra kern at
   % syllable end).  Without this, \gre@compute@nabc@extrakern cannot detect
@@ -708,13 +710,10 @@
     \global\gre@dimen@nabc@maxwidth=\wd\gre@box@nabctemp\relax%
   \fi%
   \ifdim\gre@dimen@nabcleftoverflow>\gre@dimen@nabckernemitted\relax%
-    \unsetattribute{\gre@attr@part}%
     \kern\dimexpr(\gre@dimen@nabcleftoverflow-\gre@dimen@nabckernemitted)\relax%
-    \gre@attr@part=7\relax%
     \global\gre@dimen@nabckernemitted=\gre@dimen@nabcleftoverflow\relax%
   \fi%
   \global\setbox#2=\hbox{\unhbox\gre@box@nabctemp}%
-  \unsetattribute{\gre@attr@part}%
 }%
 
 % Phase 2: Place voice 1 (above staff)
