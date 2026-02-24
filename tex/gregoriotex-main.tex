@@ -701,6 +701,12 @@
 \def\gre@nabc@prepare#1#2{%
   \gre@attr@part=7\relax%
   \setbox\gre@box@nabctemp=\hbox{#1}%
+  % Track maximum NABC width for right-overflow detection (extra kern at
+  % syllable end).  Without this, \gre@compute@nabc@extrakern cannot detect
+  % when NABC content extends past the syllable notes width.
+  \ifdim\wd\gre@box@nabctemp>\gre@dimen@nabc@maxwidth\relax%
+    \global\gre@dimen@nabc@maxwidth=\wd\gre@box@nabctemp\relax%
+  \fi%
   \ifdim\gre@dimen@nabcleftoverflow>\gre@dimen@nabckernemitted\relax%
     \unsetattribute{\gre@attr@part}%
     \kern\dimexpr(\gre@dimen@nabcleftoverflow-\gre@dimen@nabckernemitted)\relax%
