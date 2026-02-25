@@ -107,6 +107,19 @@
 \gre@nabc@voice@i@readyfalse
 \newif\ifgre@nabc@voice@ii@ready
 \gre@nabc@voice@ii@readyfalse
+% Per-voice 'altskipped' flags: set when the deferred pre-phase detects
+% an alteration.  When the real note is reached, these flags cause the
+% left-overflow kern to be suppressed (the accidental already provides
+% visual space before the note).
+\newif\ifgre@nabc@voice@i@altskipped
+\gre@nabc@voice@i@altskippedfalse
+\newif\ifgre@nabc@voice@ii@altskipped
+\gre@nabc@voice@ii@altskippedfalse
+% Shared flag: when true, \gre@nabc@prepare skips the left-overflow kern.
+% Set and cleared by the deferred pre-phase around the \gre@nabc@prepare
+% call so that each voice can independently suppress the kern.
+\newif\ifgre@nabc@suppress@leftoverflow
+\gre@nabc@suppress@leftoverflowfalse
 
 \def\gresetnabc#1#2{%
   \gre@processvisibilitywithphantom{#2}%

@@ -1472,7 +1472,7 @@ Prints the nabc glyphs for the given nabc string.
 \end{argtable}
 
 \macroname{\textbackslash gre@nabc@prepare}{\#1\#2}{gregoriotex-main.tex}
-Phase 1 of NABC two-phase processing: pre-evaluates NABC content, tracks the maximum NABC width in \verb=\gre@dimen@nabc@maxwidth= for right-overflow detection by \verb=\gre@compute@nabc@extrakern=, emits note-level kern for left overflow (in \texttt{neume} alignment mode), and saves the rendered content in a box register.
+Phase 1 of NABC two-phase processing: pre-evaluates NABC content, tracks the maximum NABC width in \verb=\gre@dimen@nabc@maxwidth= for right-overflow detection by \verb=\gre@compute@nabc@extrakern=, emits note-level kern for left overflow (in \texttt{neume} alignment mode) unless \verb=\ifgre@nabc@suppress@leftoverflow= is true, and saves the rendered content in a box register.
 
 \begin{argtable}
   \#1 & content & The NABC content (from \textbackslash GreNABCChar)\\
@@ -2092,6 +2092,23 @@ phase~1 has executed.
 Set to true by \verb=\GreSetNabcBelowLinesDeferred= pre-phase when the NABC box
 for voice~2 has been filled, and cleared after the emit-phase places it.  Mirrors
 \verb=\ifgre@nabc@voice@i@ready= for voice~2.
+
+\macroname{\textbackslash ifgre@nabc@voice@i@altskipped}{}{gregoriotex-nabc.tex}
+Per-voice flag set to true by \verb=\GreSetNabcAboveLinesDeferred= pre-phase
+when it detects an alteration (via \verb=\ifgre@nabc@in@alteration=).  When the
+pre-phase later fires on a real glyph, this flag causes
+\verb=\ifgre@nabc@suppress@leftoverflow= to be set before calling
+\verb=\gre@nabc@prepare=, suppressing the left-overflow kern.  Cleared after use.
+
+\macroname{\textbackslash ifgre@nabc@voice@ii@altskipped}{}{gregoriotex-nabc.tex}
+Per-voice flag for voice~2.  Mirrors \verb=\ifgre@nabc@voice@i@altskipped= but
+used by \verb=\GreSetNabcBelowLinesDeferred=.
+
+\macroname{\textbackslash ifgre@nabc@suppress@leftoverflow}{}{gregoriotex-nabc.tex}
+Shared flag checked by \verb=\gre@nabc@prepare=.  When true, the left-overflow
+kern is suppressed.  Set and cleared by the deferred pre-phase around each call
+to \verb=\gre@nabc@prepare= (separately for each voice), so that the NABC neume
+does not push a preceding accidental unnecessarily to the left.
 
 \macroname{\textbackslash ifgre@staffdimensions@zeroed}{}{gregoriotex-main.tex}
 Boolean indicating whether the staff dimensions (line height, inter-line space, and total staff height) have been zeroed.  Set to true by \verb=\gre@staffdimensions@dozero= when lines are made invisible or hphantom, and cleared by \verb=\gre@staffdimensions@unzero= when lines are restored.

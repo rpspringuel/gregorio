@@ -709,9 +709,11 @@
   \ifdim\wd\gre@box@nabctemp>\gre@dimen@nabc@maxwidth\relax%
     \global\gre@dimen@nabc@maxwidth=\wd\gre@box@nabctemp\relax%
   \fi%
-  \ifdim\gre@dimen@nabcleftoverflow>\gre@dimen@nabckernemitted\relax%
-    \kern\dimexpr(\gre@dimen@nabcleftoverflow-\gre@dimen@nabckernemitted)\relax%
-    \global\gre@dimen@nabckernemitted=\gre@dimen@nabcleftoverflow\relax%
+  \ifgre@nabc@suppress@leftoverflow\else%
+    \ifdim\gre@dimen@nabcleftoverflow>\gre@dimen@nabckernemitted\relax%
+      \kern\dimexpr(\gre@dimen@nabcleftoverflow-\gre@dimen@nabckernemitted)\relax%
+      \global\gre@dimen@nabckernemitted=\gre@dimen@nabcleftoverflow\relax%
+    \fi%
   \fi%
   \global\setbox#2=\hbox{\unhbox\gre@box@nabctemp}%
 }%
@@ -769,9 +771,17 @@
 % and anchors the neume to the first real square note.
 \def\GreSetNabcAboveLinesDeferred#1{%
   \global\gre@nabc@voice@i@readyfalse%
+  \global\gre@nabc@voice@i@altskippedfalse%
   \gdef\gre@nabc@pre@voice@i{%
-    \ifgre@nabc@in@alteration\else%
+    \ifgre@nabc@in@alteration%
+      \global\gre@nabc@voice@i@altskippedtrue%
+    \else%
+      \ifgre@nabc@voice@i@altskipped%
+        \gre@nabc@suppress@leftoverflowtrue%
+      \fi%
       \gre@nabc@prepare{#1}\gre@box@nabc@voice@i%
+      \gre@nabc@suppress@leftoverflowfalse%
+      \global\gre@nabc@voice@i@altskippedfalse%
       \global\gre@nabc@voice@i@readytrue%
       \gdef\gre@nabc@pre@voice@i{}%
     \fi%
@@ -790,9 +800,17 @@
 % and anchors the neume to the first real square note.
 \def\GreSetNabcBelowLinesDeferred#1{%
   \global\gre@nabc@voice@ii@readyfalse%
+  \global\gre@nabc@voice@ii@altskippedfalse%
   \gdef\gre@nabc@pre@voice@ii{%
-    \ifgre@nabc@in@alteration\else%
+    \ifgre@nabc@in@alteration%
+      \global\gre@nabc@voice@ii@altskippedtrue%
+    \else%
+      \ifgre@nabc@voice@ii@altskipped%
+        \gre@nabc@suppress@leftoverflowtrue%
+      \fi%
       \gre@nabc@prepare{#1}\gre@box@nabc@voice@ii%
+      \gre@nabc@suppress@leftoverflowfalse%
+      \global\gre@nabc@voice@ii@altskippedfalse%
       \global\gre@nabc@voice@ii@readytrue%
       \gdef\gre@nabc@pre@voice@ii{}%
     \fi%
