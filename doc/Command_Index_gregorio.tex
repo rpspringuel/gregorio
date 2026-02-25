@@ -1372,8 +1372,7 @@ NABC voice for a GABC element.  Dispatches to \verb=\GreSetNabcAboveLines= or
 \end{argtable}
 
 \macroname{\textbackslash GreFlushNABC}{}{gregoriotex-nabc.tex}
-Macro to immediately typeset pending nabc neumes stored by \textbackslash GreNABCNeumes.
-Useful when a syllable has nabc but no gabc glyph to trigger normal rendering.
+Flushes pending NABC neumes for syllables whose gabc element has no note glyphs (e.g.\ an empty gabc snippet).  Executes both the preparation phase (\textbackslash gre@nabc@pre@voice@i, \textbackslash gre@nabc@pre@voice@ii) and the placement phase (\textbackslash gre@nabc@emit@voice@i, \textbackslash gre@nabc@emit@voice@ii) so that NABC content is rendered even when no \textbackslash GreGlyph callback fires.
 
 \macroname{\textbackslash GreNABCChar}{[\#1]\{\#2\}}{gregoriotex-nabc.tex}
 Macro to print a nabc character.
