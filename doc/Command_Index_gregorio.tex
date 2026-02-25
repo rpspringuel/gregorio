@@ -1044,16 +1044,43 @@ The arguments are the same as \verb=\GreSetInitialClef= without the \#7th one, w
 to be \texttt{1}.
 
 \macroname{\textbackslash GreSetNabcAboveLines}{\#1}{gregoriotex-main.tex}
-Macro to place argument containing Nabc neumes above the lines and empty
-\verb=\gre@currentnabcvoice@i= when done.
+Macro to place argument containing Nabc neumes above the lines.
 
 \begin{argtable}
   \#1 & string & Nabc neumes to be placed above the lines.\\
 \end{argtable}
 
 \macroname{\textbackslash GreSetNabcBelowLines}{\#1}{gregoriotex-main.tex}
-Macro to place argument containing Nabc neumes below the lines and empty
-\verb=\gre@currentnabcvoice@ii= when done.
+Macro to place argument containing Nabc neumes below the lines.
+
+\begin{argtable}
+  \#1 & string & Nabc neumes to be placed below the lines.\\
+\end{argtable}
+
+\macroname{\textbackslash GreSetNabcAboveLinesDeferred}{\#1}{gregoriotex-main.tex}
+Deferred variant of \verb=\GreSetNabcAboveLines= used when skip-alterations is
+enabled for voice~1 (\verb=\gresetnabcskipalterations[1]{true}=).  The
+pre-phase is guarded by \verb=\ifgre@nabc@in@alteration= so it silently
+postpones execution during free-standing alteration signs and fires only at
+the next real \verb=\GreGlyph= call, anchoring the neume to the first square
+note.  When an alteration is skipped, the per-voice
+\verb=\ifgre@nabc@voice@i@altskipped= flag is set, causing the left-overflow
+kern in \verb=\gre@nabc@prepare= to be suppressed (via
+\verb=\ifgre@nabc@suppress@leftoverflow=), since the accidental already
+provides visual space before the note.  The emit-phase is likewise guarded by
+\verb=\ifgre@nabc@voice@i@ready= to prevent placing an empty box before the
+pre-phase has run.
+
+\begin{argtable}
+  \#1 & string & Nabc neumes to be placed above the lines.\\
+\end{argtable}
+
+\macroname{\textbackslash GreSetNabcBelowLinesDeferred}{\#1}{gregoriotex-main.tex}
+Deferred variant of \verb=\GreSetNabcBelowLines= used when skip-alterations is
+enabled for voice~2 (\verb=\gresetnabcskipalterations[2]{true}=).  Mirrors
+\verb=\GreSetNabcAboveLinesDeferred= but targets voice~2 (below staff), using
+\verb=\ifgre@nabc@voice@ii@altskipped=, \verb=\ifgre@nabc@voice@ii@ready=
+and the \verb=\gre@nabc@*@voice@ii= macros.
 
 \begin{argtable}
   \#1 & string & Nabc neumes to be placed below the lines.\\
@@ -1329,18 +1356,20 @@ Macro used to prevent a line break from occurring at a given position.
 A Lua\TeX\ attribute which designates a unique identifier for each score.
 
 \macroname{\textbackslash GreNABCNeumes}{\#1\#2\#3\#4}{gregoriotex-nabc.tex}
-Macro to print a nabc character above the lines.
+Macro called by the generated \texttt{.gtex} file to typeset the neumes of one
+NABC voice for a GABC element.  Dispatches to \verb=\GreSetNabcAboveLines= or
+\verb=\GreSetNabcBelowLines= (possibly the Deferred variant when
+\verb=\gresetnabcskipalterations= is enabled for that voice).
 
 \begin{argtable}
-  \#1 & integer & the line on which the character should appear (currently unused)\\
-  \#2 & string & The \texttt{nabc} syntax which indicates what neumes are to be printed\\
+  \#1 & integer & NABC voice number: 1 = above staff, 2 = below staff.\\
+  \#2 & string & The \texttt{nabc} syntax which indicates what neumes are to be printed.\\
   \#3 & integer & The high pitch of the notes covered by the nabc character(s).\\
   \#4 & integer & The low pitch of the notes covered by the nabc character(s).\\
 \end{argtable}
 
 \macroname{\textbackslash GreFlushNABC}{}{gregoriotex-nabc.tex}
-Macro to immediately typeset pending nabc neumes stored by \textbackslash GreNABCNeumes.
-Useful when a syllable has nabc but no gabc glyph to trigger normal rendering.
+Flushes pending NABC neumes for syllables whose gabc element has no note glyphs (e.g.\ an empty gabc snippet).  Executes both the preparation phase (\textbackslash gre@nabc@pre@voice@i, \textbackslash gre@nabc@pre@voice@ii) and the placement phase (\textbackslash gre@nabc@emit@voice@i, \textbackslash gre@nabc@emit@voice@ii) so that NABC content is rendered even when no \textbackslash GreGlyph callback fires.
 
 \macroname{\textbackslash GreNABCChar}{[\#1]\{\#2\}}{gregoriotex-nabc.tex}
 Macro to print a nabc character.
