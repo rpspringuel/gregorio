@@ -90,6 +90,37 @@
 \gre@nabcvoice@ii@phantomwrapper=0\relax
 % define more of these when more voices are supported
 
+% Per-voice 'skip-alterations' flags: when true, NABC neumes are anchored to
+% the first real square note, skipping any leading alteration signs.
+\newif\ifgre@nabc@voice@i@skipalterations
+\gre@nabc@voice@i@skipalterationsfalse
+\newif\ifgre@nabc@voice@ii@skipalterations
+\gre@nabc@voice@ii@skipalterationsfalse
+% In-alteration signal: set to true by \gre@alteration@visible around the
+% \gre@newglyphcommon call so that deferred pre/emit macros can detect they
+% are being called from an alteration and defer execution.
+\newif\ifgre@nabc@in@alteration
+\gre@nabc@in@alterationfalse
+% Per-voice 'ready' flags: set when the deferred pre-phase fills the nabc
+% box, cleared after the emit-phase places it.
+\newif\ifgre@nabc@voice@i@ready
+\gre@nabc@voice@i@readyfalse
+\newif\ifgre@nabc@voice@ii@ready
+\gre@nabc@voice@ii@readyfalse
+% Per-voice 'altskipped' flags: set when the deferred pre-phase detects
+% an alteration.  When the real note is reached, these flags cause the
+% left-overflow kern to be suppressed (the accidental already provides
+% visual space before the note).
+\newif\ifgre@nabc@voice@i@altskipped
+\gre@nabc@voice@i@altskippedfalse
+\newif\ifgre@nabc@voice@ii@altskipped
+\gre@nabc@voice@ii@altskippedfalse
+% Shared flag: when true, \gre@nabc@prepare skips the left-overflow kern.
+% Set and cleared by the deferred pre-phase around the \gre@nabc@prepare
+% call so that each voice can independently suppress the kern.
+\newif\ifgre@nabc@suppress@leftoverflow
+\gre@nabc@suppress@leftoverflowfalse
+
 \def\gresetnabc#1#2{%
   \gre@processvisibilitywithphantom{#2}%
     {\csname gre@nabcvoice@\romannumeral#1@visibletrue\endcsname}%
@@ -98,14 +129,7 @@
     {\protect\gresetnabc}%
 }
 
-% \gresetnabcalignment[#1]#2 - set the horizontal alignment reference for NABC
-% neumes relative to the gabc notes below.
-% #1: voice number (optional; if omitted, sets the default for all voices
-%     and clears any per-voice overrides)
-% #2: alignment mode
-%   neume - align to the neume (basic glyph + prepunctis), ignoring
-%           significative letters
-%   full  - align to the entire complex glyph descriptor (default)
+% See Command_Index_User.tex for documentation.
 \def\gresetnabcalignment{\@ifnextchar[{\gre@setnabcalignment@voice}{\gre@setnabcalignment@global}}%
 \def\gre@setnabcalignment@global#1{%
   \IfStrEqCase{#1}{%
@@ -128,13 +152,46 @@
     ]%
 }
 
+% See Command_Index_User.tex for documentation.
+\def\gresetnabcskipalterations{%
+  \@ifnextchar[{\gre@setnabcskipalterations@voice}{\gre@setnabcskipalterations@global}%
+}%
+\def\gre@setnabcskipalterations@global#1{%
+  \IfStrEqCase{#1}{%
+    {true}%
+      {\global\gre@nabc@voice@i@skipalterationstrue
+       \global\gre@nabc@voice@ii@skipalterationstrue}%
+    {false}%
+      {\global\gre@nabc@voice@i@skipalterationsfalse
+       \global\gre@nabc@voice@ii@skipalterationsfalse}%
+    }[%
+      \gre@error{Unrecognized option "#1" for \protect\gresetnabcskipalterations\MessageBreak Possible options are: 'true' and 'false'}%
+    ]%
+}%
+\def\gre@setnabcskipalterations@voice[#1]#2{%
+  \IfStrEqCase{#2}{%
+    {true}%
+      {\ifnum#1=1\relax\global\gre@nabc@voice@i@skipalterationstrue\fi%
+       \ifnum#1=2\relax\global\gre@nabc@voice@ii@skipalterationstrue\fi}%
+    {false}%
+      {\ifnum#1=1\relax\global\gre@nabc@voice@i@skipalterationsfalse\fi%
+       \ifnum#1=2\relax\global\gre@nabc@voice@ii@skipalterationsfalse\fi}%
+    }[%
+      \gre@error{Unrecognized option "#2" for \protect\gresetnabcskipalterations\MessageBreak Possible options are: 'true' and 'false'}%
+    ]%
+}
+
 \def\GreNABCNeumes#1#2#3#4{%
   \csname ifgre@nabcvoice@\romannumeral#1@visible\endcsname %
     \ifcase#1\relax
       \or % 1
-        \GreSetNabcAboveLines{\gre@applyphantomwrapper{\gre@nabcvoice@i@phantomwrapper}{\GreNABCChar[1]{#2}}}%
+        \csname GreSetNabcAboveLines%
+          \ifgre@nabc@voice@i@skipalterations Deferred\fi\endcsname
+        {\gre@applyphantomwrapper{\gre@nabcvoice@i@phantomwrapper}{\GreNABCChar[1]{#2}}}%
       \or % 2
-        \GreSetNabcBelowLines{\gre@applyphantomwrapper{\gre@nabcvoice@ii@phantomwrapper}{\GreNABCChar[2]{#2}}}%
+        \csname GreSetNabcBelowLines%
+          \ifgre@nabc@voice@ii@skipalterations Deferred\fi\endcsname
+        {\gre@applyphantomwrapper{\gre@nabcvoice@ii@phantomwrapper}{\GreNABCChar[2]{#2}}}%
       \fi
   \fi %
 }

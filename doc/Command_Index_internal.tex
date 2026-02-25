@@ -1472,7 +1472,7 @@ Prints the nabc glyphs for the given nabc string.
 \end{argtable}
 
 \macroname{\textbackslash gre@nabc@prepare}{\#1\#2}{gregoriotex-main.tex}
-Phase 1 of NABC two-phase processing: pre-evaluates NABC content, tracks the maximum NABC width in \verb=\gre@dimen@nabc@maxwidth= for right-overflow detection by \verb=\gre@compute@nabc@extrakern=, emits note-level kern for left overflow (in \texttt{neume} alignment mode), and saves the rendered content in a box register.
+Phase 1 of NABC two-phase processing: pre-evaluates NABC content, tracks the maximum NABC width in \verb=\gre@dimen@nabc@maxwidth= for right-overflow detection by \verb=\gre@compute@nabc@extrakern=, emits note-level kern for left overflow (in \texttt{neume} alignment mode) unless \verb=\ifgre@nabc@suppress@leftoverflow= is true, and saves the rendered content in a box register.
 
 \begin{argtable}
   \#1 & content & The NABC content (from \textbackslash GreNABCChar)\\
@@ -1486,16 +1486,29 @@ Phase 2 of NABC two-phase processing for voice 1 (above staff): places the pre-r
 Phase 2 of NABC two-phase processing for voice 2 (below staff): places the pre-rendered NABC voice 2 content from \textbackslash gre@box@nabc@voice@ii at the correct vertical position below the staff.
 
 \macroname{\textbackslash gre@nabc@pre@voice@i}{}{gregoriotex-main.tex}
-Deferred macro for phase 1 processing of NABC voice 1 (above staff). Set by \textbackslash GreSetNabcAboveLines, called from \textbackslash gre@newglyphcommon. After execution, resets itself to empty.
+Deferred macro for phase~1 processing of NABC voice~1 (above staff).  Set by
+\verb=\GreSetNabcAboveLines= (or \verb=\GreSetNabcAboveLinesDeferred= when
+skip-alterations is enabled), called from \verb=\gre@newglyphcommon=.  When set
+by the deferred variant, guarded by \verb=\ifgre@nabc@in@alteration=: execution
+is postponed during free-standing alterations and fires at the next real glyph.
+After execution, resets itself to empty.
 
 \macroname{\textbackslash gre@nabc@pre@voice@ii}{}{gregoriotex-main.tex}
-Deferred macro for phase 1 processing of NABC voice 2 (below staff). Set by \textbackslash GreSetNabcBelowLines, called from \textbackslash gre@newglyphcommon. After execution, resets itself to empty.
+Deferred macro for phase~1 processing of NABC voice~2 (below staff).  Set by
+\verb=\GreSetNabcBelowLines= (or \verb=\GreSetNabcBelowLinesDeferred= when
+skip-alterations is enabled), called from \verb=\gre@newglyphcommon=.  Mirrors
+\verb=\gre@nabc@pre@voice@i= for voice~2.  After execution, resets itself to empty.
 
 \macroname{\textbackslash gre@nabc@emit@voice@i}{}{gregoriotex-main.tex}
-Deferred macro for phase 2 processing of NABC voice 1 (above staff). Set by \textbackslash GreSetNabcAboveLines, called from \textbackslash gre@newglyphcommon. After execution, resets itself to empty.
+Deferred macro for phase~2 processing of NABC voice~1 (above staff).  Set by
+\verb=\GreSetNabcAboveLines= (or \verb=\GreSetNabcAboveLinesDeferred=).  When
+set by the deferred variant, guarded by \verb=\ifgre@nabc@voice@i@ready= so it
+does not fire before phase~1 has completed.  After execution, resets itself to empty.
 
 \macroname{\textbackslash gre@nabc@emit@voice@ii}{}{gregoriotex-main.tex}
-Deferred macro for phase 2 processing of NABC voice 2 (below staff). Set by \textbackslash GreSetNabcBelowLines, called from \textbackslash gre@newglyphcommon. After execution, resets itself to empty.
+Deferred macro for phase~2 processing of NABC voice~2 (below staff).  Set by
+\verb=\GreSetNabcBelowLines= (or \verb=\GreSetNabcBelowLinesDeferred=).  Mirrors
+\verb=\gre@nabc@emit@voice@i= for voice~2, guarded by \verb=\ifgre@nabc@voice@ii@ready=.
 
 \macroname{\textbackslash gre@setnabcalignment@global}{\#1}{gregoriotex-nabc.tex}
 Sets the default NABC horizontal alignment mode for all voices and clears any per-voice overrides.
@@ -1512,6 +1525,27 @@ Sets the NABC horizontal alignment mode for a specific voice.
   \#1 & integer & The nabc voice number: 1 = above staff, 2 = below staff\\
   \#2 & \texttt{neume} & Align to the neume (basic glyph + prepunctis), ignoring significative letters\\
   & \texttt{full} & Align to the entire complex glyph descriptor (default)\\
+\end{argtable}
+
+\macroname{\textbackslash gre@setnabcskipalterations@global}{\#1}{gregoriotex-nabc.tex}
+Sets the skip-alterations flag for all NABC voices simultaneously.  Internal
+implementation of \verb=\gresetnabcskipalterations= when called without the
+optional voice argument.
+
+\begin{argtable}
+  \#1 & \texttt{true} & Enable skip-alterations for all voices\\
+  & \texttt{false} & Disable skip-alterations for all voices (default)\\
+\end{argtable}
+
+\macroname{\textbackslash gre@setnabcskipalterations@voice}{[\#1]\{\#2\}}{gregoriotex-nabc.tex}
+Sets the skip-alterations flag for a specific NABC voice.  Internal
+implementation of \verb=\gresetnabcskipalterations= when called with the
+optional voice argument.
+
+\begin{argtable}
+  \#1 & integer & The nabc voice number: 1 = above staff, 2 = below staff\\
+  \#2 & \texttt{true} & Enable skip-alterations for the given voice\\
+  & \texttt{false} & Disable skip-alterations for the given voice\\
 \end{argtable}
 
 
@@ -2031,6 +2065,50 @@ Boolean indicating whether the first nabc voice should be shown.
 
 \macroname{\textbackslash ifgre@nabcvoice@ii@visible}{}{gregoriotex-nabc.tex}
 Boolean indicating whether the second nabc voice should be shown.
+
+\macroname{\textbackslash ifgre@nabc@voice@i@skipalterations}{}{gregoriotex-nabc.tex}
+When true, NABC neumes for voice~1 are anchored to the first real square note,
+skipping any leading free-standing alteration signs.  Controlled by
+\verb=\gresetnabcskipalterations=.
+
+\macroname{\textbackslash ifgre@nabc@voice@ii@skipalterations}{}{gregoriotex-nabc.tex}
+When true, NABC neumes for voice~2 are anchored to the first real square note,
+skipping any leading free-standing alteration signs.  Mirrors
+\verb=\ifgre@nabc@voice@i@skipalterations= for voice~2.
+
+\macroname{\textbackslash ifgre@nabc@in@alteration}{}{gregoriotex-nabc.tex}
+Set to true by \verb=\gre@alteration@visible= around its internal call to
+\verb=\gre@newglyphcommon=, so that the deferred NABC pre/emit macros can detect
+they are being triggered by a free-standing alteration sign rather than by a real
+glyph and defer execution accordingly.
+
+\macroname{\textbackslash ifgre@nabc@voice@i@ready}{}{gregoriotex-main.tex}
+Set to true by \verb=\GreSetNabcAboveLinesDeferred= pre-phase when the NABC box
+for voice~1 has been filled, and cleared after the emit-phase places it.  The
+emit-phase checks this flag to avoid placing an empty box when called before
+phase~1 has executed.
+
+\macroname{\textbackslash ifgre@nabc@voice@ii@ready}{}{gregoriotex-main.tex}
+Set to true by \verb=\GreSetNabcBelowLinesDeferred= pre-phase when the NABC box
+for voice~2 has been filled, and cleared after the emit-phase places it.  Mirrors
+\verb=\ifgre@nabc@voice@i@ready= for voice~2.
+
+\macroname{\textbackslash ifgre@nabc@voice@i@altskipped}{}{gregoriotex-nabc.tex}
+Per-voice flag set to true by \verb=\GreSetNabcAboveLinesDeferred= pre-phase
+when it detects an alteration (via \verb=\ifgre@nabc@in@alteration=).  When the
+pre-phase later fires on a real glyph, this flag causes
+\verb=\ifgre@nabc@suppress@leftoverflow= to be set before calling
+\verb=\gre@nabc@prepare=, suppressing the left-overflow kern.  Cleared after use.
+
+\macroname{\textbackslash ifgre@nabc@voice@ii@altskipped}{}{gregoriotex-nabc.tex}
+Per-voice flag for voice~2.  Mirrors \verb=\ifgre@nabc@voice@i@altskipped= but
+used by \verb=\GreSetNabcBelowLinesDeferred=.
+
+\macroname{\textbackslash ifgre@nabc@suppress@leftoverflow}{}{gregoriotex-nabc.tex}
+Shared flag checked by \verb=\gre@nabc@prepare=.  When true, the left-overflow
+kern is suppressed.  Set and cleared by the deferred pre-phase around each call
+to \verb=\gre@nabc@prepare= (separately for each voice), so that the NABC neume
+does not push a preceding accidental unnecessarily to the left.
 
 \macroname{\textbackslash ifgre@staffdimensions@zeroed}{}{gregoriotex-main.tex}
 Boolean indicating whether the staff dimensions (line height, inter-line space, and total staff height) have been zeroed.  Set to true by \verb=\gre@staffdimensions@dozero= when lines are made invisible or hphantom, and cleared by \verb=\gre@staffdimensions@unzero= when lines are restored.
