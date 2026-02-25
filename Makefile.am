@@ -48,7 +48,7 @@ gregoriotex.tds.zip: dist-zip install-gtex.sh
 	./install-gtex.sh tds
 
 ctan : gregoriotex.ctan.zip
-gregoriotex.ctan.zip: doc dist-zip gregoriotex.tds.zip build-ctan.sh
+gregoriotex.ctan.zip: doc dist-zip gregoriotex.tds.zip
 	mkdir -p ctan/gregoriotex
 	cp gregoriotex.tds.zip ctan/gregoriotex.tds.zip
 	cp *.md ctan/gregoriotex/
