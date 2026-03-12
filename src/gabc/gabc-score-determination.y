@@ -886,7 +886,11 @@ note:
                              "det_score", VERBOSITY_FATAL, 0);
         }
         if (nabc_state == 0) {
-            /* empty GABC snippet: create an empty element */
+            gregorio_message(
+                _("Empty GABC element created by extra \"|\" separator. "
+                  "With nabc-lines>1, use a single \"|\" to start a new "
+                  "element after the last NABC voice."),
+                "det_score", VERBOSITY_ERROR, 0);
             gregorio_add_element(&elements[voice], NULL);
             current_element = elements[voice];
             while (current_element->next) {
