@@ -68,9 +68,6 @@ gregoriotex.ctan.zip: doc dist-zip gregoriotex.tds.zip
 	zip -r gregoriotex.ctan.zip ctan/
 	rm -rf ctan/
 
-dist-hook:
-	rm -rf $(distdir)/windows
-
 if MACOSX
 dist-macosx: gregorio doc fonts
 	$(MAKE) -C macosx dist-macosx
