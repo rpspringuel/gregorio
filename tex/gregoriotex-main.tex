@@ -1288,8 +1288,7 @@
   \setbox\gre@box@annotation=\box\voidb@x%
   \setbox\gre@box@commentary=\box\voidb@x%
   \directlua{gregoriotex.at_score_end()}%
-  \unsetattribute{\gre@attr@glyph@top}%
-  \unsetattribute{\gre@attr@glyph@bottom}%
+  \gre@unset@glyph@heights
   \unsetattribute{\gre@attr@dash}%
   \xdef\gre@bolshiftcleftypelocal{\gre@bolshiftcleftypeglobal}%
   \ifnum\gre@count@lastline=0\relax

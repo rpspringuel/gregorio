@@ -3,7 +3,10 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][develop]
-
+### Fixed
+- Changed all uses of `char` as integers to `signed char`s for better portability. This previously affected some horizontal spacing in rare cases with some compilers. See [#1731](https://github.com/gregorio-project/gregorio/pull/1731).
+- Fixed a bug ([#1717](https://github.com/gregorio-project/gregorio/issues/1717)) that could cause incorrect vertical spacing.
+- Added a shim to implement lfs.mkdirp in versions of LuaTeX (<1.18) that do not have it. See [#1728](https://github.com/gregorio-project/gregorio/issues/1728).
 
 ## [Unreleased][CTAN]
 

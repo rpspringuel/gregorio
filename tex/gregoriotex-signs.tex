@@ -315,6 +315,7 @@
     \gre@update@clefwidth@current{\wd\gre@box@temp@width}%
   \fi %
   \copy\gre@box@temp@width %
+  \gre@unset@glyph@heights
   \ifcase#4 %
     \gre@skip@temp@two=\gre@space@skip@afterclefnospace\relax%
   \or %
@@ -669,6 +670,7 @@
     \IfStrEq{#2}{}{}{%
       \GreGlyphHeights{#1}{#1}%
       \csname Gre#2\endcsname{#1}{0}{}{}{}}%
+      \gre@unset@glyph@heights
   \fi %
   \gre@trace@end%
 }%
@@ -746,6 +748,7 @@
   \or\gre@fontchar@custosbottomlong %
   \or\gre@fontchar@custosbottommiddle %
   \fi%
+  \gre@unset@glyph@heights
   \gre@trace@end%
 }%
 
@@ -2391,6 +2394,7 @@
     \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@virgulahigh}%
     \GreAdditionalLine{\GreOCaseBarVirgula}{0}{2}%
     #4\relax %
+    \gre@unset@glyph@heights
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
       \gre@skip@temp@four = \csname gre@space@skip@bar@virgula\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
@@ -2407,6 +2411,7 @@
     \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiominimahigh}%
     \GreAdditionalLine{\GreOCaseBarStandard}{0}{2}%
     #4\relax %
+    \gre@unset@glyph@heights
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
       \gre@skip@temp@four = \csname gre@space@skip@bar@minima\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
@@ -2460,6 +2465,7 @@
     \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiominimishigh}%
     \GreAdditionalLine{\GreOCaseBarStandard}{0}{2}%
     #4\relax %
+    \gre@unset@glyph@heights
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
       \gre@skip@temp@four = \csname gre@space@skip@bar@minimis\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
@@ -2504,6 +2510,7 @@
     \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@virgulaparenhigh}%
     \GreAdditionalLine{\GreOCaseBarVirgulaParen}{0}{2}%
     #4\relax %
+    \gre@unset@glyph@heights
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
       \gre@skip@temp@four = \csname gre@space@skip@bar@virgulaparen\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
@@ -2520,6 +2527,7 @@
     \raise\gre@dimen@glyphraisevalue\hbox{\gre@font@music\gre@char@bar@divisiominimaparenhigh}%
     \GreAdditionalLine{\GreOCaseBarParen}{0}{2}%
     #4\relax %
+    \gre@unset@glyph@heights
     \ifnum\gre@count@temp@one=1\relax %
       \GreNoBreak %
       \gre@skip@temp@four = \csname gre@space@skip@bar@minimaparen\gre@bar@space@suffix{#2}{#3}{#5}\endcsname\relax%
