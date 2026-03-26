@@ -58,6 +58,12 @@ static bool read_vowel_rules(char *const lang) {
     gregorio_kpse_find_or_else(filenames, VOWEL_FILE, return false);
 
     gregorio_vowel_tables_init();
+    /* first check to see if the language is Latin */
+    bool is_latin = (strcasecmp(language, "latin") == 0 ||
+                     strcasecmp(language, "la") == 0 ||
+                     strcasecmp(language, "lat") == 0) ;
+    /* To allow for users to use customize their own Latin rules, we always
+     * look for the requested language in the vowel files */
     /* only need to try twice; if it's not resolved by then, there is an alias
      * loop */
     for (tries = 0; tries < 2; ++tries) {
@@ -85,8 +91,12 @@ static bool read_vowel_rules(char *const lang) {
             break;
         }
     }
-    if ((strcmp(language, "Latin") == 0 || strcmp(language, "latin") == 0 || strcmp(language, "la") == 0 || strcmp(language, "lat") == 0) && status == RFPS_NOT_FOUND) {
-        gregorio_messagef("read_rules", VERBOSITY_INFO, 0, "Falling back on internal Latin vowel rules");
+    if (status == RFPS_NOT_FOUND) {
+        const char *msg = is_latin
+            ? "Using default Latin vowel rules"
+            : "Falling back on internal Latin vowel rules";
+
+        gregorio_messagef("read_rules", VERBOSITY_INFO, 0, msg);
     }
     if (status == RFPS_ALIASED) {
         gregorio_messagef("read_rules", VERBOSITY_WARNING, 0,
