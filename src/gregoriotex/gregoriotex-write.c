@@ -3956,7 +3956,8 @@ static void write_default_end_of_element(FILE *f,
         if (next_element->type == GRE_ALT) {
             next_element = next_element->next;
         }
-        if (next_element && next_element->type == GRE_ELEMENT) {
+        if (next_element && next_element->type == GRE_ELEMENT
+                && element->u.first_glyph) {
             for (last_glyph = element->u.first_glyph; last_glyph->next;
                     last_glyph = last_glyph->next) {
                 /* iterate to find the last glyph */

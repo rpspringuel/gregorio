@@ -886,11 +886,21 @@ note:
                              "det_score", VERBOSITY_FATAL, 0);
         }
         if (nabc_state == 0) {
-            /* empty GABC snippet: create an empty element */
-            gregorio_add_element(&elements[voice], NULL);
-            current_element = elements[voice];
-            while (current_element->next) {
-                current_element = current_element->next;
+            gregorio_messagef("det_score", VERBOSITY_WARNING, 0,
+                _("Starting a new element with empty GABC notation at "
+                  "\"|\" separator (all %zu NABC voice(s) were already "
+                  "assigned to the previous element)."),
+                nabc_lines);
+            if (!elements[voice]) {
+                gregorio_add_element(&elements[voice], NULL);
+                current_element = elements[voice];
+            } else {
+                gregorio_element *last_element = current_element;
+                while (last_element->next) {
+                    last_element = last_element->next;
+                }
+                gregorio_add_element(&last_element, NULL);
+                current_element = last_element;
             }
         }
         nabc_state = (nabc_state + 1) % (nabc_lines+1);
