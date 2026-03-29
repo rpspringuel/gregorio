@@ -3,11 +3,16 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][develop]
+
+
+## [Unreleased][CTAN]
+
+
+## [6.2.0-beta3] - 2026-03-29
 ### Fixed
 - Fixed a segfault related to NABC state wrapping. See [#1726](https://github.com/gregorio-project/gregorio/issues/1726).
 
 
-## [Unreleased][CTAN]
 
 
 ## [6.2.0-beta2] - 2026-03-24
