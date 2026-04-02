@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][develop]
+### Changed
+- Changed the way errors in the options (in particular invalid options) were handled.  Instead of letting getopt print the message, we catch and print the message ourselves.  This gives us more control over how the message looks and removes duplication (because getopt was seeing the error twice).
 
 
 ## [Unreleased][CTAN]
