@@ -553,13 +553,15 @@ int main(int argc, char **argv)
             } else {
                 fprintf(stderr, "%s: invalid option\n", argv[0]);
             }
-            must_print_short_usage = true;
+            print_short_usage(argv[0]);
+            gregorio_exit(1);
             break;
 
         case ':':
             fprintf(stderr, "%s: option requires an argument -- '%c'\n",
                     argv[0], optopt);
-            must_print_short_usage = true;
+            print_short_usage(argv[0]);
+            gregorio_exit(1);
             break;
         default:
             /* not reachable unless there's a programming error */
