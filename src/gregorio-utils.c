@@ -566,7 +566,7 @@ int main(int argc, char **argv)
         default:
             /* not reachable unless there's a programming error */
             /* LCOV_EXCL_START */
-            gregorio_fail2(main, "%s: internal error: unexpected option code '%c'\n", argv[0], c);
+            gregorio_fail(main, "%s: internal error: unexpected option code '%c'\n", argv[0], c);
             print_short_usage(argv[0]);
             gregorio_exit(1);
             break;
