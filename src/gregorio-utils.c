@@ -549,7 +549,7 @@ int main(int argc, char **argv)
             break;
         case '?':
             if (optopt) {
-                fprintf(stderr, "%s: invalid option -- '%c'\n", argv[0], optopt);
+                fprintf(stderr, "%s: invalid option '%c'\n", argv[0], optopt);
             } else {
                 fprintf(stderr, "%s: invalid option\n", argv[0]);
             }
@@ -558,7 +558,7 @@ int main(int argc, char **argv)
             break;
 
         case ':':
-            fprintf(stderr, "%s: option requires an argument -- '%c'\n",
+            fprintf(stderr, "%s: option '%c' requires an argument \n",
                     argv[0], optopt);
             print_short_usage(argv[0]);
             gregorio_exit(1);
