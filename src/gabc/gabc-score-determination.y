@@ -487,7 +487,7 @@ static void add_auto_protrusion(char *protrusion)
         default:
             /* not reachable unless there's a programming error */
             /* LCOV_EXCL_START */
-            gregorio_fail2(add_auto_protrusion,
+            gregorio_fail(add_auto_protrusion,
                     "unsupported protruding punctuation: %c", *protrusion);
             break;
             /* LCOV_EXCL_STOP */
