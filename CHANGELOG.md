@@ -3,12 +3,17 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][develop]
+
+
+## [Unreleased][CTAN]
+
+
+## [6.2.0-rc1] - 2026-04-08
 ### Changed
 - Changed the way errors in the options (in particular invalid options) were handled.  Instead of letting getopt print the message, we catch and print the message ourselves.  This gives us more control over how the message looks and removes duplication (because getopt was seeing the error twice).
 - Consolidated `gregorio_fail()` and `gregorio_fail2()` into one macro which allows for arbitrary number of substitution arguments in the message.  Previously `gregorio_fail()` did not allow any substitutions and `gregorio_fail2()` allowed one substitution.
 
 
-## [Unreleased][CTAN]
 
 
 ## [6.2.0-beta3] - 2026-03-29
