@@ -548,6 +548,7 @@
   \global\gre@dimen@nabc@extrakern=0pt\relax %
   \let\ifgre@saved@prenotes@lastendswithmora\ifgre@lastendswithmora%
   \xdef\gre@saved@prenotes@lastoflinecount{\number\gre@lastoflinecount\relax }%
+  \xdef\gre@saved@prenotes@bar@lastskip{\the\gre@skip@bar@lastskip}%
   \ifgre@shownotes%
     \setbox\gre@box@syllablenotes=\hbox{#1}%
     \gre@compute@nabc@extrakern
@@ -581,7 +582,7 @@
   \let\ifgre@lastendswithmora\ifgre@saved@prenotes@lastendswithmora%
   \global\gre@lastoflinecount=\gre@saved@prenotes@lastoflinecount\relax %
   \global\gre@count@lastglyphiscavum=0\relax %
-  \global\gre@skip@bar@lastskip=0pt\relax %
+  \global\gre@skip@bar@lastskip=\gre@saved@prenotes@bar@lastskip
   \global\gre@endofscorefalse %
   \relax %
   \gre@trace@end%
