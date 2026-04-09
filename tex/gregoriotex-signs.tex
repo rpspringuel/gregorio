@@ -104,6 +104,7 @@
 \xdef\gre@insidediscretionary{\number 0}%
 
 \newdimen\gre@dimen@savedenddifference
+\newskip\gre@skip@savedlastskip
 
 % #1 is the type of discretionary, for penalty assignment. Recognized types:
 %   - 0: clef change
@@ -114,6 +115,8 @@
   \global\xdef\gre@insidediscretionary{\number 1}%
   \gre@debugmsg{barspacing}{save end diff: \the\gre@dimen@enddifference}%
   \gre@dimen@savedenddifference=\gre@dimen@enddifference
+  \gre@debugmsg{barspacing}{save last skip: \the\gre@skip@bar@lastskip}%
+  \gre@skip@savedlastskip=\gre@skip@bar@lastskip
   \discretionary{%
     \global\gre@lastoflinecount=1\relax % (a good magic trick)
     \gre@debugmsg{bolshift}{discretionary pre lastoflinecount: \the\gre@lastoflinecount}%
@@ -124,6 +127,8 @@
     }{%
     \gre@debugmsg{barspacing}{restore end diff: \the\gre@dimen@savedenddifference}%
     \gre@dimen@enddifference=\gre@dimen@savedenddifference
+    \gre@debugmsg{barspacing}{restore last skip: \the\gre@skip@savedlastskip}%
+    \gre@skip@bar@lastskip=\gre@skip@savedlastskip
     \gre@debugmsg{bolshift}{discretionary no lastoflinecount: \the\gre@lastoflinecount}%
     #3%
     }%
