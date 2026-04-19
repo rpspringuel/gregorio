@@ -2,42 +2,12 @@
 All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
-## [Unreleased][develop]
-
-
-## [Unreleased][CTAN]
-
-
 ## [6.2.0] - 2026-04-19
-
-
-
-
-## [6.2.0-rc1] - 2026-04-08
-### Changed
-- Changed the way errors in the options (in particular invalid options) were handled.  Instead of letting getopt print the message, we catch and print the message ourselves.  This gives us more control over how the message looks and removes duplication (because getopt was seeing the error twice).
-- Consolidated `gregorio_fail()` and `gregorio_fail2()` into one macro which allows for arbitrary number of substitution arguments in the message.  Previously `gregorio_fail()` did not allow any substitutions and `gregorio_fail2()` allowed one substitution.
-
-
-
-
-## [6.2.0-beta3] - 2026-03-29
-### Fixed
-- Fixed a segfault related to NABC state wrapping. See [#1726](https://github.com/gregorio-project/gregorio/issues/1726).
-
-
-
-
-## [6.2.0-beta2] - 2026-03-24
 ### Fixed
 - Changed all uses of `char` as integers to `signed char`s for better portability. This previously affected some horizontal spacing in rare cases with some compilers. See [#1731](https://github.com/gregorio-project/gregorio/pull/1731).
 - Fixed a bug ([#1717](https://github.com/gregorio-project/gregorio/issues/1717)) that could cause incorrect vertical spacing.
 - Added a shim to implement lfs.mkdirp in versions of LuaTeX (<1.18) that do not have it. See [#1728](https://github.com/gregorio-project/gregorio/issues/1728).
-
-
-
-## [6.2.0-beta1] - 2026-02-23
-### Fixed
+- Fixed a segfault related to NABC state wrapping. See [#1726](https://github.com/gregorio-project/gregorio/issues/1726).
 - Fixed a bug that could cause a punctum mora that is supposed to be below the line (`.0`) to appear above the line. This bug was platform-dependent and was observed on a Windows system.  See [#1642](https://github.com/gregorio-project/gregorio/issues/1642).
 - Error messages from executable have been cleaned up to be more uniform.  See [#1644](https://github.com/gregorio-project/gregorio/issues/1644).
 - NABC neumes are now rendered for syllables with empty GABC/NABC snippets when NABC content is present (e.g. `(|vi|ta)`, `(|vi)`, `(||ta)`, `(g||ta)`).  See [#1700](https://github.com/gregorio-project/gregorio/issues/1700).
@@ -58,6 +28,8 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 - Added `\gresetnabcskipalterations` command to control whether NABC neumes are anchored to the first real square note, skipping any leading alteration sign. See [#1712](https://github.com/gregorio-project/gregorio/issues/1712).
 
 ### Changed
+- Changed the way errors in the options (in particular invalid options) were handled.  Instead of letting getopt print the message, we catch and print the message ourselves.  This gives us more control over how the message looks and removes duplication (because getopt was seeing the error twice).
+- Consolidated `gregorio_fail()` and `gregorio_fail2()` into one macro which allows for arbitrary number of substitution arguments in the message.  Previously `gregorio_fail()` did not allow any substitutions and `gregorio_fail2()` allowed one substitution.
 - Variable line heights are now computed in one pass instead of two. Per-line adjustments using `\grechangenextscorelinedim` and `\grechangenextscorelinecount` are also done in one pass, but only work on dimensions/counts related to line heights.  Mentioned in [#1488](https://github.com/gregorio-project/gregorio/issues/1488).
 - Previously, if a score ended with `Z` (ragged line break) or `z` (justified line break), the appearance of the last line would sometimes depend on `Z` versus `z` and sometimes depend on `\gresetlastline{ragged}` versus `\gresetlastline{justified}`. Now, the appearance of the last line always depends on `\gresetlastline`.
 - Fixed a bug introduced in 6.1.0 that caused latexmk not to recognize when a GABC file has changed and needs to be recompiled (issue #1685).
