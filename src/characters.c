@@ -92,11 +92,22 @@ static bool read_vowel_rules(char *const lang) {
         }
     }
     if (status == RFPS_NOT_FOUND) {
-        const char *msg = is_latin
-            ? "Using default Latin vowel rules"
-            : "Falling back on internal Latin vowel rules";
-
-        gregorio_messagef("read_rules", VERBOSITY_INFO, 0, msg);
+        if (is_latin) {
+            gregorio_messagef(
+                "read_rules",
+                VERBOSITY_INFO,
+                0,
+                "Using default Latin vowel rules"
+            );
+        } else {
+            gregorio_messagef(
+                "read_rules",
+                VERBOSITY_WARNING,
+                0,
+                "Selecting Latin instead of %s",
+                language
+            );
+        }
     }
     if (status == RFPS_ALIASED) {
         gregorio_messagef("read_rules", VERBOSITY_WARNING, 0,
@@ -118,7 +129,9 @@ static bool read_vowel_rules(char *const lang) {
 void gregorio_set_centering_language(char *const language)
 {
     if (!read_vowel_rules(language)) {
-        if (strcmp(language, "Latin") != 0 && strcmp(language, "latin") != 0 && strcmp(language, "la") != 0 && strcmp(language, "lat") != 0) {
+        if ((strcasecmp(language, "latin") != 0 ||
+             strcasecmp(language, "la") != 0 ||
+             strcasecmp(language, "lat") != 0) {
             gregorio_messagef("gregorio_set_centering_language",
                     VERBOSITY_WARNING, 0, _("unable to read vowel files for "
                         "%s; defaulting to Latin vowel rules"), language);
