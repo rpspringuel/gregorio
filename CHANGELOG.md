@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
+## [Unreleased][CTAN]
+*Note:* 6.2.0 was not released to CTAN and is not compatible with 6.1.0 which is on CTAN.  Please make all changes against develop until this is resolved.
+
 ## [6.2.0] - 2026-04-19
 ### Fixed
 - Changed all uses of `char` as integers to `signed char`s for better portability. This previously affected some horizontal spacing in rare cases with some compilers. See [#1731](https://github.com/gregorio-project/gregorio/pull/1731).
