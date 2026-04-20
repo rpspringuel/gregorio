@@ -4,6 +4,7 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 
 ## [Unreleased][develop]
 
+- Fixed a few bugs related to horizontal spacing around bars and clef changes. See issues [#1191](https://github.com/gregorio-project/gregorio/issues/1191), case 3 of [#1724](https://github.com/gregorio-project/gregorio/issues/1724), [#1745](https://github.com/gregorio-project/gregorio/issues/1745), and [PR #1743](https://github.com/gregorio-project/gregorio/pull/1743).
 
 ## [Unreleased][CTAN]
 *Note:* 6.2.0 was not released to CTAN and is not compatible with 6.1.0 which is on CTAN.  Please make all changes against develop until this is resolved.
