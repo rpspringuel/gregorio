@@ -1150,25 +1150,36 @@ local function get_score_font_unicode_pairs(name)
   return pairs(unicodes)
 end
 
+--- Add GregorioTeX callbacks.
 local function add_callbacks()
   debugmessage('callbacks', 'adding post_linebreak and hyphenate callbacks')
   luatexbase.add_to_callback('post_linebreak_filter', post_linebreak, 'gregoriotex.post_linebreak', 1)
   luatexbase.add_to_callback('hyphenate', disable_hyphenation, 'gregoriotex.disable_hyphenation', 1)
 end
 
+--- Remove GregorioTeX callbacks.
 local function remove_callbacks()
   debugmessage('callbacks', 'removing post_linebreak and hyphenate callbacks')
   luatexbase.remove_from_callback('post_linebreak_filter', 'gregoriotex.post_linebreak')
   luatexbase.remove_from_callback('hyphenate', 'gregoriotex.disable_hyphenation')
 end
 
-local function pre_output(h)
+--- Called when a page is full and is about to be shipped out.
+--- @param head node The contents of the page.
+--- @return node The contents of the page.
+local function pre_output(head)
+  -- The output routine may add headers/footers, which should not be
+  -- processed like scores, so turn off our callbacks.
   remove_callbacks()
-  return h
+  return head
 end
 
+--- Called on various occasions, and in particular right after a page is shipped out.
+--- @param extrainfo string Information about what TeX's state is with respect to the 'current page.'
 local function buildpage(extrainfo)
   if extrainfo == 'after_output' then
+    -- The output routine is done adding headers/footers, so turn our
+    -- callbacks back on.
     add_callbacks()
   end
 end
