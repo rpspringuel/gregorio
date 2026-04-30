@@ -3,7 +3,8 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][develop]
-
+### Fixed
+- Fixed a bug that could cause problems with headers/footers, and in particular an error with the `memoir` class. See [#1753](https://github.com/gregorio-project/gregorio/pull/1753).
 
 ## [Unreleased][CTAN]
 *Note:* 6.2.0 was not released to CTAN and is not compatible with 6.1.0 which is on CTAN.  Please make all changes against develop until this is resolved.
