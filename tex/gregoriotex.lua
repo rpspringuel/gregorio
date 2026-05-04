@@ -951,8 +951,6 @@ local function adjust_additional_spaces(line, info, linenum)
   end
 end
 
--- in each function we check if we really are inside a score,
--- which we can see with the dash_attr being set or not
 local function post_linebreak(h, groupcode, glyphes)
   --dump_nodes(h)
   -- TODO: to be changed according to the font
@@ -961,29 +959,26 @@ local function post_linebreak(h, groupcode, glyphes)
   local linenum                 = 0
   local syl_id                  = nil
   
-  -- we explore the lines
-  for line in traverse(h) do
-    if line.id == hlist and has_attribute(line, dash_attr) then
-      linenum = linenum + 1
-      debugmessage('linesglues', 'line %d: %s factor %.0f%%', linenum, glue_sign_name[line.glue_sign], line.glue_set*100)
-      centerstartnode = nil
+  for line in traverse_id(hlist, h) do
+    linenum = linenum + 1
+    debugmessage('linesglues', 'line %d: %s factor %.0f%%', linenum, glue_sign_name[line.glue_sign], line.glue_set*100)
+    centerstartnode = nil
 
-      for n in traverse_id(hlist, line.head) do
-        syl_id = has_attribute(n, syllable_id_attr) or syl_id
-        if has_attribute(n, center_attr, startcenter) then
-          centerstartnode = n
-        elseif has_attribute(n, center_attr, endcenter) then
-          if not centerstartnode then
-            warn("End of a translation centering area encountered on a\nline without translation centering beginning,\nskipping translation...")
-          else
-            center_translation(centerstartnode, n, line.glue_set, line.glue_sign, line.glue_order)
-          end
+    for n in traverse_id(hlist, line.head) do
+      syl_id = has_attribute(n, syllable_id_attr) or syl_id
+      if has_attribute(n, center_attr, startcenter) then
+        centerstartnode = n
+      elseif has_attribute(n, center_attr, endcenter) then
+        if not centerstartnode then
+          warn("End of a translation centering area encountered on a\nline without translation centering beginning,\nskipping translation...")
+        else
+          center_translation(centerstartnode, n, line.glue_set, line.glue_sign, line.glue_order)
         end
       end
+    end
 
-      if new_score_last_syllables and syl_id then
-        new_score_last_syllables[syl_id] = syl_id
-      end
+    if new_score_last_syllables and syl_id then
+      new_score_last_syllables[syl_id] = syl_id
     end
   end
   
@@ -1046,36 +1041,34 @@ local function post_linebreak(h, groupcode, glyphes)
 
   -- Look for words that are broken across lines and insert a hyphen
   for line in traverse_id(hlist, h) do
-    if has_attribute(line, dash_attr) then
-      -- Look for the last node that has dash_attr > 0
-      local adddash=false
-      for n in traverse_id(hlist, line.head) do
-        -- If a syllable is not word-final, it may need a dash if it
-        -- ends up being line-final.
-        -- Note: This also loops over translations, but translations
-        -- come before lyrics, so they should never become lastseennode
-        if has_attribute(n, dash_attr, potentialdashvalue) then
-          adddash=true
-          lastseennode=n
-          -- if we encounter a text that doesn't need a dash, we acknowledge it
-        elseif has_attribute(n, dash_attr, nopotentialdashvalue) then
-          adddash=false
-        end
+    -- Look for the last node that has dash_attr > 0
+    local adddash=false
+    for n in traverse_id(hlist, line.head) do
+      -- If a syllable is not word-final, it may need a dash if it
+      -- ends up being line-final.
+      -- Note: This also loops over translations, but translations
+      -- come before lyrics, so they should never become lastseennode
+      if has_attribute(n, dash_attr, potentialdashvalue) then
+        adddash=true
+        lastseennode=n
+        -- if we encounter a text that doesn't need a dash, we acknowledge it
+      elseif has_attribute(n, dash_attr, nopotentialdashvalue) then
+        adddash=false
       end
+    end
 
-      -- If the last syllable needed a dash, add it
-      if adddash then
-        local lastglyph
-        -- we traverse the list, to detect the font to use,
-        -- and also not to add an hyphen if there is already one
-        for g in node.traverse_id(glyph, lastseennode.head) do
-          lastglyph = g
-        end
-        if not (lastglyph.char == hyphen or lastglyph.char == 45) then
-          local dashnode, hyphnode = getdashnnode()
-          hyphnode.font = lastglyph.font
-          insert_after(lastseennode.head, lastglyph, dashnode)
-        end
+    -- If the last syllable needed a dash, add it
+    if adddash then
+      local lastglyph
+      -- we traverse the list, to detect the font to use,
+      -- and also not to add an hyphen if there is already one
+      for g in node.traverse_id(glyph, lastseennode.head) do
+        lastglyph = g
+      end
+      if not (lastglyph.char == hyphen or lastglyph.char == 45) then
+        local dashnode, hyphnode = getdashnnode()
+        hyphnode.font = lastglyph.font
+        insert_after(lastseennode.head, lastglyph, dashnode)
       end
     end
   end
@@ -1157,13 +1150,45 @@ local function get_score_font_unicode_pairs(name)
   return pairs(unicodes)
 end
 
-local inside_score = false
+--- Add GregorioTeX callbacks.
+local function add_callbacks()
+  debugmessage('callbacks', 'adding post_linebreak and hyphenate callbacks')
+  luatexbase.add_to_callback('post_linebreak_filter', post_linebreak, 'gregoriotex.post_linebreak', 1)
+  luatexbase.add_to_callback('hyphenate', disable_hyphenation, 'gregoriotex.disable_hyphenation', 1)
+end
+
+--- Remove GregorioTeX callbacks.
+local function remove_callbacks()
+  debugmessage('callbacks', 'removing post_linebreak and hyphenate callbacks')
+  luatexbase.remove_from_callback('post_linebreak_filter', 'gregoriotex.post_linebreak')
+  luatexbase.remove_from_callback('hyphenate', 'gregoriotex.disable_hyphenation')
+end
+
+--- Called when a page is full and is about to be shipped out.
+--- @param head node The contents of the page.
+--- @return node The contents of the page.
+local function pre_output(head)
+  -- The output routine may add headers/footers, which should not be
+  -- processed like scores, so turn off our callbacks.
+  remove_callbacks()
+  return head
+end
+
+--- Called on various occasions, and in particular right after a page is shipped out.
+--- @param extrainfo string Information about what TeX's state is with respect to the 'current page.'
+local function buildpage(extrainfo)
+  if extrainfo == 'after_output' then
+    -- The output routine is done adding headers/footers, so turn our
+    -- callbacks back on.
+    add_callbacks()
+  end
+end
+
 --- Start a score
 -- Prepare all variables for processing a new score and add our callbacks
 -- @param score_id score identifier
 local function at_score_beginning(score_id)
   first_line_prevdepth = tex.prevdepth -- used in adjust_glue
-  inside_score = true
   local inclusion = score_inclusion[score_id] or 1
   score_inclusion[score_id] = inclusion + 1
   score_id = score_id..'.'..inclusion
@@ -1191,37 +1216,20 @@ local function at_score_beginning(score_id)
     new_score_first_alterations = {}
     new_first_alterations[score_id] = new_score_first_alterations
   end
-
-  luatexbase.add_to_callback('post_linebreak_filter', post_linebreak, 'gregoriotex.post_linebreak', 1)
-  luatexbase.add_to_callback("hyphenate", disable_hyphenation, "gregoriotex.disable_hyphenation", 1)
+  add_callbacks()
+  luatexbase.add_to_callback('pre_output_filter', pre_output, 'gregoriotex.pre_output')
+  luatexbase.add_to_callback('buildpage_filter', buildpage, 'gregoriotex.buildpage')
 end
 
 --- Finish a score
 -- Reset variables to out of score state and remove our callbacks
 local function at_score_end()
-  inside_score = false
-  luatexbase.remove_from_callback('post_linebreak_filter', 'gregoriotex.post_linebreak')
-  luatexbase.remove_from_callback("hyphenate", "gregoriotex.disable_hyphenation")
+  remove_callbacks()
+  luatexbase.remove_from_callback('pre_output_filter', 'gregoriotex.pre_output')
+  luatexbase.remove_from_callback('buildpage_filter', 'gregoriotex.buildpage')
   per_line_dims = {}
   per_line_counts = {}
 end
-
---- Toggle the state of GregorioTeX callbacks.
--- Our callbacks can affect fancyhdr's ability to create multi-line headers/footers
--- By adding this function to fancyhdr's before and after hooks, our callbacks are removed
--- while processing headers/footers and then reinstated for the rest of the score.
-local function fancyhdr_toggle_callbacks()
-  if inside_score then
-    if luatexbase.is_active_callback('post_linebreak_filter','gregoriotex.post_linebreak') then
-      luatexbase.remove_from_callback('post_linebreak_filter', 'gregoriotex.post_linebreak')
-      luatexbase.remove_from_callback("hyphenate", "gregoriotex.disable_hyphenation")
-    else
-      luatexbase.add_to_callback('post_linebreak_filter', post_linebreak, 'gregoriotex.post_linebreak', 1)
-      luatexbase.add_to_callback("hyphenate", disable_hyphenation, "gregoriotex.disable_hyphenation", 1)
-    end
-  end
-end
-
 
 -- Inserted copy of https://github.com/ToxicFrog/luautil/blob/master/lfs.lua
 local windows = package.config:sub(1,1) == "\\"
@@ -1990,7 +1998,6 @@ gregoriotex.change_next_score_line_dim   = change_next_score_line_dim
 gregoriotex.change_next_score_line_count = change_next_score_line_count
 gregoriotex.set_base_output_dir          = set_base_output_dir
 gregoriotex.is_first_alteration          = is_first_alteration
-gregoriotex.fancyhdr_toggle_callbacks    = fancyhdr_toggle_callbacks
 
 dofile(kpse.find_file('gregoriotex-nabc.lua', 'lua'))
 dofile(kpse.find_file('gregoriotex-signs.lua', 'lua'))
