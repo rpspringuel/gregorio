@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). It follows [some conventions](http://keepachangelog.com/).
 
 ## [Unreleased][develop]
+
+### Fixed
+- Fixed a bug that could cause problems with headers/footers by generalizing the fix for fancyhdr (see [#1610](https://github.com/gregorio-project/gregorio/pull/1610) to work with any headers/footers. In particular, it fixes a similar problem with the `memoir` class. See [#1753](https://github.com/gregorio-project/gregorio/pull/1753).
 - Fixed a bug in horizontal spacing when the first syllable consists of only a bar. See [PR #1741](https://github.com/gregorio-project/gregorio/pull/1741).
 
 ## [Unreleased][CTAN]
