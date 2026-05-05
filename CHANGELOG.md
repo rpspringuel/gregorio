@@ -4,6 +4,9 @@ As of v3.0.0 this project adheres to [Semantic Versioning](http://semver.org/). 
 
 ## [Unreleased][develop]
 
+### Fixed
+- Fixed a bug that could cause problems with headers/footers by generalizing the fix for fancyhdr (see [#1610](https://github.com/gregorio-project/gregorio/pull/1610) to work with any headers/footers. In particular, it fixes a similar problem with the `memoir` class. See [#1753](https://github.com/gregorio-project/gregorio/pull/1753).
+- Fixed some typos that would cause a handful of spaces to be scaled incorrectly. See [PR #1746](https://github.com/gregorio-project/gregorio/pull/1746).
 
 ## [Unreleased][CTAN]
 *Note:* 6.2.0 was not released to CTAN and is not compatible with 6.1.0 which is on CTAN.  Please make all changes against develop until this is resolved.
