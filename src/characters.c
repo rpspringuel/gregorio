@@ -129,9 +129,9 @@ static bool read_vowel_rules(char *const lang) {
 void gregorio_set_centering_language(char *const language)
 {
     if (!read_vowel_rules(language)) {
-        if ((strcasecmp(language, "latin") != 0 ||
-             strcasecmp(language, "la") != 0 ||
-             strcasecmp(language, "lat") != 0) {
+        if (strcasecmp(language, "latin") != 0 ||
+            strcasecmp(language, "la") != 0 ||
+            strcasecmp(language, "lat") != 0) {
             gregorio_messagef("gregorio_set_centering_language",
                     VERBOSITY_WARNING, 0, _("unable to read vowel files for "
                         "%s; defaulting to Latin vowel rules"), language);
