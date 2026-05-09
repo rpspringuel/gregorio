@@ -1216,8 +1216,7 @@
 % #1 is the gabc score id
 % #2 is the point-and-click filename
 % #3 is the number of staff lines
-% #4 is to set the initial clef position
-\def\GreBeginScore#1#2#3#4{%
+\def\GreBeginScore#1#2#3{%
   % scores must be new paragraphs!
   \ifhmode\par\fi %
   \gre@beginningofscoretrue%
@@ -1241,7 +1240,6 @@
   \gre@generatelines %
   \noindent%
   \gre@calculate@additionalspaces
-  #4%
   \directlua{gregoriotex.at_score_beginning([[#1]])}%
   %TODO do something like LaTeX's AtBeginDocument
   \ifdefined\optgabcAtScoreBeginning %

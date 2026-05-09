@@ -4693,7 +4693,7 @@ void gregoriotex_write_score(FILE *const f, gregorio_score *const score,
     if (score->first_voice_info) {
         clef = score->first_voice_info->initial_clef;
     }
-    fprintf(f, "\\GreBeginScore{%s}{%s}{%u}{}%%\n",
+    fprintf(f, "\\GreBeginScore{%s}{%s}{%u}%%\n",
             digest_to_hex(score->digest),
             point_and_click_filename? point_and_click_filename : "",
             score->staff_lines);
