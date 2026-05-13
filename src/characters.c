@@ -108,8 +108,7 @@ static bool read_vowel_rules(char *const lang) {
                 language
             );
         }
-    }
-    if (status == RFPS_ALIASED) {
+    } else if (status == RFPS_ALIASED) {
         gregorio_messagef("read_rules", VERBOSITY_WARNING, 0,
                 _("Unable to resolve alias for %s"), lang);
     }
