@@ -67,7 +67,7 @@ static bool read_vowel_rules(char *const lang) {
     char *language = lang;
     const char *requested_language = lang;
 
-    rulefile_parse_status status;
+    rulefile_parse_status status = RFPS_NOT_FOUND;
     char **filenames, *filename, **p;
     char *visited[MAX_ALIAS_DEPTH];
     int visited_count = 0;
@@ -82,7 +82,6 @@ static bool read_vowel_rules(char *const lang) {
     /* To allow for users to use customize their own Latin rules, we always
      * look for the requested language in the vowel files */
     do {
-        status = RFPS_NOT_FOUND;
         /*
          * Detect alias loops explicitly.
          */
@@ -94,7 +93,6 @@ static bool read_vowel_rules(char *const lang) {
                 _("Alias loop detected for %s. Selecting Latin instead"),
                 requested_language
             );
-            status = RFPS_ALIASED;
             break;
         }
 
@@ -107,7 +105,6 @@ static bool read_vowel_rules(char *const lang) {
                   "Selecting Latin instead"),
                 requested_language
             );
-            status = RFPS_ALIASED;
             break;
         }
 
@@ -116,6 +113,7 @@ static bool read_vowel_rules(char *const lang) {
         /*
          * Search all rule files for the current language.
          */
+        status = RFPS_NOT_FOUND;
         for (p = filenames; (filename = *p); ++p) {
 
             rulefile_parse_status file_status = RFPS_NOT_FOUND;
