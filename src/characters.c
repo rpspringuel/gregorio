@@ -67,7 +67,7 @@ static bool read_vowel_rules(char *const lang) {
     char *language = lang;
     const char *requested_language = lang;
 
-    rulefile_parse_status status = RFPS_NOT_FOUND;
+    rulefile_parse_status status;
     char **filenames, *filename, **p;
     char *visited[MAX_ALIAS_DEPTH];
     int visited_count = 0;
@@ -81,10 +81,8 @@ static bool read_vowel_rules(char *const lang) {
                      strcasecmp(language, "lat") == 0) ;
     /* To allow for users to use customize their own Latin rules, we always
      * look for the requested language in the vowel files */
-    while (status != RFPS_FOUND) {
-
-        bool alias_found = false;
-
+    do {
+        status = RFPS_NOT_FOUND;
         /*
          * Detect alias loops explicitly.
          */
@@ -114,7 +112,7 @@ static bool read_vowel_rules(char *const lang) {
         }
 
         visited[visited_count++] = strdup(language);
-
+        
         /*
          * Search all rule files for the current language.
          */
@@ -161,8 +159,7 @@ static bool read_vowel_rules(char *const lang) {
                     (strcasecmp(language, "latin") == 0 ||
                      strcasecmp(language, "la") == 0 ||
                      strcasecmp(language, "lat") == 0);
-
-                alias_found = true;
+                status = RFPS_ALIASED;
                 break;
             case RFPS_NOT_FOUND:
             default:
@@ -182,35 +179,16 @@ static bool read_vowel_rules(char *const lang) {
              *   - successfully finding a definition
              *   - resolving to an alias
              */
-            if (status == RFPS_FOUND || alias_found) {
+            if (status == RFPS_FOUND || status == RFPS_ALIASED) {
                 break;
             }
         }
+    } while (status == RFPS_ALIASED);
 
-        /*
-         * Success.
-         */
-        if (status == RFPS_FOUND) {
-            break;
-        }
-
-        /*
-         * No alias encountered anywhere, so resolution failed.
-         */
-        if (!alias_found) {
-            status = RFPS_NOT_FOUND;
-            break;
-        }
-
-        /*
-         * Otherwise:
-         *   alias_found == true
-         * Continue loop with new language target.
-         */
-    }
-
+    /* RFPS_ALIASED at this point indicates alias resolution failed; guards above
+     * already reported the appropriate warning. */
     /*
-     * Fallback behavior.
+     * Fallback behavior if we didn't find the requested language.
      */
     if (status == RFPS_NOT_FOUND) {
         if (is_latin) {
