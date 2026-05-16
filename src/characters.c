@@ -82,9 +82,7 @@ static bool read_vowel_rules(char *const lang) {
     /* To allow for users to use customize their own Latin rules, we always
      * look for the requested language in the vowel files */
     do {
-        /*
-         * Detect alias loops explicitly.
-         */
+        /* Detect alias loops explicitly. */
         if (already_visited(language, visited, visited_count)) {
             gregorio_messagef(
                 "read_rules",
@@ -95,7 +93,8 @@ static bool read_vowel_rules(char *const lang) {
             );
             break;
         }
-
+        
+        /* Check that we haven't exceeded MAX_ALIAS_DEPTH */
         if (visited_count >= MAX_ALIAS_DEPTH) {
             gregorio_messagef(
                 "read_rules",
@@ -109,11 +108,9 @@ static bool read_vowel_rules(char *const lang) {
         }
 
         visited[visited_count++] = strdup(language);
-        
-        /*
-         * Search all rule files for the current language.
-         */
         status = RFPS_NOT_FOUND;
+
+        /* Search all rule files for the current language. */
         for (p = filenames; (filename = *p); ++p) {
 
             rulefile_parse_status file_status = RFPS_NOT_FOUND;
@@ -172,8 +169,7 @@ static bool read_vowel_rules(char *const lang) {
                 break;
             }
 
-            /*
-             * Stop scanning files immediately after either:
+            /* Stop scanning files immediately after either:
              *   - successfully finding a definition
              *   - resolving to an alias
              */
@@ -183,11 +179,9 @@ static bool read_vowel_rules(char *const lang) {
         }
     } while (status == RFPS_ALIASED);
 
-    /* RFPS_ALIASED at this point indicates alias resolution failed; guards above
-     * already reported the appropriate warning. */
-    /*
-     * Fallback behavior if we didn't find the requested language.
-     */
+    /* if guards fired, status is still RFPS_ALIASED and fallback (below) is correctly suppressed */
+    
+    /* Fallback behavior if we didn't find the requested language. */
     if (status == RFPS_NOT_FOUND) {
         if (is_latin) {
             gregorio_messagef(
@@ -207,9 +201,7 @@ static bool read_vowel_rules(char *const lang) {
         }
     }
 
-    /*
-     * Cleanup.
-     */
+    /* Cleanup. */
     for (p = filenames; *p; ++p) {
         free(*p);
     }
